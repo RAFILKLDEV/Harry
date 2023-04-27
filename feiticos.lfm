@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form name="feiticos" width="600" height="170" margins="{top=2,bottom=2}">
+
+
+    <script>
+        -- Primeiro, é necessário usar a unidade "dialogs.lua"
+        require("dialogs.lua");
+
+        local function Aceitar()
+            Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
+                function (confirmado)
+                    if confirmado then
+                        NDB.deleteNode(sheet);
+                    else
+                        return
+                    end;
+            end);
+            
+        end
+
+        local function enviarNaMesa()
+
+            local minhaMesa = Firecast.getRoomOf(sheet);
+            local chat = minhaMesa.chat;  
+            local nick = minhaMesa.meuJogador.nick
+
+            node = NDB.getParent(NDB.getParent(sheet))
+
+            local function definirEscola()
+                if sheet.escola == 'Adivinhação' then
+                    return node.adivinhacao
+                elseif sheet.escola == 'Azaração' then
+                    return node.azaracao
+                elseif sheet.escola == 'Contra-Feitiço' then
+                    return node.contraFeitico
+                elseif sheet.escola == 'Encantamento' then
+                    return node.encantamento
+                elseif sheet.escola == 'Feitiço' then
+                    return node.feitico
+                elseif sheet.escola == 'Transmutação' then
+                    return node.transmutacao
+                elseif sheet.escola == 'Arte das Trevas' then
+                    return node.arteDasTrevas    
+                end
+
+            end
+
+            local function stats()
+                local msg = ""
+
+                if sheet.Grad then
+                    msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. sheet.Grad
+                end
+
+                if sheet.CD then
+                    msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. sheet.CD
+                end
+
+                if sheet.Dano then
+                    msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. sheet.Dano
+                end
+
+                if sheet.Poder then
+                    msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. sheet.Poder
+                end
+
+                if sheet.Bonus then
+                    msg = msg .. "[§K10]" .. " Bonus: " .. "[§K1]" .. sheet.Bonus
+                end
+
+                if sheet.Range then
+                    msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. sheet.Range
+                end
+
+                if sheet.Area then
+                    msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. sheet.Area
+                end
+
+                if sheet.Duracao then
+                    msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" .. sheet.Duracao
+                end
+
+                return msg
+            end
+
+            local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "+" .. (node.concentracao or 0)
+
+            chat:enviarMensagem("----------------");
+
+            chat:rolarDados("1d20+" .. somatoria, "Cast " .. sheet.nome .. " CD " .. sheet.CD, function (rolagem)
+                    
+                chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta usando [§K6]" .. sheet.nome)
+
+            
+                if rolagem.resultado >= tonumber(sheet.CD) then
+                    chat:enviarMensagem("[§K9]Sucesso!");
+
+                    chat:enviarMensagem("[§K6]" .. sheet.nome .. " " .. stats())
+
+                    if sheet.Efeito then
+                        chat:enviarMensagem("[§K10]Efeito: " .. "[§K1]" .. sheet.Efeito)
+                    end
+
+                    if sheet.tipo == 'Ataque' then
+                        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "+" .. (node.acerto or 0), "Ataque de " .. sheet.nome)
+                    elseif sheet.tipo == 'Defesa' then
+                        chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
+                    end
+
+                    chat:enviarMensagem("----------------");
+                    
+                elseif rolagem.resultado &lt; tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD) - 5 then
+                    chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 1 Estagio!!");
+
+                elseif rolagem.resultado &lt; tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD) - 10 then
+                    chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 2 Estagio!!");
+
+                elseif rolagem.resultado &lt; tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD) - 15 then
+                    chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 3 Estagio!!");
+
+                else chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 4 Estagio!!");
+                
+                end
+
+            end)
+
+
+        end
+
+    </script>
+
+    <template name="label3">
+        <layout align="left" margins="{left=10}" width="80">
+            <rectangle top="7" left="7" color="DarkSlateBlue" width="65" height="20">
+                <label align="client" text="$(text)" horzTextAlign="center"/>
+            </rectangle>
+            <edit top="27" width="80" height="25" field="$(field)" horzTextAlign="center"/>
+        </layout>
+    </template>
+
+    <rectangle color="grey" opacity="0.35" width="1020" height="170"/>
+    <layout align="left" width="300">
+        <label align="top" margins="{left=130,top=5}" text="Nome"/>
+        <edit fontStyle="bold italic" horzTextAlign="center" align="top" field="nome"/>
+        <label align="top" margins="{left=130,top=5}" text="Escola"/>
+        <comboBox name="escola" field="escola" horzTextAlign="center" align="top" height="30" items="{'Adivinhação', 'Azaração', 'Contra-Feitiço', 'Encantamento','Feitiço','Transmutação', 'Arte das Trevas'}"/>
+        <label align="top" margins="{left=130,top=5}" text="Ação"/>
+        <comboBox name="tipo" field="tipo" horzTextAlign="center" align="top" height="30" items="{'Ataque', 'Defesa', 'Cast'}"/>
+    </layout>
+
+    <layout align="left" width="280">
+        <layout align="top" height="55">
+            <label3 field="Grad" text="Grad"/>
+            <label3 field="CD" text="CD"/>
+            <label3 field="Efeito" text="Efeito"/>
+        </layout>
+        <layout align="top" height="55">
+            <label3 field="Poder" text="Poder"/>
+            <label3 field="Dano" text="Dano"/>
+            <label3 field="Bonus" text="Bonus"/>
+        </layout>
+        <layout align="top" height="55">
+            <label3 field="Range" text="Range"/>
+            <label3 field="Area" text="Area"/>
+            <label3 field="Duracao" text="Duração"/>
+        </layout>
+    </layout>
+
+    <layout width="50" align="left">
+        <rectangle top="55" left="5" color="purple" width="40" height="20">
+            <label align="client" text="Order" horzTextAlign="center"/>
+        </rectangle>
+        <edit top="75" left="5" width="40" height="25" field="Order" horzTextAlign="center" hint="Quanto menor mais acima na lista!"/>
+    </layout>
+
+    <layout width="100" align="left">
+        <button align="top" text="Rolar" height="45" onClick="enviarNaMesa()"/>
+        <button align="bottom" text="Apagar" height="30" onClick="Aceitar()"/>
+    </layout>
+
+    <event name="onNodeReady">
+
+          local campos = {"Grad","CD","Efeito","Poder","Dano","Bonus","Range","Area","Duracao"}
+          
+          for x = 1, #campos, 1 do
+
+                if sheet[campos[x]] == nil then
+                    sheet[campos[x]] = 0
+               end
+
+          end
+
+          if sheet.escola == nil then
+            self.escola.text = "Feitiço"
+          end
+
+          if sheet.tipo == nil then
+            self.tipo.text = "Cast"
+          end
+
+          if sheet.nome == nil then
+            sheet.nome = "Feitiço"
+          end
+
+          if sheet.Order == nil then
+
+            sheet.Order = 99
+
+          end
+
+    </event>
+
+</form>
