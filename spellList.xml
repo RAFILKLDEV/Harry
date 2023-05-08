@@ -5,7 +5,7 @@ const feiticos = [
         type: "Basico",
         action: "Instantanêo",
         test: "Acerto + Fortitude",
-        desc: "Feitiço Convocatório; é usado para chamar itens de longa distância para as mãos do bruxo.",
+        desc: "Atrai um item específico para a varinha.",
         effect: null,
         cdf: 10,
         power: 1,
@@ -96,6 +96,19 @@ const feiticos = [
         cdf: 15,
         power: 1,
         range: "7,5m", 
+    },
+    {
+        name: "Aqua Eructo",
+        school: "Transmutação",
+        type: null
+        action: "Instantanêo",
+        test: "Acerto 10",
+        desc: "Feitiço Convocatório; é usado para chamar itens de longa distância para as mãos do bruxo.",
+        effect: null,
+        cdf: 15,
+        power: 1,
+        range: "7,5m", 
     }
+    
 
 ]
