@@ -3,91 +3,484 @@
 <form formType="sheetTemplate" dataType="HarryPlugin" height="700" width="1080"
      title="Ficha Harry Potter Nova!" name="HarryFicha">
 
-     <scrollBox align="client">
-          <image style="autoFit" top="0" width="1300" height="800" src="/imagens/wizard.jpg" />
-          <layout align="top" height="100" padding="{top=5, left=5}">
+     <tabControl align="client">
+          <tab title="Jogador">
+               <rectangle left="20" top="20" width="200" height="200" />
+
+               <image field="imagemDoPersonagem" editable="true" style="autoFit"
+                    left="20" top="20" width="200" height="200" />
+
+               <layout left="20" top="20" width="1300" height="1000">
+
+                    <rectangle left="220" top="0" width="700" height="155" color="black">
+
+                         <label left="5" top="5" text="Nome Jogador" width="90" height="25" />
+                         <label left="5" top="35" text="Nome Personagem" width="110"
+                              height="25" />
+                         <label left="5" top="65" text="Cidade" width="90" height="25" />
+                         <label left="5" top="95" text="Continente" width="90" height="25" />
+                         <label left="5" top="125" text="Classe" width="90" height="25" />
+                         <label left="130" top="125" text="Level" width="90" height="25" />
+                         <label left="222" top="125" text="XP" width="90" height="25" />
+
+                         <edit left="100" top="5" width="245" height="25" />
+                         <edit left="120" top="35" width="225" height="25" />
+                         <edit left="52" top="65" width="293" height="25" />
+                         <edit left="75" top="95" width="270" height="25" />
+                         <edit left="45" top="125" width="80" height="25" />
+                         <edit left="165" top="125" width="50" height="25" />
+                         <edit left="245" top="125" width="100" height="25" />
+
+                    </rectangle>
+
+                    <layout left="0" top="220" width="300" height="500">
+
+                         <layout align="left" width="100">
+
+                              <rectangle align="top" height="150" color="black">
+
+                                   <label text="AGILIDADE" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <label text="DESTREZA" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <label text="FORÇA" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <label text="LUTA" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <label text="VIGOR" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                              </rectangle>
+
+                              <rectangle margins="{top=20}" align="top" height="90" color="black">
+                                   <label text="INTELIGENCIA" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <label text="PRESENÇA" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <label text="SABEDORIA" height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                              </rectangle>
+
+                         </layout>
+                         <layout align="left" width="40">
+
+                              <rectangle align="top" height="150" color="black">
+
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                              </rectangle>
+
+                              <rectangle margins="{top=20}" align="top" height="90" color="black">
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                              </rectangle>
+                         </layout>
+                         <layout align="left" width="40">
+
+                              <rectangle align="top" height="150" color="black" padding="{right=5}">
+
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                              </rectangle>
+
+                              <rectangle margins="{top=20}" align="top" height="90" color="black" padding="{right=5}">
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                                   <edit height="25" align="top"
+                                        margins="{left=5,top=5}"
+                                        horzTextAlign="center" />
+                              </rectangle>
+                         </layout>
+
+                    </layout>
+
+               </layout>
+
+               <layout left="240" top="200" width="1300" height="600">
+
+                    <template name="LabelComEdit">
+                         <layout height="30" align="top" margins="{top=3}">
+                              <label text="$(text1)" align="left" width="$(wid)"
+                                   horzTextAlign="center" />
+                              <edit field="$(field1)" align="left"
+                                   margins="{left = 5}" width="30"
+                                   horzTextAlign="center" />
+                              <edit field="$(field2)" align="left"
+                                   margins="{left = 5}" width="30"
+                                   horzTextAlign="center" />
+                              <label text="$(text2)" align="left"
+                                   margins="{left = 5}" width="30"
+                                   horzTextAlign="center" />
+                              <label text="$(text3)" align="left"
+                                   margins="{left = 5}" width="30"
+                                   horzTextAlign="center" />
+                         </layout>
+                    </template>
+
+                    <layout width="800" height="700">
+                         <tabControl align="left" width="350">
+                              <tab title="Corpo" width="134">
+                                   <layout height="250"
+                                        align="top">
+                                        <label align="top" height="50" text="Corpo"
+                                             horzTextAlign="center" />
+                                        <LabelComEdit wid="120" text1="Acrobacia"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Atlestismo" text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Corpo-a-Corpo" text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Especialidade" text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Furtividade" text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Veiculos Mágicos"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                   </layout>
+                              </tab>
+                              <tab title="Mente" width="134">
+                                   <layout height="320"
+                                        align="top">
+                                        <label align="top" height="50" text="Mente"
+                                             horzTextAlign="center" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Enganação"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Intimidação"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Intuição"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Percepção"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Persuação"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             text1="Enganação"
+                                             text2="0"
+                                             text3="0"
+                                             field1="" field2="" align="top"
+                                             height="30" />
+                                   </layout>
+                              </tab>
+                              <tab title="Conhecimentos" width="134">
+                                   <label
+                                        align="top" height="50" text="Conhecimentos"
+                                        horzTextAlign="center" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Atualidades"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Adivinhação"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Azaração"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Contra-Feitiço"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Criaturas Mágicas"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Encantamentos"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Feitiços"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Herbologia"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Maldições (DCAT)"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Poções"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Runas"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="200"
+                                        margins="{top=5}"
+                                        text1="Conhe. Transmutação"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                              </tab>
+                         </tabControl>
+
+                         <tabControl align="left" width="300">
+                              <tab title="Defesas" width="220">
+                                   <label align="top" height="50" text="Defesas Ativas"
+                                        horzTextAlign="center" />
+                                   <LabelComEdit wid="120" margins="{top=5}"
+                                        text1="Iniciativa"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="120" margins="{top=5}"
+                                        text1="Aparar"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="120" margins="{top=5}"
+                                        text1="Fortitude"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="120" margins="{top=5}"
+                                        text1="Reflexos"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="120" margins="{top=5}"
+                                        text1="Resistencia"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                                   <LabelComEdit wid="120" margins="{top=5}"
+                                        text1="Vontade"
+                                        text2="0"
+                                        text3="0"
+                                        field1="" field2="" align="top"
+                                        height="30" />
+                              </tab>
+                         </tabControl>
+                    </layout>
+
+               </layout>
 
 
-               <template name="label2">
+          </tab>
+
+
+          <tab title="Feitiços">
+               <image style="autoFit" top="0" width="1300" height="800"
+                    src="/imagens/wizard.jpg" />
+               <layout align="top" height="100" padding="{top=5, left=5}">
+
+
+                    <template name="label2">
+                         <layout align="left" margins="{left=20}" width="120" height="80">
+                              <rectangle top="5" left="10" color="$(color)" width="90"
+                                   height="25">
+                                   <label align="client" text="$(text)" horzTextAlign="center" />
+                              </rectangle>
+                              <edit top="30" width="120" field="$(field)"
+                                   horzTextAlign="center">
+                                   <event name="onUserChange">
+
+                                   </event>
+                              </edit>
+                         </layout>
+                    </template>
+
+                    <layout align="top" height="80" margins="{top=10, left=0}">
+                         <label2 field="DES" text="Destreza" color="DarkSlateBlue" />
+                         <label2 field="adivinhacao" color="DarkSlateBlue" text="Adivinhação" />
+                         <label2 field="azaracao" color="DarkSlateBlue" text="Azaração" />
+                         <label2 field="contraFeitico" color="DarkSlateBlue"
+                              text="Contra-Feitiço" />
+                         <label2 field="encantamento" color="DarkSlateBlue" text="Encantamento" />
+                         <label2 field="feitico" color="DarkSlateBlue" text="Feitiço" />
+                         <label2 field="transmutacao" color="DarkSlateBlue" text="Transmutação" />
+                         <label2 field="arteDasTrevas" color="DarkSlateBlue"
+                              text="Arte das Trevas" />
+                    </layout>
+
+               </layout>
+
+               <layout align="top" height="80" margins="{top=0, left=0}">
                     <layout align="left" margins="{left=20}" width="120" height="80">
-                         <rectangle top="5" left="10" color="$(color)" width="90" height="25">
-                              <label align="client" text="$(text)" horzTextAlign="center" />
+                         <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+                              <label align="client" text="Fisico" horzTextAlign="center" />
                          </rectangle>
-                         <edit top="30" width="120" field="$(field)" horzTextAlign="center">
+                         <edit top="30" width="120" field="fisico" horzTextAlign="center">
                               <event name="onUserChange">
+                                   local minhaMesa = Firecast.getRoomOf(sheet);
+                                   local chat = minhaMesa.chat;
 
+                                   chat:enviarAcao("esta com penalidade em Fisico de " ..
+                                   sheet.fisico)
                               </event>
                          </edit>
                     </layout>
-               </template>
+                    <layout align="left" margins="{left=20}" width="120" height="80">
+                         <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+                              <label align="client" text="Mental" horzTextAlign="center" />
+                         </rectangle>
+                         <edit top="30" width="120" field="mental" horzTextAlign="center">
+                              <event name="onUserChange">
+                                   local minhaMesa = Firecast.getRoomOf(sheet);
+                                   local chat = minhaMesa.chat;
 
-               <layout align="top" height="80" margins="{top=10, left=0}">
-                    <label2 field="DES" text="Destreza" color="DarkSlateBlue" />
-                    <label2 field="adivinhacao" color="DarkSlateBlue" text="Adivinhação" />
-                    <label2 field="azaracao" color="DarkSlateBlue" text="Azaração" />
-                    <label2 field="contraFeitico" color="DarkSlateBlue" text="Contra-Feitiço" />
-                    <label2 field="encantamento" color="DarkSlateBlue" text="Encantamento" />
-                    <label2 field="feitico" color="DarkSlateBlue" text="Feitiço" />
-                    <label2 field="transmutacao" color="DarkSlateBlue" text="Transmutação" />
-                    <label2 field="arteDasTrevas" color="DarkSlateBlue" text="Arte das Trevas" />
+                                   chat:enviarAcao("esta com penalidade em Mental de " ..
+                                   sheet.mental)
+                              </event>
+                         </edit>
+                    </layout>
+                    <label2 field="concentracao" color="purple" text="Concentração" />
+                    <label2 field="acerto" color="purple" text="Acerto" />
                </layout>
 
-          </layout>
-
-          <layout align="top" height="80" margins="{top=0, left=0}">
-               <layout align="left" margins="{left=20}" width="120" height="80">
-                    <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-                         <label align="client" text="Fisico" horzTextAlign="center" />
-                    </rectangle>
-                    <edit top="30" width="120" field="fisico" horzTextAlign="center">
-                         <event name="onUserChange">
-                              local minhaMesa = Firecast.getRoomOf(sheet);
-                              local chat = minhaMesa.chat;
-
-                              chat:enviarAcao("esta com penalidade em Fisico de " .. sheet.fisico)
-                         </event>
-                    </edit>
+               <layout align="top" height="600" padding="{top=5, left=5}">r <button left="20"
+                         top="20"
+                         height="25" text="Novo Feitiço" width="100"
+                         onClick="self.rclMagias:append();" />
+                         <button
+                         left="130" top="20" height="25" text="Ordenar" width="100"
+                         onClick="self.rclMagias:sort();" />
+                         <recordList name="rclMagias"
+                         field="magias"
+                         itemHeight="200" templateForm="feiticos" left="20" top="60"
+                         width="760"
+                         height="450" autoHeight="false">
+                         <event name="onCompare"><![CDATA[     
+                              if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
+                                   return -1;
+                              elseif (tonumber(nodeA.Order) or 0) > (tonumber(nodeB.Order) or 0) then
+                                   return 1;
+                              else   
+                                   return Utils.compareStringPtBr(nodeA.nome, nodeB.nome);
+                              end;               
+          
+                              ]]>
+                              </event>
+                    </recordList>
                </layout>
-               <layout align="left" margins="{left=20}" width="120" height="80">
-                    <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-                         <label align="client" text="Mental" horzTextAlign="center" />
-                    </rectangle>
-                    <edit top="30" width="120" field="mental" horzTextAlign="center">
-                         <event name="onUserChange">
-                              local minhaMesa = Firecast.getRoomOf(sheet);
-                              local chat = minhaMesa.chat;
-
-                              chat:enviarAcao("esta com penalidade em Mental de " .. sheet.mental)
-                         </event>
-                    </edit>
-               </layout>
-               <label2 field="concentracao" color="purple" text="Concentração" />
-               <label2 field="acerto" color="purple" text="Acerto" />
-          </layout>
-
-          <layout align="top" height="600" padding="{top=5, left=5}">r <button left="20" top="20"
-                    height="25" text="Novo Feitiço" width="100" onClick="self.rclMagias:append();" />
-               <button
-                    left="130" top="20" height="25" text="Ordenar" width="100"
-                    onClick="self.rclMagias:sort();" />
-               <recordList name="rclMagias" field="magias"
-                    itemHeight="200" templateForm="feiticos" left="20" top="60" width="760"
-                    height="450" autoHeight="false">
-                    <event name="onCompare"><![CDATA[     
-                    if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
-                         return -1;
-                    elseif (tonumber(nodeA.Order) or 0) > (tonumber(nodeB.Order) or 0) then
-                         return 1;
-                    else   
-                         return Utils.compareStringPtBr(nodeA.nome, nodeB.nome);
-                    end;               
-
-                    ]]>
-                    </event>
-               </recordList>
-          </layout>
-
-     </scrollBox>
+          </tab>
+     </tabControl>
 
      <event name="onNodeReady">
 
@@ -102,4 +495,5 @@
           end
 
      </event>
+
 </form>
