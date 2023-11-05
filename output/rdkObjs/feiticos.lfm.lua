@@ -36,125 +36,182 @@ local function constructNew_feiticos()
         require("dialogs.lua");
 
         local function Aceitar()
-            Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
-                function (confirmado)
-                    if confirmado then
-                        NDB.deleteNode(sheet);
-                    else
-                        return
-                    end;
-            end);
-            
+        Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
+        function (confirmado)
+        if confirmado then
+        ndb.deleteNode(sheet);
+        else
+        return
+        end;
+        end);
+
         end
 
         local function enviarNaMesa()
 
-            local minhaMesa = Firecast.getRoomOf(sheet);
-            local chat = minhaMesa.chat;  
-            local nick = minhaMesa.meuJogador.nick
+        local minhaMesa = Firecast.getRoomOf(sheet);
+        local chat = minhaMesa.chat;
+        local nick = minhaMesa.meuJogador.nick
 
-            node = NDB.getParent(NDB.getParent(sheet))
+        node = ndb.getParent(ndb.getParent(sheet))
 
-            local function definirEscola()
-                if sheet.escola == 'Adivinhação' then
-                    return node.adivinhacao
-                elseif sheet.escola == 'Azaração' then
-                    return node.azaracao
-                elseif sheet.escola == 'Contra-Feitiço' then
-                    return node.contraFeitico
-                elseif sheet.escola == 'Encantamento' then
-                    return node.encantamento
-                elseif sheet.escola == 'Feitiço' then
-                    return node.feitico
-                elseif sheet.escola == 'Transmutação' then
-                    return node.transmutacao
-                elseif sheet.escola == 'Arte das Trevas' then
-                    return node.arteDasTrevas    
-                end
+        local function definirEscola()
+        if sheet.escola == 'Adivinhação' then
+        return node.adivinhacao
+        elseif sheet.escola == 'Azaração' then
+        return node.azaracao
+        elseif sheet.escola == 'Contra-Feitiço' then
+        return node.contraFeitico
+        elseif sheet.escola == 'Encantamento' then
+        return node.encantamento
+        elseif sheet.escola == 'Feitiço' then
+        return node.feitico
+        elseif sheet.escola == 'Transmutação' then
+        return node.transmutacao
+        elseif sheet.escola == 'Arte das Trevas' then
+        return node.arteDasTrevas
+        end
 
-            end
+        end
 
-            local function stats()
-                local msg = ""
+        local function stats()
+        local msg = ""
 
-                if sheet.Grad then
-                    msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. sheet.Grad
-                end
+        if sheet.Grad then
+        msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. sheet.Grad
+        end
 
-                if sheet.CD then
-                    msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. sheet.CD
-                end
+        if sheet.CD then
+        msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. sheet.CD
+        end
 
-                if sheet.Dano then
-                    msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. sheet.Dano
-                end
+        if sheet.Dano then
+        msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. sheet.Dano
+        end
 
-                if sheet.Poder then
-                    msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. sheet.Poder
-                end
+        if sheet.Poder then
+        msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. sheet.Poder
+        end
 
-                if sheet.Bonus then
-                    msg = msg .. "[§K10]" .. " Bonus: " .. "[§K1]" .. sheet.Bonus
-                end
+        if sheet.Bonus then
+        msg = msg .. "[§K10]" .. " Bonus: " .. "[§K1]" .. sheet.Bonus
+        end
 
-                if sheet.Range then
-                    msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. sheet.Range
-                end
+        if sheet.Range then
+        msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. sheet.Range
+        end
 
-                if sheet.Area then
-                    msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. sheet.Area
-                end
+        if sheet.Area then
+        msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. sheet.Area
+        end
 
-                if sheet.Duracao then
-                    msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" .. sheet.Duracao
-                end
+        if sheet.Duracao then
+        msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" .. sheet.Duracao
+        end
 
-                return msg
-            end
+        return msg
+        end
 
-            local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "+" .. (node.concentracao or 0)
+        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "+" ..
+        (node.concentracao or 0)
 
-            chat:enviarMensagem("----------------");
+        chat:enviarMensagem("----------------");
 
-            chat:rolarDados("1d20+" .. somatoria, "Cast " .. sheet.nome .. " CD " .. sheet.CD, function (rolagem)
-                    
-                chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta usando [§K6]" .. sheet.nome)
+        chat:rolarDados("1d20+" .. somatoria, "Cast " .. sheet.nome .. " CD " .. sheet.CD, function
+        (rolagem)
 
-            
-                if rolagem.resultado >= tonumber(sheet.CD) then
-                    chat:enviarMensagem("[§K9]Sucesso!");
+        chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta usando [§K6]" .. sheet.nome)
 
-                    chat:enviarMensagem("[§K6]" .. sheet.nome .. " " .. stats())
 
-                    if sheet.Efeito then
-                        chat:enviarMensagem("[§K10]Efeito: " .. "[§K1]" .. sheet.Efeito)
-                    end
+        if rolagem.resultado >= tonumber(sheet.CD) then
+        chat:enviarMensagem("[§K9]Sucesso!");
 
-                    if sheet.tipo == 'Ataque' then
-                        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "+" .. (node.acerto or 0), "Ataque de " .. sheet.nome)
-                    elseif sheet.tipo == 'Defesa' then
-                        chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
-                    end
+        chat:enviarMensagem("[§K6]" .. sheet.nome .. " " .. stats())
 
-                    chat:enviarMensagem("----------------");
-                    
-                elseif rolagem.resultado < tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD) - 5 then
-                    chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 1 Estagio!!");
+        if sheet.Efeito then
+        chat:enviarMensagem("[§K10]Efeito: " .. "[§K1]" .. sheet.Efeito)
+        end
 
-                elseif rolagem.resultado < tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD) - 10 then
-                    chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 2 Estagio!!");
+        if sheet.tipo == 'Ataque' then
+        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "+" .. (node.acerto or 0),
+        "Ataque de " .. sheet.nome)
+        elseif sheet.tipo == 'Defesa' then
+        chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
+        end
 
-                elseif rolagem.resultado < tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD) - 15 then
-                    chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 3 Estagio!!");
+        chat:enviarMensagem("----------------");
 
-                else chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 4 Estagio!!");
-                
-                end
+        elseif rolagem.resultado < tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD)
+        - 5 then
+        chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 1 Estagio!!");
 
-            end)
+        elseif rolagem.resultado < tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD)
+        - 10 then
+        chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 2 Estagio!!");
+
+        elseif rolagem.resultado < tonumber(sheet.CD) and rolagem.resultado > tonumber(sheet.CD)
+        - 15 then
+        chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 3 Estagio!!");
+
+        else chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 4 Estagio!!");
+
+        end
+
+        end)
 
 
         end
+
+        -- FUNÇÂO DE FEITICO
+
+        local function ListaDeFeitico()
+        require("ndb.lua");
+        require("utils.lua");
+
+        local Raiz = ndb.load("listfetico.xml");
+        local Filho = ndb.getChildNodes(Raiz);
+
+        ListaFeiticos = {} -- new array
+        ListaNomesFeitico = {} -- new array
+
+        for i = 1, #Filho, 1 do
+        ListaFeiticos[i] = Raiz["f" .. i]
+        ListaNomesFeitico[i] = Raiz["f" .. i].nome
+        end
+
+        Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
+        function(selected, selectedIndex, selectedText)
+
+        if selected then
+
+        for k = 1, #Filho, 1 do
+
+        if tostring(selectedText) == ListaFeiticos[k].nome then
+        sheet.nome = ListaFeiticos[k].nome
+        sheet.escola = ListaFeiticos[k].escola
+        sheet.tipo = ListaFeiticos[k].cast
+        sheet.Grad = ListaFeiticos[k].grad
+        sheet.CD = ListaFeiticos[k].cdf
+        sheet.Efeito = ListaFeiticos[k].efeito
+        sheet.Poder = ListaFeiticos[k].poder
+        sheet.Dano = ListaFeiticos[k].dano
+        sheet.Bonus = ListaFeiticos[k].bonus
+        sheet.Range = ListaFeiticos[k].range
+        sheet.Area = ListaFeiticos[k].area
+        sheet.Duracao = ListaFeiticos[k].duracao
+        end
+
+        end
+
+        else
+
+        end;
+
+        end)
+
+
+        end
+
 
     
 
@@ -580,40 +637,47 @@ local function constructNew_feiticos()
 
     obj.button2 = GUI.fromHandle(_obj_newObject("button"));
     obj.button2:setParent(obj.layout16);
-    obj.button2:setAlign("bottom");
-    obj.button2:setText("Apagar");
-    obj.button2:setHeight(30);
+    obj.button2:setAlign("top");
+    obj.button2:setText("Importar");
+    obj.button2:setHeight(45);
     obj.button2:setName("button2");
+
+    obj.button3 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button3:setParent(obj.layout16);
+    obj.button3:setAlign("bottom");
+    obj.button3:setText("Apagar");
+    obj.button3:setHeight(30);
+    obj.button3:setName("button3");
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
         function (_)
             local campos = {"Grad","CD","Efeito","Poder","Dano","Bonus","Range","Area","Duracao"}
-                      
-                      for x = 1, #campos, 1 do
             
-                            if sheet[campos[x]] == nil then
-                                sheet[campos[x]] = 0
-                           end
+                    for x = 1, #campos, 1 do
             
-                      end
+                    if sheet[campos[x]] == nil then
+                    sheet[campos[x]] = 0
+                    end
             
-                      if sheet.escola == nil then
-                        self.escola.text = "Feitiço"
-                      end
+                    end
             
-                      if sheet.tipo == nil then
-                        self.tipo.text = "Cast"
-                      end
+                    if sheet.escola == nil then
+                    self.escola.text = "Feitiço"
+                    end
             
-                      if sheet.nome == nil then
-                        sheet.nome = "Feitiço"
-                      end
+                    if sheet.tipo == nil then
+                    self.tipo.text = "Cast"
+                    end
             
-                      if sheet.Order == nil then
+                    if sheet.nome == nil then
+                    sheet.nome = "Feitiço"
+                    end
             
-                        sheet.Order = 99
+                    if sheet.Order == nil then
             
-                      end
+                    sheet.Order = 99
+            
+                    end
         end, obj);
 
     obj._e_event1 = obj.button1:addEventListener("onClick",
@@ -623,10 +687,16 @@ local function constructNew_feiticos()
 
     obj._e_event2 = obj.button2:addEventListener("onClick",
         function (_)
+            ListaDeFeitico()
+        end, obj);
+
+    obj._e_event3 = obj.button3:addEventListener("onClick",
+        function (_)
             Aceitar()
         end, obj);
 
     function obj:_releaseEvents()
+        __o_rrpgObjs.removeEventListenerById(self._e_event3);
         __o_rrpgObjs.removeEventListenerById(self._e_event2);
         __o_rrpgObjs.removeEventListenerById(self._e_event1);
         __o_rrpgObjs.removeEventListenerById(self._e_event0);
@@ -641,61 +711,62 @@ local function constructNew_feiticos()
           self:setNodeDatabase(nil);
         end;
 
-        if self.rectangle11 ~= nil then self.rectangle11:destroy(); self.rectangle11 = nil; end;
-        if self.label14 ~= nil then self.label14:destroy(); self.label14 = nil; end;
-        if self.tipo ~= nil then self.tipo:destroy(); self.tipo = nil; end;
-        if self.label1 ~= nil then self.label1:destroy(); self.label1 = nil; end;
-        if self.layout4 ~= nil then self.layout4:destroy(); self.layout4 = nil; end;
-        if self.rectangle7 ~= nil then self.rectangle7:destroy(); self.rectangle7 = nil; end;
-        if self.layout15 ~= nil then self.layout15:destroy(); self.layout15 = nil; end;
-        if self.layout10 ~= nil then self.layout10:destroy(); self.layout10 = nil; end;
-        if self.rectangle9 ~= nil then self.rectangle9:destroy(); self.rectangle9 = nil; end;
-        if self.edit9 ~= nil then self.edit9:destroy(); self.edit9 = nil; end;
-        if self.layout5 ~= nil then self.layout5:destroy(); self.layout5 = nil; end;
-        if self.edit7 ~= nil then self.edit7:destroy(); self.edit7 = nil; end;
-        if self.rectangle2 ~= nil then self.rectangle2:destroy(); self.rectangle2 = nil; end;
-        if self.rectangle3 ~= nil then self.rectangle3:destroy(); self.rectangle3 = nil; end;
-        if self.rectangle6 ~= nil then self.rectangle6:destroy(); self.rectangle6 = nil; end;
-        if self.button2 ~= nil then self.button2:destroy(); self.button2 = nil; end;
-        if self.layout13 ~= nil then self.layout13:destroy(); self.layout13 = nil; end;
-        if self.layout3 ~= nil then self.layout3:destroy(); self.layout3 = nil; end;
-        if self.label13 ~= nil then self.label13:destroy(); self.label13 = nil; end;
-        if self.rectangle10 ~= nil then self.rectangle10:destroy(); self.rectangle10 = nil; end;
         if self.layout8 ~= nil then self.layout8:destroy(); self.layout8 = nil; end;
-        if self.layout1 ~= nil then self.layout1:destroy(); self.layout1 = nil; end;
-        if self.label10 ~= nil then self.label10:destroy(); self.label10 = nil; end;
-        if self.rectangle1 ~= nil then self.rectangle1:destroy(); self.rectangle1 = nil; end;
-        if self.layout2 ~= nil then self.layout2:destroy(); self.layout2 = nil; end;
-        if self.rectangle5 ~= nil then self.rectangle5:destroy(); self.rectangle5 = nil; end;
-        if self.layout12 ~= nil then self.layout12:destroy(); self.layout12 = nil; end;
-        if self.button1 ~= nil then self.button1:destroy(); self.button1 = nil; end;
         if self.edit4 ~= nil then self.edit4:destroy(); self.edit4 = nil; end;
-        if self.label8 ~= nil then self.label8:destroy(); self.label8 = nil; end;
+        if self.tipo ~= nil then self.tipo:destroy(); self.tipo = nil; end;
         if self.layout11 ~= nil then self.layout11:destroy(); self.layout11 = nil; end;
-        if self.label11 ~= nil then self.label11:destroy(); self.label11 = nil; end;
-        if self.label4 ~= nil then self.label4:destroy(); self.label4 = nil; end;
-        if self.label6 ~= nil then self.label6:destroy(); self.label6 = nil; end;
-        if self.layout9 ~= nil then self.layout9:destroy(); self.layout9 = nil; end;
-        if self.edit11 ~= nil then self.edit11:destroy(); self.edit11 = nil; end;
-        if self.edit5 ~= nil then self.edit5:destroy(); self.edit5 = nil; end;
-        if self.edit6 ~= nil then self.edit6:destroy(); self.edit6 = nil; end;
-        if self.label7 ~= nil then self.label7:destroy(); self.label7 = nil; end;
-        if self.label2 ~= nil then self.label2:destroy(); self.label2 = nil; end;
-        if self.edit3 ~= nil then self.edit3:destroy(); self.edit3 = nil; end;
-        if self.label5 ~= nil then self.label5:destroy(); self.label5 = nil; end;
-        if self.layout6 ~= nil then self.layout6:destroy(); self.layout6 = nil; end;
-        if self.label12 ~= nil then self.label12:destroy(); self.label12 = nil; end;
-        if self.rectangle4 ~= nil then self.rectangle4:destroy(); self.rectangle4 = nil; end;
-        if self.edit8 ~= nil then self.edit8:destroy(); self.edit8 = nil; end;
-        if self.layout14 ~= nil then self.layout14:destroy(); self.layout14 = nil; end;
-        if self.layout16 ~= nil then self.layout16:destroy(); self.layout16 = nil; end;
-        if self.edit2 ~= nil then self.edit2:destroy(); self.edit2 = nil; end;
         if self.edit10 ~= nil then self.edit10:destroy(); self.edit10 = nil; end;
-        if self.label9 ~= nil then self.label9:destroy(); self.label9 = nil; end;
+        if self.rectangle6 ~= nil then self.rectangle6:destroy(); self.rectangle6 = nil; end;
+        if self.layout3 ~= nil then self.layout3:destroy(); self.layout3 = nil; end;
+        if self.label11 ~= nil then self.label11:destroy(); self.label11 = nil; end;
         if self.rectangle8 ~= nil then self.rectangle8:destroy(); self.rectangle8 = nil; end;
-        if self.edit1 ~= nil then self.edit1:destroy(); self.edit1 = nil; end;
-        if self.layout7 ~= nil then self.layout7:destroy(); self.layout7 = nil; end;
+        if self.rectangle11 ~= nil then self.rectangle11:destroy(); self.rectangle11 = nil; end;
+        if self.layout9 ~= nil then self.layout9:destroy(); self.layout9 = nil; end;
+        if self.rectangle3 ~= nil then self.rectangle3:destroy(); self.rectangle3 = nil; end;
+        if self.edit8 ~= nil then self.edit8:destroy(); self.edit8 = nil; end;
+        if self.edit5 ~= nil then self.edit5:destroy(); self.edit5 = nil; end;
+        if self.layout10 ~= nil then self.layout10:destroy(); self.layout10 = nil; end;
+        if self.rectangle5 ~= nil then self.rectangle5:destroy(); self.rectangle5 = nil; end;
+        if self.layout4 ~= nil then self.layout4:destroy(); self.layout4 = nil; end;
+        if self.layout16 ~= nil then self.layout16:destroy(); self.layout16 = nil; end;
+        if self.label1 ~= nil then self.label1:destroy(); self.label1 = nil; end;
+        if self.label10 ~= nil then self.label10:destroy(); self.label10 = nil; end;
+        if self.button1 ~= nil then self.button1:destroy(); self.button1 = nil; end;
+        if self.rectangle2 ~= nil then self.rectangle2:destroy(); self.rectangle2 = nil; end;
+        if self.edit9 ~= nil then self.edit9:destroy(); self.edit9 = nil; end;
+        if self.edit2 ~= nil then self.edit2:destroy(); self.edit2 = nil; end;
+        if self.layout13 ~= nil then self.layout13:destroy(); self.layout13 = nil; end;
+        if self.label4 ~= nil then self.label4:destroy(); self.label4 = nil; end;
+        if self.rectangle4 ~= nil then self.rectangle4:destroy(); self.rectangle4 = nil; end;
+        if self.layout5 ~= nil then self.layout5:destroy(); self.layout5 = nil; end;
+        if self.label2 ~= nil then self.label2:destroy(); self.label2 = nil; end;
+        if self.label13 ~= nil then self.label13:destroy(); self.label13 = nil; end;
+        if self.button2 ~= nil then self.button2:destroy(); self.button2 = nil; end;
+        if self.rectangle1 ~= nil then self.rectangle1:destroy(); self.rectangle1 = nil; end;
+        if self.edit3 ~= nil then self.edit3:destroy(); self.edit3 = nil; end;
+        if self.label8 ~= nil then self.label8:destroy(); self.label8 = nil; end;
+        if self.layout12 ~= nil then self.layout12:destroy(); self.layout12 = nil; end;
+        if self.label5 ~= nil then self.label5:destroy(); self.label5 = nil; end;
+        if self.label14 ~= nil then self.label14:destroy(); self.label14 = nil; end;
+        if self.layout6 ~= nil then self.layout6:destroy(); self.layout6 = nil; end;
+        if self.edit6 ~= nil then self.edit6:destroy(); self.edit6 = nil; end;
+        if self.label12 ~= nil then self.label12:destroy(); self.label12 = nil; end;
+        if self.button3 ~= nil then self.button3:destroy(); self.button3 = nil; end;
         if self.escola ~= nil then self.escola:destroy(); self.escola = nil; end;
+        if self.layout1 ~= nil then self.layout1:destroy(); self.layout1 = nil; end;
+        if self.label9 ~= nil then self.label9:destroy(); self.label9 = nil; end;
+        if self.layout15 ~= nil then self.layout15:destroy(); self.layout15 = nil; end;
+        if self.label6 ~= nil then self.label6:destroy(); self.label6 = nil; end;
+        if self.layout7 ~= nil then self.layout7:destroy(); self.layout7 = nil; end;
+        if self.edit7 ~= nil then self.edit7:destroy(); self.edit7 = nil; end;
+        if self.edit11 ~= nil then self.edit11:destroy(); self.edit11 = nil; end;
+        if self.rectangle7 ~= nil then self.rectangle7:destroy(); self.rectangle7 = nil; end;
+        if self.layout2 ~= nil then self.layout2:destroy(); self.layout2 = nil; end;
+        if self.edit1 ~= nil then self.edit1:destroy(); self.edit1 = nil; end;
+        if self.layout14 ~= nil then self.layout14:destroy(); self.layout14 = nil; end;
+        if self.label7 ~= nil then self.label7:destroy(); self.label7 = nil; end;
+        if self.rectangle9 ~= nil then self.rectangle9:destroy(); self.rectangle9 = nil; end;
+        if self.rectangle10 ~= nil then self.rectangle10:destroy(); self.rectangle10 = nil; end;
         self:_oldLFMDestroy();
     end;
 
