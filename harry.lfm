@@ -3,6 +3,102 @@
 <form formType="sheetTemplate" dataType="HarryPlugin" height="700" width="1080"
      title="Ficha Harry Potter Nova!" name="HarryFicha">
 
+     <script>
+          local function TotalPericia(ATR, MOD, OUT)
+          local total = 0
+
+          total = ATR + MOD + OUT
+
+          return total
+          end
+     </script>
+
+     <dataLink
+          fields="{'AGI','DES', 'FOR','LUT','VIG','INTE','PRE','SAB','ACR_Grad','ACR_Out','ATL_Grad',
+          'ATL_Out','COR_Grad','COR_Out','FUR_Grad','FUR_Out','PRE_Grad','PRE_Out','VEI_Grad','VEI_Out',
+          'CON_Grad','CON_Out','INT_Grad','INT_Out','INTU_Grad','INTU_Out','PERC_Grad','PERC_Out','PERS_Grad','PERS_Out',
+          'TRA_Grad','TRA_Out','ATU_Grad','ATU_Out','C_ADI_Grad','C_ADI_Out','C_AZA_Grad','C_AZA_Out','C_CON_Grad','C_CON_Out',
+          'C_CRI_Grad','C_CRI_Out','C_ENC_Grad','C_ENC_Out','C_FEI_Grad','C_FEI_Out','C_HER_Grad','C_HER_Out','C_MAL_Grad','C_MAL_Out','C_POC_Grad','C_POC_Out',
+          'C_RUN_Grad','C_RUN_Out','C_TRA_Grad','C_TRA_Out'}">
+          <event name="onChange">
+               sheet.ACR_Total = (tonumber(sheet.ACR_Grad) or 0) +
+               (tonumber(sheet.AGI) or 0) +
+               (tonumber(sheet.ACR_Out) or 0)
+               sheet.ATL_Total = (tonumber(sheet.ATL_Grad) or 0) +
+               (tonumber(sheet.FOR) or 0) +
+               (tonumber(sheet.ATL_Out) or 0)
+               sheet.COR_Total = (tonumber(sheet.COR_Grad) or 0) +
+               (tonumber(sheet.LUT) or 0) +
+               (tonumber(sheet.COR_Out) or 0)
+               sheet.FUR_Total = (tonumber(sheet.FUR_Grad) or 0) +
+               (tonumber(sheet.AGI) or 0) +
+               (tonumber(sheet.FUR_Out) or 0)
+               sheet.PRE_Total = (tonumber(sheet.PRE_Grad) or 0) +
+               (tonumber(sheet.DES) or 0) +
+               (tonumber(sheet.PRE_Out) or 0)
+               sheet.VEI_Total = (tonumber(sheet.VEI_Grad) or 0) +
+               (tonumber(sheet.AGI) or 0) +
+               (tonumber(sheet.VEI_Out) or 0)
+               sheet.CON_Total = (tonumber(sheet.CON_Grad) or 0) +
+               (tonumber(sheet.SAB) or 0) +
+               (tonumber(sheet.CON_Out) or 0)
+               sheet.ENG_Total = (tonumber(sheet.ENG_Grad) or 0) +
+               (tonumber(sheet.PRE) or 0) +
+               (tonumber(sheet.ENG_Out) or 0)
+               sheet.INT_Total = (tonumber(sheet.INT_Grad) or 0) +
+               (tonumber(sheet.PRE) or 0) +
+               (tonumber(sheet.INT_Out) or 0)
+               sheet.INTU_Total = (tonumber(sheet.INTU_Grad) or 0) +
+               (tonumber(sheet.SAB) or 0) +
+               (tonumber(sheet.INTU_Out) or 0)
+               sheet.PERC_Total = (tonumber(sheet.PERC_Grad) or 0) +
+               (tonumber(sheet.SAB) or 0) +
+               (tonumber(sheet.PERC_Out) or 0)
+               sheet.PERS_Total = (tonumber(sheet.PERS_Grad) or 0) +
+               (tonumber(sheet.PRE) or 0) +
+               (tonumber(sheet.PERS_Out) or 0)
+               sheet.TRA_Total = (tonumber(sheet.TRA_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.TRA_Out) or 0)
+               sheet.ATU_Total = (tonumber(sheet.ATU_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.ATU_Out) or 0)
+               sheet.C_ADI_Total = (tonumber(sheet.C_ADI_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_ADI_Out) or 0)
+               sheet.C_AZA_Total = (tonumber(sheet.C_AZA_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_AZA_Out) or 0)
+               sheet.C_CON_Total = (tonumber(sheet.C_CON_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_CON_Out) or 0)
+               sheet.C_CRI_Total = (tonumber(sheet.C_CRI_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_CRI_Out) or 0)
+               sheet.C_ENC_Total = (tonumber(sheet.C_ENC_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_ENC_Out) or 0)
+               sheet.C_FEI_Total = (tonumber(sheet.C_FEI_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_FEI_Out) or 0)
+               sheet.C_HER_Total = (tonumber(sheet.C_HER_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_HER_Out) or 0)
+               sheet.C_MAL_Total = (tonumber(sheet.C_MAL_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_MAL_Out) or 0)
+               sheet.C_POC_Total = (tonumber(sheet.C_POC_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_POC_Out) or 0)
+               sheet.C_RUN_Total = (tonumber(sheet.C_RUN_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_RUN_Out) or 0)
+               sheet.C_TRA_Total = (tonumber(sheet.C_TRA_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.C_TRA_Out) or 0)
+          </event>
+     </dataLink>
+
      <tabControl align="client">
           <tab title="Jogador">
                <rectangle left="20" top="20" width="200" height="200" />
@@ -33,109 +129,44 @@
 
                     </rectangle>
 
-                    <layout left="0" top="220" width="300" height="500">
+                    <template name="Atributo">
+                         <rectangle padding="{top=3,bottom=5}" align="top" height="35" color="blue">
+                              <label margins="{left=5}" align="left" horzTextAlign="center"
+                                   width="100" text="$(text1)" />
+                              <edit margins="{left=5}" align="left" horzTextAlign="center"
+                                   width="40" field="$(field1)" />
+                              <edit margins="{left=5}" align="left" horzTextAlign="center"
+                                   width="40" field="$(field2)" />
+                         </rectangle>
+                    </template>
 
-                         <layout align="left" width="100">
+                    <layout left="0" top="220" width="200" height="500">
+                         <rectangle align="top" height="40" color="blue">
+                              <label margins="{left=5}" horzTextAlign="center" align="left"
+                                   width="100" text="CORPO" />
+                              <label margins="{left=5}" horzTextAlign="center" align="left"
+                                   width="40" text="MOD" />
+                              <label margins="{left=5}" horzTextAlign="center" align="left"
+                                   width="40" text="OUT" />
+                         </rectangle>
+                         <Atributo text1="AGILIDADE" field1="AGI" field2="AGI_OUT" />
+                         <Atributo text1="DESTREZA" field1="DES" field2="DES_OUT" />
+                         <Atributo text1="FORÇA" field1="FOR" field2="FOR_OUT" />
+                         <Atributo text1="LUTA" field1="LUT" field2="LUT_OUT" />
+                         <Atributo text1="VIGOR" field1="VIG" field2="VIG_OUT" />
 
-                              <rectangle align="top" height="150" color="black">
+                         <rectangle align="top" margins="{top=15}" height="40" color="blue">
+                              <label margins="{left=5}" horzTextAlign="center" align="left"
+                                   width="100" text="MENTE" />
+                              <label margins="{left=5}" horzTextAlign="center" align="left"
+                                   width="40" text="MOD" />
+                              <label margins="{left=5}" horzTextAlign="center" align="left"
+                                   width="40" text="OUT" />
+                         </rectangle>
 
-                                   <label text="AGILIDADE" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <label text="DESTREZA" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <label text="FORÇA" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <label text="LUTA" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <label text="VIGOR" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                              </rectangle>
-
-                              <rectangle margins="{top=20}" align="top" height="90" color="black">
-                                   <label text="INTELIGENCIA" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <label text="PRESENÇA" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <label text="SABEDORIA" height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                              </rectangle>
-
-                         </layout>
-                         <layout align="left" width="40">
-
-                              <rectangle align="top" height="150" color="black">
-
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                              </rectangle>
-
-                              <rectangle margins="{top=20}" align="top" height="90" color="black">
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                              </rectangle>
-                         </layout>
-                         <layout align="left" width="40">
-
-                              <rectangle align="top" height="150" color="black" padding="{right=5}">
-
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                              </rectangle>
-
-                              <rectangle margins="{top=20}" align="top" height="90" color="black" padding="{right=5}">
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                                   <edit height="25" align="top"
-                                        margins="{left=5,top=5}"
-                                        horzTextAlign="center" />
-                              </rectangle>
-                         </layout>
-
+                         <Atributo text1="INTELIGENCIA" field1="INTE" field2="INTE_OUT" />
+                         <Atributo text1="PRESENÇA" field1="PRE" field2="PRES_OUT" />
+                         <Atributo text1="SABEDORIA" field1="SAB" field2="SAB_OUT" />
                     </layout>
 
                </layout>
@@ -144,18 +175,18 @@
 
                     <template name="LabelComEdit">
                          <layout height="30" align="top" margins="{top=3}">
-                              <label text="$(text1)" align="left" width="$(wid)"
+                              <label text="$(nome)" align="left" width="$(wid)"
                                    horzTextAlign="center" />
-                              <edit field="$(field1)" align="left"
+                              <edit field="$(grad)" align="left"
                                    margins="{left = 5}" width="30"
                                    horzTextAlign="center" />
-                              <edit field="$(field2)" align="left"
+                              <edit field="$(out)" align="left"
                                    margins="{left = 5}" width="30"
                                    horzTextAlign="center" />
-                              <label text="$(text2)" align="left"
+                              <label field="$(atr)" align="left"
                                    margins="{left = 5}" width="30"
                                    horzTextAlign="center" />
-                              <label text="$(text3)" align="left"
+                              <label field="$(total)" align="left"
                                    margins="{left = 5}" width="30"
                                    horzTextAlign="center" />
                          </layout>
@@ -163,174 +194,181 @@
 
                     <layout width="800" height="700">
                          <tabControl align="left" width="350">
-                              <tab title="Corpo" width="134">
+                              <tab title="  Corpo              " width="134">
                                    <layout height="250"
                                         align="top">
                                         <label align="top" height="50" text="Corpo"
                                              horzTextAlign="center" />
-                                        <LabelComEdit wid="120" text1="Acrobacia"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                        <LabelComEdit wid="120" nome="Acrobacia"
+                                             atr="AGI"
+                                             total="ACR_Total"
+                                             grad="ACR_Grad" out="ACR_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Atlestismo" text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Atlestismo" atr="FOR"
+                                             total="ATL_Total"
+                                             grad="ATL_Grad" out="ATL_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Corpo-a-Corpo" text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Corpo-a-Corpo" atr="LUT"
+                                             total="COR_Total"
+                                             grad="COR_Grad" out="COR_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Especialidade" text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Furtividade" atr="AGI"
+                                             total="FUR_Total"
+                                             grad="FUR_Grad" out="FUR_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Furtividade" text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Prestidigitação"
+                                             atr="DES"
+                                             total="PRE_Total"
+                                             grad="PRE_Grad" out="PRE_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Veiculos Mágicos"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Veiculos Mágicos"
+                                             atr="AGI"
+                                             total="VEI_Total"
+                                             grad="VEI_Grad" out="VEI_Out" align="top"
                                              height="30" />
                                    </layout>
                               </tab>
-                              <tab title="Mente" width="134">
+                              <tab title="  Mente              " width="134">
                                    <layout height="320"
                                         align="top">
                                         <label align="top" height="50" text="Mente"
                                              horzTextAlign="center" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Enganação"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Concentração"
+                                             atr="SAB"
+                                             total="CON_Total"
+                                             grad="CON_Grad" out="CON_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Intimidação"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Enganação"
+                                             atr="PRE"
+                                             total="ENG_Total"
+                                             grad="ENG_Grad" out="ENG_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Intuição"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Intimidação"
+                                             atr="PRE"
+                                             total="INT_Total"
+                                             grad="INT_Grad" out="INT_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Percepção"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Intuição"
+                                             atr="SAB"
+                                             total="INTU_Total"
+                                             grad="INTU_Grad" out="INTU_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Persuação"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Percepção"
+                                             atr="SAB"
+                                             total="PERC_Total"
+                                             grad="PERC_Grad" out="PERC_Out" align="top"
                                              height="30" />
                                         <LabelComEdit wid="120" margins="{top=5}"
-                                             text1="Enganação"
-                                             text2="0"
-                                             text3="0"
-                                             field1="" field2="" align="top"
+                                             nome="Persuação"
+                                             atr="PRE"
+                                             total="PERS_Total"
+                                             grad="PERS_Grad" out="PERS_Out" align="top"
+                                             height="30" />
+                                        <LabelComEdit wid="120" margins="{top=5}"
+                                             nome="Tratamento"
+                                             atr="INTE"
+                                             total="TRA_Total"
+                                             grad="TRA_Grad" out="TRA_Out" align="top"
                                              height="30" />
                                    </layout>
                               </tab>
-                              <tab title="Conhecimentos" width="134">
+                              <tab title="  Conhecimentos       " width="134">
                                    <label
                                         align="top" height="50" text="Conhecimentos"
                                         horzTextAlign="center" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Atualidades"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Atualidades"
+                                        atr="INTE"
+                                        total="ATU_Total"
+                                        grad="ATU_Grad" out="ATU_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Adivinhação"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Adivinhação"
+                                        atr="INTE"
+                                        total="C_ADI_Total"
+                                        grad="C_ADI_Grad" out="C_ADI_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Azaração"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Azaração"
+                                        atr="INTE"
+                                        total="C_AZA_Total"
+                                        grad="C_AZA_Grad" out="C_AZA_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Contra-Feitiço"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Contra-Feitiço"
+                                        atr="INTE"
+                                        total="C_CON_Total"
+                                        grad="C_CON_Grad" out="C_CON_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Criaturas Mágicas"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Criaturas Mágicas"
+                                        atr="INTE"
+                                        total="C_CRI_Total"
+                                        grad="C_CRI_Grad" out="C_CRI_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Encantamentos"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Encantamentos"
+                                        atr="INTE"
+                                        total="C_ENC_Total"
+                                        grad="C_ENC_Grad" out="C_ENC_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Feitiços"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Feitiços"
+                                        atr="INTE"
+                                        total="C_FEI_Total"
+                                        grad="C_FEI_Grad" out="C_FEI_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Herbologia"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Herbologia"
+                                        atr="INTE"
+                                        total="C_HER_Total"
+                                        grad="C_HER_Grad" out="C_HER_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Maldições (DCAT)"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Maldições (DCAT)"
+                                        atr="INTE"
+                                        total="C_MAL_Total"
+                                        grad="C_MAL_Grad" out="C_MAL_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Poções"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Poções"
+                                        atr="INTE"
+                                        total="C_POC_Total"
+                                        grad="C_POC_Grad" out="C_POC_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Runas"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Runas"
+                                        atr="INTE"
+                                        total="C_RUN_Total"
+                                        grad="C_RUN_Grad" out="C_RUN_Out" align="top"
                                         height="30" />
-                                   <LabelComEdit wid="200"
+                                   <LabelComEdit wid="120"
                                         margins="{top=5}"
-                                        text1="Conhe. Transmutação"
-                                        text2="0"
-                                        text3="0"
-                                        field1="" field2="" align="top"
+                                        nome="Conhe. Transmutação"
+                                        atr="INTE"
+                                        total="C_TRA_Total"
+                                        grad="C_TRA_Grad" out="C_TRA_Out" align="top"
                                         height="30" />
                               </tab>
                          </tabControl>
