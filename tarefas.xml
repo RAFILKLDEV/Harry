@@ -1,0 +1,6 @@
+<tab title="Defesas" width="220">
+    <layout height="320" margins="{left=35}"
+        align="top">
+        <tarefa />
+    </layout>
+</tab>

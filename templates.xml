@@ -1,0 +1,59 @@
+<layout>
+    <template name="LabelComEdit">
+        <layout height="30" align="top" margins="{top=3}">
+            <rectangle color="black" align="left" width="$(wid)">
+                <label name="$(name)" text="$(nome)" top="5"
+                    horzTextAlign="center">
+                </label>
+                <event name="onClick">
+                    local mesaDoPersonagem = rrpg.getMesaDe(sheet);
+                    local chat = mesaDoPersonagem.chat
+
+
+                    chat:rolarDados("1d20 + " .. (sheet.$(total) or 0),
+                    self.$(name).text,
+                    function (rolado)
+
+                    end);
+                </event>
+            </rectangle>
+
+            <edit field="$(grad)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" />
+            <edit field="$(out)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" />
+            <label field="$(atr)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" />
+            <label field="$(total)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" />
+        </layout>
+    </template>
+
+    <template name="Atributo">
+        <rectangle padding="{top=3,bottom=5}" align="top" height="35"
+            color="blue">
+            <label margins="{left=5}" align="left" horzTextAlign="center"
+                width="100" text="$(text1)" />
+            <edit margins="{left=5}" align="left" horzTextAlign="center"
+                width="40" field="$(field1)" />
+            <edit margins="{left=5}" align="left" horzTextAlign="center"
+                width="40" field="$(field2)" />
+        </rectangle>
+    </template>
+
+    <template name="tarefa">
+        <rectangle name="$(rectangle)" align="top" height="50">
+            <edit align="left" field="$(nome)" margins="{left=5}" />
+            <edit align="left" field="$(atual)" margins="{left=5}" />
+            <edit align="left" field="$(max)" margins="{left=5}" />
+            <checkBox align="left" width="30" name="$(checkBox)" margins="{left=10}">
+
+            </checkBox>
+        </rectangle>
+    </template>
+
+</layout>

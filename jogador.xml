@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tab title="Jogador">
+     <scrollBox align="client">
+
+          <import file="templates.xml" />
+
+          <rectangle left="20" top="20" width="200" height="200" />
+
+          <image field="imagemDoPersonagem" editable="true" style="autoFit"
+               left="20" top="20" width="200" height="200" />
+
+          <import file="atributos.xml" />
+
+          <layout left="240" top="200" width="1300" height="600">
+
+               <layout width="800" height="700">
+                    <tabControl align="left" width="350">
+                         <import file="corpo.xml" />
+                         <import file="mente.xml" />
+                         <import file="conhecimento.xml" />
+                    </tabControl>
+
+                    <tabControl align="left" width="300">
+                         <import file="defesas.xml" />
+                         <import file="tarefas.xml" />
+                    </tabControl>
+
+               </layout>
+
+          </layout>
+
+     </scrollBox>
+</tab>

@@ -1,0 +1,44 @@
+
+    <tab title="Defesas" width="220">
+        <layout height="320" margins="{left=35}"
+            align="top">
+            <label align="top" height="50" text="Defesas Ativas"
+                horzTextAlign="center" />
+            <LabelComEdit wid="120" nome="Iniciativa"
+                name="Iniciativa"
+                atr="AGI"
+                total="INI_Total"
+                grad="INI_Grad" out="INI_Out" align="top"
+                height="30" />
+            <LabelComEdit wid="120" nome="Aparar"
+                name="Aparar"
+                atr="LUT"
+                total="APA_Total"
+                grad="APA_Grad" out="APA_Out" align="top"
+                height="30" />
+            <LabelComEdit wid="120" nome="Fortitude"
+                name="Fortitude"
+                atr="VIG"
+                total="FORT_Total"
+                grad="FORT_Grad" out="FORT_Out" align="top"
+                height="30" />
+            <LabelComEdit wid="120" nome="Reflexo"
+                name="Reflexo"
+                atr="AGI"
+                total="REF_Total"
+                grad="REF_Grad" out="REF_Out" align="top"
+                height="30" />
+            <LabelComEdit wid="120" nome="Resistencia"
+                name="Resistencia"
+                atr="VIG"
+                total="RES_Total"
+                grad="RES_Grad" out="RES_Out" align="top"
+                height="30" />
+            <LabelComEdit wid="120" nome="Vontade"
+                name="Vontade"
+                atr="SAB"
+                total="VON_Total"
+                grad="VON_Grad" out="VON_Out" align="top"
+                height="30" />
+        </layout>
+    </tab>

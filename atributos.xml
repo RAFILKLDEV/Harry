@@ -1,0 +1,53 @@
+<layout left="20" top="20" width="1300" height="1000">
+
+    <rectangle left="220" top="0" width="700" height="155" color="black">
+
+         <label left="5" top="5" text="Nome Jogador" width="90" height="25" />
+         <label left="5" top="35" text="Nome Personagem" width="110"
+              height="25" />
+         <label left="5" top="65" text="Cidade" width="90" height="25" />
+         <label left="5" top="95" text="Continente" width="90" height="25" />
+         <label left="5" top="125" text="Classe" width="90" height="25" />
+         <label left="130" top="125" text="Level" width="90" height="25" />
+         <label left="222" top="125" text="XP" width="90" height="25" />
+
+         <edit left="100" top="5" width="245" height="25" />
+         <edit left="120" top="35" width="225" height="25" />
+         <edit left="52" top="65" width="293" height="25" />
+         <edit left="75" top="95" width="270" height="25" />
+         <edit left="45" top="125" width="80" height="25" />
+         <edit left="165" top="125" width="50" height="25" />
+         <edit left="245" top="125" width="100" height="25" />
+
+    </rectangle>
+
+    <layout left="0" top="220" width="200" height="500">
+         <rectangle align="top" height="40" color="blue">
+              <label margins="{left=5}" horzTextAlign="center" align="left"
+                   width="100" text="CORPO" />
+              <label margins="{left=5}" horzTextAlign="center" align="left"
+                   width="40" text="MOD" />
+              <label margins="{left=5}" horzTextAlign="center" align="left"
+                   width="40" text="OUT" />
+         </rectangle>
+         <Atributo text1="AGILIDADE" field1="AGI" field2="AGI_OUT" />
+         <Atributo text1="DESTREZA" field1="DES" field2="DES_OUT" />
+         <Atributo text1="FORÇA" field1="FOR" field2="FOR_OUT" />
+         <Atributo text1="LUTA" field1="LUT" field2="LUT_OUT" />
+         <Atributo text1="VIGOR" field1="VIG" field2="VIG_OUT" />
+
+         <rectangle align="top" margins="{top=15}" height="40" color="blue">
+              <label margins="{left=5}" horzTextAlign="center" align="left"
+                   width="100" text="MENTE" />
+              <label margins="{left=5}" horzTextAlign="center" align="left"
+                   width="40" text="MOD" />
+              <label margins="{left=5}" horzTextAlign="center" align="left"
+                   width="40" text="OUT" />
+         </rectangle>
+
+         <Atributo text1="INTELIGENCIA" field1="INTE" field2="INTE_OUT" />
+         <Atributo text1="PRESENÇA" field1="PRE" field2="PRES_OUT" />
+         <Atributo text1="SABEDORIA" field1="SAB" field2="SAB_OUT" />
+    </layout>
+
+</layout>

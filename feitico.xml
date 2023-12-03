@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tab title="Feitiços">
+    <image style="autoFit" top="0" width="1300" height="800"
+         src="/imagens/wizard.jpg" />
+    <layout align="top" height="100" padding="{top=5, left=5}">
+
+
+         <template name="label2">
+              <layout align="left" margins="{left=20}" width="120" height="80">
+                   <rectangle top="5" left="10" color="$(color)" width="90"
+                        height="25">
+                        <label align="client" text="$(text)" horzTextAlign="center" />
+                   </rectangle>
+                   <edit top="30" width="120" field="$(field)"
+                        horzTextAlign="center">
+                        <event name="onUserChange">
+
+                        </event>
+                   </edit>
+              </layout>
+         </template>
+
+         <layout align="top" height="80" margins="{top=10, left=0}">
+              <label2 field="DES" text="Destreza" color="DarkSlateBlue" />
+              <label2 field="adivinhacao" color="DarkSlateBlue" text="Adivinhação" />
+              <label2 field="azaracao" color="DarkSlateBlue" text="Azaração" />
+              <label2 field="contraFeitico" color="DarkSlateBlue"
+                   text="Contra-Feitiço" />
+              <label2 field="encantamento" color="DarkSlateBlue" text="Encantamento" />
+              <label2 field="feitico" color="DarkSlateBlue" text="Feitiço" />
+              <label2 field="transmutacao" color="DarkSlateBlue" text="Transmutação" />
+              <label2 field="arteDasTrevas" color="DarkSlateBlue"
+                   text="Arte das Trevas" />
+         </layout>
+
+    </layout>
+
+    <layout align="top" height="80" margins="{top=0, left=0}">
+         <layout align="left" margins="{left=20}" width="120" height="80">
+              <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+                   <label align="client" text="Fisico" horzTextAlign="center" />
+              </rectangle>
+              <edit top="30" width="120" field="fisico" horzTextAlign="center">
+                   <event name="onUserChange">
+                        local minhaMesa = Firecast.getRoomOf(sheet);
+                        local chat = minhaMesa.chat;
+
+                        chat:enviarAcao("esta com penalidade em Fisico de " ..
+                        sheet.fisico)
+                   </event>
+              </edit>
+         </layout>
+         <layout align="left" margins="{left=20}" width="120" height="80">
+              <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+                   <label align="client" text="Mental" horzTextAlign="center" />
+              </rectangle>
+              <edit top="30" width="120" field="mental" horzTextAlign="center">
+                   <event name="onUserChange">
+                        local minhaMesa = Firecast.getRoomOf(sheet);
+                        local chat = minhaMesa.chat;
+
+                        chat:enviarAcao("esta com penalidade em Mental de " ..
+                        sheet.mental)
+                   </event>
+              </edit>
+         </layout>
+         <label2 field="concentracao" color="purple" text="Concentração" />
+         <label2 field="acerto" color="purple" text="Acerto" />
+    </layout>
+
+    <layout align="top" height="600" padding="{top=5, left=5}">r <button left="20"
+              top="20"
+              height="25" text="Novo Feitiço" width="100"
+              onClick="self.rclMagias:append();" />
+              <button
+              left="130" top="20" height="25" text="Ordenar" width="100"
+              onClick="self.rclMagias:sort();" />
+              <recordList name="rclMagias"
+              field="magias"
+              itemHeight="200" templateForm="feiticos" left="20" top="60"
+              width="760"
+              height="450" autoHeight="false">
+              <event name="onCompare"><![CDATA[     
+                   if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
+                        return -1;
+                   elseif (tonumber(nodeA.Order) or 0) > (tonumber(nodeB.Order) or 0) then
+                        return 1;
+                   else   
+                        return Utils.compareStringPtBr(nodeA.nome, nodeB.nome);
+                   end;               
+
+                   ]]>
+                   </event>
+         </recordList>
+    </layout>
+</tab>
