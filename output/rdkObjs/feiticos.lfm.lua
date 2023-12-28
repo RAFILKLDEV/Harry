@@ -34,6 +34,7 @@ local function constructNew_feiticos()
 
         -- Primeiro, é necessário usar a unidade "dialogs.lua"
         require("dialogs.lua");
+        require("ndb.lua")
 
         local function Aceitar()
         Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
@@ -165,7 +166,6 @@ local function constructNew_feiticos()
         -- FUNÇÂO DE FEITICO
 
         local function ListaDeFeitico()
-        require("NDB.lua");
         require("utils.lua");
 
         local Raiz = NDB.load("listfetico.xml");

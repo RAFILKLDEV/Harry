@@ -3243,9 +3243,7 @@ local function constructNew_HarryFicha()
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
         function (_)
-            local Child = NDB.getChildNodes(sheet.magias)
-            
-                      local campos =
+            local campos =
                       {"DES","adivinhacao","azaracao","contraFeitico","encantamento","feitico","transmutacao","arteDasTrevas","fisico","mental","concentracao","acerto"}
                       for x = 1, #campos, 1 do
             
