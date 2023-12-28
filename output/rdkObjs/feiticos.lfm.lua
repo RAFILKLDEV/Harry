@@ -39,7 +39,7 @@ local function constructNew_feiticos()
         Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
         function (confirmado)
         if confirmado then
-        ndb.deleteNode(sheet);
+        NDB.deleteNode(sheet);
         else
         return
         end;
@@ -53,23 +53,23 @@ local function constructNew_feiticos()
         local chat = minhaMesa.chat;
         local nick = minhaMesa.meuJogador.nick
 
-        node = ndb.getParent(ndb.getParent(sheet))
+        node = NDB.getParent(NDB.getParent(sheet))
 
         local function definirEscola()
         if sheet.escola == 'Adivinhação' then
-        return node.adivinhacao
+        return node.C_ADI_Total
         elseif sheet.escola == 'Azaração' then
-        return node.azaracao
+        return node.C_AZA_Total
         elseif sheet.escola == 'Contra-Feitiço' then
-        return node.contraFeitico
+        return node.C_CON_Total
         elseif sheet.escola == 'Encantamento' then
-        return node.encantamento
+        return node.C_ENC_Total
         elseif sheet.escola == 'Feitiço' then
-        return node.feitico
+        return node.C_FEI_Total
         elseif sheet.escola == 'Transmutação' then
-        return node.transmutacao
+        return node.C_TRA_Total
         elseif sheet.escola == 'Arte das Trevas' then
-        return node.arteDasTrevas
+        return node.C_MAL_Total
         end
 
         end
@@ -112,7 +112,7 @@ local function constructNew_feiticos()
         return msg
         end
 
-        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "+" ..
+        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "-" ..
         (node.concentracao or 0)
 
         chat:enviarMensagem("----------------");
@@ -133,7 +133,7 @@ local function constructNew_feiticos()
         end
 
         if sheet.tipo == 'Ataque' then
-        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "+" .. (node.acerto or 0),
+        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
         "Ataque de " .. sheet.nome)
         elseif sheet.tipo == 'Defesa' then
         chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
@@ -165,11 +165,11 @@ local function constructNew_feiticos()
         -- FUNÇÂO DE FEITICO
 
         local function ListaDeFeitico()
-        require("ndb.lua");
+        require("NDB.lua");
         require("utils.lua");
 
-        local Raiz = ndb.load("listfetico.xml");
-        local Filho = ndb.getChildNodes(Raiz);
+        local Raiz = NDB.load("listfetico.xml");
+        local Filho = NDB.getChildNodes(Raiz);
 
         ListaFeiticos = {} -- new array
         ListaNomesFeitico = {} -- new array

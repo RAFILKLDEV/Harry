@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form name="frmItemDeMagia" height="50" margins="{top=2,bottom=2}">
+    <template name="tarefa">
+        <rectangle name="$(rectangle)" padding="{top=5, bottom=5}" align="top" height="35">
+            <edit align="left" width="200" field="$(nome)" margins="{left=5}" />
+            <edit align="left" width="25" field="$(atual)" margins="{left=5}" />
+            <edit align="left" width="25" field="$(max)" margins="{left=5}" />
+            <checkBox align="left" width="30" name="$(checkBox)" field="$(checkBox1)"
+                margins="{left=10}">
+                <event name="onChange">
+                    if self.$(checkBox).checked then
+                    self.$(rectangle).color = "green"
+                    else
+                    self.$(rectangle).color = "gray"
+                    end
+                </event>
+            </checkBox>
+        </rectangle>
+    </template>
+
+    <tarefa checkBox="CheckBox1" align="top" rectangle="Keko" />
+
+    <button align="top" text="Apagar" height="15"
+        onClick="ndb.deleteNode(sheet);" />
+</form>

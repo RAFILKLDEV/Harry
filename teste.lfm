@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<form name="feiticos" width="600" height="170" margins="{top=2,bottom=2}">
-
+<form name="feiticosFacil" width="600" height="70" margins="{top=2,bottom=2}">
 
     <script>
         -- Primeiro, é necessário usar a unidade "dialogs.lua"
@@ -10,7 +9,7 @@
         Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
         function (confirmado)
         if confirmado then
-        NDB.deleteNode(sheet);
+        ndb.deleteNode(sheet);
         else
         return
         end;
@@ -24,7 +23,7 @@
         local chat = minhaMesa.chat;
         local nick = minhaMesa.meuJogador.nick
 
-        node = NDB.getParent(NDB.getParent(sheet))
+        node = ndb.getParent(ndb.getParent(sheet))
 
         local function definirEscola()
         if sheet.escola == 'Adivinhação' then
@@ -83,8 +82,8 @@
         return msg
         end
 
-        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "-" ..
-        (node.concentracao or 0)
+        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "+" ..
+        (node.concentracao or 0) .. (sheet.ext_Penalidade == nil and 0 or "-" .. sheet.ext_Penalidade)
 
         chat:enviarMensagem("----------------");
 
@@ -103,11 +102,16 @@
         chat:enviarMensagem("[§K10]Efeito: " .. "[§K1]" .. sheet.Efeito)
         end
 
+        if sheet.extra ~= 0 and sheet.extra ~= nil then
+        chat:enviarMensagem("[§K8]Extra: " .. "[§K1]" .. sheet.extra)
+        end
+
         if sheet.tipo == 'Ataque' then
-        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
+        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "+" .. (node.acerto or 0),
         "Ataque de " .. sheet.nome)
         elseif sheet.tipo == 'Defesa' then
         chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
+
         end
 
         chat:enviarMensagem("----------------");
@@ -136,11 +140,11 @@
         -- FUNÇÂO DE FEITICO
 
         local function ListaDeFeitico()
-        require("NDB.lua");
+        require("ndb.lua");
         require("utils.lua");
 
-        local Raiz = NDB.load("listfetico.xml");
-        local Filho = NDB.getChildNodes(Raiz);
+        local Raiz = ndb.load("listfetico.xml");
+        local Filho = ndb.getChildNodes(Raiz);
 
         ListaFeiticos = {} -- new array
         ListaNomesFeitico = {} -- new array
@@ -186,90 +190,39 @@
 
     </script>
 
-    <template name="label3">
-        <layout align="left" margins="{left=10}" width="80">
-            <rectangle top="7" left="7" color="DarkSlateBlue" width="65" height="20">
-                <label align="client" text="$(text)" horzTextAlign="center" />
+    <dataLink
+        fields="{'ext_Penalidade'}">
+        <event name="onChange">
+            sheet.extra = math.floor((sheet.ext_Penalidade or 0) / 2)
+        </event>
+    </dataLink>
+
+    <layout align="top" height="50">
+
+        <layout align="left" margins="{left=10}" width="150">
+            <rectangle top="7" left="7" color="DarkSlateBlue" width="120" height="20">
+                <label align="client" text="Feitiço" horzTextAlign="center" />
             </rectangle>
-            <edit top="27" width="80" height="25" field="$(field)" horzTextAlign="center" />
+            <edit top="27" width="150" height="25" field="nome" horzTextAlign="center" />
         </layout>
-    </template>
 
-    <rectangle color="grey" opacity="0.35" width="1020" height="170" />
-    <layout align="left" width="300">
-        <label align="top" margins="{left=130,top=5}" text="Nome" />
-        <edit fontStyle="bold italic" horzTextAlign="center" align="top" field="nome" />
-        <label align="top" margins="{left=130,top=5}" text="Escola" />
-        <comboBox name="escola" field="escola" horzTextAlign="center" align="top" height="30"
-            items="{'Adivinhação', 'Azaração', 'Contra-Feitiço', 'Encantamento','Feitiço','Transmutação', 'Arte das Trevas'}" />
-        <label align="top" margins="{left=130,top=5}" text="Ação" />
-        <comboBox name="tipo" field="tipo" horzTextAlign="center" align="top" height="30"
-            items="{'Ataque', 'Defesa', 'Cast'}" />
-    </layout>
-
-    <layout align="left" width="280">
-        <layout align="top" height="55">
-            <label3 field="Grad" text="Grad" />
-            <label3 field="CD" text="CD" />
-            <label3 field="Efeito" text="Efeito" />
+        <layout align="left" margins="{left=10}" width="80">
+            <rectangle top="7" left="7" color="DarkRed" width="65" height="20">
+                <label align="client" text="Debuff" horzTextAlign="center" />
+            </rectangle>
+            <edit top="27" width="80" height="25" field="ext_Penalidade" horzTextAlign="center" />
         </layout>
-        <layout align="top" height="55">
-            <label3 field="Poder" text="Poder" />
-            <label3 field="Dano" text="Dano" />
-            <label3 field="Bonus" text="Bonus" />
+
+        <layout align="left" margins="{left=10}" width="80">
+            <rectangle top="7" left="7" color="DarkGreen" width="65" height="20">
+                <label align="client" text="Buff" horzTextAlign="center" />
+            </rectangle>
+            <edit top="27" width="80" height="25" field="extra" readOnly="true"
+                horzTextAlign="center" />
         </layout>
-        <layout align="top" height="55">
-            <label3 field="Range" text="Range" />
-            <label3 field="Area" text="Area" />
-            <label3 field="Duracao" text="Duração" />
-        </layout>
+
+        <button align="left" margins="{left=10}" text="Rolar" onClick="enviarNaMesa()" />
+
     </layout>
-
-    <layout width="50" align="left">
-        <rectangle top="55" left="5" color="purple" width="40" height="20">
-            <label align="client" text="Order" horzTextAlign="center" />
-        </rectangle>
-        <edit top="75" left="5" width="40" height="25" field="Order" horzTextAlign="center"
-            hint="Quanto menor mais acima na lista!" />
-    </layout>
-
-    <layout width="100" align="left">
-        <button align="top" text="Rolar" height="45" onClick="enviarNaMesa()" />
-        <button align="top" text="Importar" height="45" onClick="ListaDeFeitico()" />
-        <button align="bottom" text="Apagar" height="30" onClick="Aceitar()" />
-    </layout>
-
-    <event name="onNodeReady">
-
-
-        local campos = {"Grad","CD","Efeito","Poder","Dano","Bonus","Range","Area","Duracao"}
-
-        for x = 1, #campos, 1 do
-
-        if sheet[campos[x]] == nil then
-        sheet[campos[x]] = 0
-        end
-
-        end
-
-        if sheet.escola == nil then
-        self.escola.text = "Feitiço"
-        end
-
-        if sheet.tipo == nil then
-        self.tipo.text = "Cast"
-        end
-
-        if sheet.nome == nil then
-        sheet.nome = "Feitiço"
-        end
-
-        if sheet.Order == nil then
-
-        sheet.Order = 99
-
-        end
-
-    </event>
 
 </form>

@@ -19,7 +19,8 @@
           'CON_Grad','CON_Out','INT_Grad','INT_Out','INTU_Grad','INTU_Out','PERC_Grad','PERC_Out','PERS_Grad','PERS_Out',
           'TRA_Grad','TRA_Out','ATU_Grad','ATU_Out','C_ADI_Grad','C_ADI_Out','C_AZA_Grad','C_AZA_Out','C_CON_Grad','C_CON_Out',
           'C_CRI_Grad','C_CRI_Out','C_ENC_Grad','C_ENC_Out','C_FEI_Grad','C_FEI_Out','C_HER_Grad','C_HER_Out','C_MAL_Grad','C_MAL_Out','C_POC_Grad','C_POC_Out',
-          'C_RUN_Grad','C_RUN_Out','C_TRA_Grad','C_TRA_Out'}">
+          'C_RUN_Grad','C_RUN_Out','C_TRA_Grad','C_TRA_Out', 'INI_Grad', 'INI_Out', 'APA_Grad','APA_Out', 'FORT_Grad', 'FORT_Out',
+          'REF_Grad', 'REF_Out', 'RES_Grad', 'RES_Out', 'VON_Grad', 'VON_Out'    }">
           <event name="onChange">
                sheet.ACR_Total = (tonumber(sheet.ACR_Grad) or 0) +
                (tonumber(sheet.AGI) or 0) +
@@ -96,15 +97,35 @@
                sheet.C_TRA_Total = (tonumber(sheet.C_TRA_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_TRA_Out) or 0)
+               sheet.INI_Total = (tonumber(sheet.INI_Grad) or 0) +
+               (tonumber(sheet.AGI) or 0) +
+               (tonumber(sheet.INI_OUT) or 0)
+               sheet.APA_Total = (tonumber(sheet.APA_Grad) or 0) +
+               (tonumber(sheet.LUT) or 0) +
+               (tonumber(sheet.APA_Out) or 0)
+               sheet.FORT_Total = (tonumber(sheet.FORT_Grad) or 0) +
+               (tonumber(sheet.VIG) or 0) +
+               (tonumber(sheet.FORT_Out) or 0)
+               sheet.REF_Total = (tonumber(sheet.REF_Grad) or 0) +
+               (tonumber(sheet.AGI) or 0) +
+               (tonumber(sheet.REF_Out) or 0)
+               sheet.RES_Total = (tonumber(sheet.RES_Grad) or 0) +
+               (tonumber(sheet.VIG) or 0) +
+               (tonumber(sheet.RES_Out) or 0)
+               sheet.VON_Total = (tonumber(sheet.VON_Grad) or 0) +
+               (tonumber(sheet.SAB) or 0) +
+               (tonumber(sheet.VON_Out) or 0)
           </event>
      </dataLink>
 
      <tabControl align="client">
-          <import file="jogador.xml"/>
-          <import file="feitico.xml"/>
+          <import file="jogador.xml" />
+          <import file="feitico.xml" />
      </tabControl>
 
      <event name="onNodeReady">
+
+          local Child = NDB.getChildNodes(sheet.magias)
 
           local campos =
           {"DES","adivinhacao","azaracao","contraFeitico","encantamento","feitico","transmutacao","arteDasTrevas","fisico","mental","concentracao","acerto"}
@@ -115,7 +136,6 @@
           end
 
           end
-          
      </event>
 
 </form>

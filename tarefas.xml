@@ -1,6 +1,11 @@
-<tab title="Defesas" width="220">
-    <layout height="320" margins="{left=35}"
+<tab title="Tarefas" width="220">
+    <layout height="320"
         align="top">
-        <tarefa />
+
+        <button left="20" top="20" height="25" text="Nova Magia" width="80"
+            onClick="self.kekzin:append();" />
+
+        <recordList name="kekzin" field="kekzim" templateForm="frmItemDeMagia"
+            left="0" top="60" width="300" autoHeight="true" />
     </layout>
 </tab>

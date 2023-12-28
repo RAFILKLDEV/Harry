@@ -1,56 +1,58 @@
 <tab title="  Mente              " width="134">
-    <layout height="320" margins="{left=35}"
-         align="top">
-         <label align="top" height="50" text="Mente"
-              horzTextAlign="center" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Concentração"
-              name="Concentracao"
-              atr="SAB"
-              total="CON_Total"
-              grad="CON_Grad" out="CON_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Enganação"
-              name="Enganacao"
-              atr="PRE"
-              total="ENG_Total"
-              grad="ENG_Grad" out="ENG_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Intimidação"
-              name="Intimidacao"
-              atr="PRE"
-              total="INT_Total"
-              grad="INT_Grad" out="INT_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Intuição"
-              name="Intuicao"
-              atr="SAB"
-              total="INTU_Total"
-              grad="INTU_Grad" out="INTU_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Percepção"
-              name="Percepcao"
-              atr="SAB"
-              total="PERC_Total"
-              grad="PERC_Grad" out="PERC_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Persuação"
-              name="Persuacao"
-              atr="PRE"
-              total="PERS_Total"
-              grad="PERS_Grad" out="PERS_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Tratamento"
-              name="Tratamento"
-              atr="INTE"
-              total="TRA_Total"
-              grad="TRA_Grad" out="TRA_Out" align="top"
-              height="30" />
-    </layout>
+     <layout height="320" margins="{left=35}"
+          align="top">
+          <label align="top" height="50" text="Mente"
+               horzTextAlign="center" />
+          <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
+               align="top" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Concentração"
+               name="Concentracao"
+               atr="SAB"
+               total="CON_Total"
+               grad="CON_Grad" out="CON_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Enganação"
+               name="Enganacao"
+               atr="PRE"
+               total="ENG_Total"
+               grad="ENG_Grad" out="ENG_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Intimidação"
+               name="Intimidacao"
+               atr="PRE"
+               total="INT_Total"
+               grad="INT_Grad" out="INT_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Intuição"
+               name="Intuicao"
+               atr="SAB"
+               total="INTU_Total"
+               grad="INTU_Grad" out="INTU_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Percepção"
+               name="Percepcao"
+               atr="SAB"
+               total="PERC_Total"
+               grad="PERC_Grad" out="PERC_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Persuação"
+               name="Persuacao"
+               atr="PRE"
+               total="PERS_Total"
+               grad="PERS_Grad" out="PERS_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Tratamento"
+               name="Tratamento"
+               atr="INTE"
+               total="TRA_Total"
+               grad="TRA_Grad" out="TRA_Out" align="top"
+               height="30" />
+     </layout>
 </tab>

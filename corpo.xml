@@ -1,45 +1,47 @@
 <tab title="  Corpo              " width="134">
-    <layout height="250"
-         align="top" margins="{left=35}">
-         <label align="top" height="50" text="Corpo"
-              horzTextAlign="center" />
-         <LabelComEdit wid="120" nome="Acrobacia"
-              name="Acrobacia"
-              atr="AGI"
-              total="ACR_Total"
-              grad="ACR_Grad" out="ACR_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Atlestismo" nome2="Atletismo" atr="FOR"
-              name="Atlestismo"
-              total="ATL_Total"
-              grad="ATL_Grad" out="ATL_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Corpo-a-Corpo" atr="LUT"
-              name="CorpoACorpo"
-              total="COR_Total"
-              grad="COR_Grad" out="COR_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Furtividade" atr="AGI"
-              name="Furtividade"
-              total="FUR_Total"
-              grad="FUR_Grad" out="FUR_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Prestidigitação"
-              name="Prestidigitacao"
-              atr="DES"
-              total="PRE_Total"
-              grad="PRE_Grad" out="PRE_Out" align="top"
-              height="30" />
-         <LabelComEdit wid="120" margins="{top=5}"
-              nome="Veiculos Mágicos"
-              name="VeiculosMagicos"
-              atr="AGI"
-              total="VEI_Total"
-              grad="VEI_Grad" out="VEI_Out" align="top"
-              height="30" />
-    </layout>
+     <layout height="250"
+          align="top" margins="{left=35}">
+          <label align="top" height="50" text="Corpo"
+               horzTextAlign="center" />
+          <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
+               align="top" />
+          <LabelComEdit wid="120" nome="Acrobacia"
+               name="Acrobacia"
+               atr="AGI"
+               total="ACR_Total"
+               grad="ACR_Grad" out="ACR_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Atlestismo" nome2="Atletismo" atr="FOR"
+               name="Atlestismo"
+               total="ATL_Total"
+               grad="ATL_Grad" out="ATL_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Corpo-a-Corpo" atr="LUT"
+               name="CorpoACorpo"
+               total="COR_Total"
+               grad="COR_Grad" out="COR_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Furtividade" atr="AGI"
+               name="Furtividade"
+               total="FUR_Total"
+               grad="FUR_Grad" out="FUR_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Prestidigitação"
+               name="Prestidigitacao"
+               atr="DES"
+               total="PRE_Total"
+               grad="PRE_Grad" out="PRE_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Veiculos Mágicos"
+               name="VeiculosMagicos"
+               atr="AGI"
+               total="VEI_Total"
+               grad="VEI_Grad" out="VEI_Out" align="top"
+               height="30" />
+     </layout>
 </tab>
