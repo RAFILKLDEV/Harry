@@ -7,6 +7,15 @@
         require("dialogs.lua");
         require("ndb.lua")
 
+        local function tocarAudio()
+        require("utils.lua");
+
+        local minhaMesa = Firecast.getRoomOf(sheet);
+        local track = "/audios/" .. sheet.Sound
+        minhaMesa.audioPlayer:play(track,0.8)
+
+        end
+
         local function Aceitar()
         Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
         function (confirmado)
@@ -107,8 +116,11 @@
         if sheet.tipo == 'Ataque' then
         chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
         "Ataque de " .. sheet.nome)
+        setTimeout(tocarAudio, 5000)
+
         elseif sheet.tipo == 'Defesa' then
         chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
+        setTimeout(tocarAudio, 5000)
         end
 
         chat:enviarMensagem("----------------");
@@ -170,6 +182,7 @@
         sheet.Range = ListaFeiticos[k].range
         sheet.Area = ListaFeiticos[k].area
         sheet.Duracao = ListaFeiticos[k].duracao
+        sheet.Sound = ListaFeiticos[k].sound or "noAudio.mp3"
         end
 
         end
@@ -207,7 +220,7 @@
             items="{'Ataque', 'Defesa', 'Cast'}" />
     </layout>
 
-    <layout align="left" width="280">
+    <layout align="left" width="270">
         <layout align="top" height="55">
             <label3 field="Grad" text="Grad" />
             <label3 field="CD" text="CD" />
@@ -234,9 +247,11 @@
     </layout>
 
     <layout width="100" align="left">
-        <button align="top" text="Rolar" height="45" onClick="enviarNaMesa()" />
-        <button align="top" text="Importar" height="45" onClick="ListaDeFeitico()" />
-        <button align="bottom" text="Apagar" height="30" onClick="Aceitar()" />
+        <button align="top" text="Rolar" height="40" margins="{bottom=5}" onClick="enviarNaMesa()" />
+        <button align="top" text="Importar" height="40" margins="{bottom=5}"
+            onClick="ListaDeFeitico()" />
+        <label name="sound" align="top" field="Sound" height="40" margins="{bottom=5}" />
+        <button align="bottom" text="Apagar" height="40" onClick="Aceitar()" />
     </layout>
 
     <event name="onNodeReady">

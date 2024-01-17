@@ -2751,20 +2751,29 @@ local function constructNew_HarryFicha()
     obj.layout46:setName("layout46");
 
 
-               local function alternarFeiticos()
+         local function alternarFeiticos()
 
-               if self.rclMagias.visible == true then
-               self.botao.text = "Lista Completa"
-               self.rclMagias.visible = false
-               self.testezim.visible = true
-               else
-               self.botao.text = "Lista Simplificada"
-               self.rclMagias.visible = true
-               self.testezim.visible = false
-               end
+         if self.rclMagias.visible == true then
+         self.botao.text = "Lista Completa"
+         self.rclMagias.visible = false
+         self.testezim.visible = true
+         else
+         self.botao.text = "Lista Simplificada"
+         self.rclMagias.visible = true
+         self.testezim.visible = false
+         end
 
-               end
-          
+         end
+
+         local function alternarAudio()
+
+         if self.sound.text == "🔊" then
+         self.sound.text = "🔇"
+         else self.sound.text = "🔊"
+         end
+
+         end
+      
 
 
     obj.layout47 = GUI.fromHandle(_obj_newObject("layout"));
@@ -3038,6 +3047,12 @@ local function constructNew_HarryFicha()
     obj.edit124:setHorzTextAlign("center");
     obj.edit124:setName("edit124");
 
+    obj.button2 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button2:setParent(obj.layout47);
+    obj.button2:setAlign("left");
+    obj.button2:setText("kek");
+    obj.button2:setName("button2");
+
     obj.layout56 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout56:setParent(obj.tab7);
     obj.layout56:setAlign("top");
@@ -3186,7 +3201,7 @@ local function constructNew_HarryFicha()
     obj.layout62:setParent(obj.layout61);
     obj.layout62:setLeft(20);
     obj.layout62:setTop(15);
-    obj.layout62:setWidth(450);
+    obj.layout62:setWidth(500);
     obj.layout62:setHeight(35);
     obj.layout62:setName("layout62");
 
@@ -3199,23 +3214,32 @@ local function constructNew_HarryFicha()
     obj.botao:setText("Lista Simplificada");
     obj.botao:setWidth(150);
 
-    obj.button2 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button2:setParent(obj.layout62);
-    obj.button2:setAlign("left");
-    obj.button2:setMargins({left=20});
-    obj.button2:setHeight(25);
-    obj.button2:setText("Novo Feitiço");
-    obj.button2:setWidth(100);
-    obj.button2:setName("button2");
-
     obj.button3 = GUI.fromHandle(_obj_newObject("button"));
     obj.button3:setParent(obj.layout62);
     obj.button3:setAlign("left");
-    obj.button3:setHeight(25);
-    obj.button3:setText("Ordenar");
-    obj.button3:setWidth(100);
     obj.button3:setMargins({left=20});
+    obj.button3:setHeight(25);
+    obj.button3:setText("Novo Feitiço");
+    obj.button3:setWidth(100);
     obj.button3:setName("button3");
+
+    obj.button4 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button4:setParent(obj.layout62);
+    obj.button4:setAlign("left");
+    obj.button4:setHeight(25);
+    obj.button4:setText("Ordenar");
+    obj.button4:setWidth(100);
+    obj.button4:setMargins({left=20});
+    obj.button4:setName("button4");
+
+    obj.sound = GUI.fromHandle(_obj_newObject("button"));
+    obj.sound:setParent(obj.layout62);
+    obj.sound:setName("sound");
+    obj.sound:setAlign("left");
+    obj.sound:setHeight(25);
+    obj.sound:setText("🔊");
+    obj.sound:setWidth(35);
+    obj.sound:setMargins({left=20});
 
     obj.rclMagias = GUI.fromHandle(_obj_newObject("recordList"));
     obj.rclMagias:setParent(obj.layout61);
@@ -3352,7 +3376,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event2 = obj.rectangle13:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3364,7 +3388,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event3 = obj.rectangle14:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3376,7 +3400,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event4 = obj.rectangle15:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3388,7 +3412,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event5 = obj.rectangle16:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3400,7 +3424,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event6 = obj.rectangle17:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3412,7 +3436,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event7 = obj.rectangle18:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3424,7 +3448,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event8 = obj.rectangle19:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3436,7 +3460,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event9 = obj.rectangle20:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3448,7 +3472,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event10 = obj.rectangle21:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3460,7 +3484,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event11 = obj.rectangle22:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3472,7 +3496,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event12 = obj.rectangle23:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3484,7 +3508,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event13 = obj.rectangle24:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3496,7 +3520,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event14 = obj.rectangle25:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3508,7 +3532,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event15 = obj.rectangle26:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3520,7 +3544,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event16 = obj.rectangle27:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3532,7 +3556,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event17 = obj.rectangle28:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3544,7 +3568,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event18 = obj.rectangle29:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3556,7 +3580,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event19 = obj.rectangle30:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3568,7 +3592,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event20 = obj.rectangle31:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3580,7 +3604,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event21 = obj.rectangle32:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3592,7 +3616,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event22 = obj.rectangle33:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3604,7 +3628,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event23 = obj.rectangle34:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3616,7 +3640,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event24 = obj.rectangle35:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3628,7 +3652,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event25 = obj.rectangle36:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3640,7 +3664,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event26 = obj.rectangle37:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3652,7 +3676,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event27 = obj.rectangle38:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3664,7 +3688,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event28 = obj.rectangle39:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3676,7 +3700,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event29 = obj.rectangle40:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3688,7 +3712,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event30 = obj.rectangle41:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3700,7 +3724,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event31 = obj.rectangle42:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3712,7 +3736,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event32 = obj.rectangle43:addEventListener("onClick",
-        function (_)
+        function (_, event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
             
@@ -3724,7 +3748,7 @@ local function constructNew_HarryFicha()
         end, obj);
 
     obj._e_event33 = obj.button1:addEventListener("onClick",
-        function (_)
+        function (_, event)
             self.kekzin:append();
         end, obj);
 
@@ -3760,48 +3784,68 @@ local function constructNew_HarryFicha()
         function (_)
         end, obj);
 
-    obj._e_event42 = obj.edit125:addEventListener("onUserChange",
+    obj._e_event42 = obj.button2:addEventListener("onClick",
+        function (_, event)
+            require("ndb.lua");
+                           local minhaMesa = Firecast.getRoomOf(sheet);
+                           local chat = minhaMesa.chat;
+            
+                           local track = "/audios/estupefaca.wav"
+                           minhaMesa.audioPlayer:play(track,0.2)
+            
+                           chat:enviarMensagem("Audio Por Ficha 🔇")
+            
+                           showMessage(nick)
+                           -- showMessage(tableToStr(Child[1].nome))
+        end, obj);
+
+    obj._e_event43 = obj.edit125:addEventListener("onUserChange",
         function (_)
             local minhaMesa = Firecast.getRoomOf(sheet);
-                                     local chat = minhaMesa.chat;
+                           local chat = minhaMesa.chat;
             
-                                     chat:enviarAcao("esta com penalidade em Fisico de " ..
-                                     sheet.fisico)
+                           chat:enviarAcao("esta com penalidade em Fisico de " ..
+                           sheet.fisico)
         end, obj);
 
-    obj._e_event43 = obj.edit126:addEventListener("onUserChange",
+    obj._e_event44 = obj.edit126:addEventListener("onUserChange",
         function (_)
             local minhaMesa = Firecast.getRoomOf(sheet);
-                                     local chat = minhaMesa.chat;
+                           local chat = minhaMesa.chat;
             
-                                     chat:enviarAcao("esta com penalidade em Mental de " ..
-                                     sheet.mental)
+                           chat:enviarAcao("esta com penalidade em Mental de " ..
+                           sheet.mental)
         end, obj);
 
-    obj._e_event44 = obj.edit127:addEventListener("onUserChange",
+    obj._e_event45 = obj.edit127:addEventListener("onUserChange",
         function (_)
         end, obj);
 
-    obj._e_event45 = obj.edit128:addEventListener("onUserChange",
+    obj._e_event46 = obj.edit128:addEventListener("onUserChange",
         function (_)
         end, obj);
 
-    obj._e_event46 = obj.botao:addEventListener("onClick",
-        function (_)
+    obj._e_event47 = obj.botao:addEventListener("onClick",
+        function (_, event)
             alternarFeiticos();
         end, obj);
 
-    obj._e_event47 = obj.button2:addEventListener("onClick",
-        function (_)
+    obj._e_event48 = obj.button3:addEventListener("onClick",
+        function (_, event)
             self.rclMagias:append();
         end, obj);
 
-    obj._e_event48 = obj.button3:addEventListener("onClick",
-        function (_)
+    obj._e_event49 = obj.button4:addEventListener("onClick",
+        function (_, event)
             self.rclMagias:sort();
         end, obj);
 
-    obj._e_event49 = obj.rclMagias:addEventListener("onCompare",
+    obj._e_event50 = obj.sound:addEventListener("onClick",
+        function (_, event)
+            alternarAudio()
+        end, obj);
+
+    obj._e_event51 = obj.rclMagias:addEventListener("onCompare",
         function (_, nodeA, nodeB)
             if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
                                     return -1;
@@ -3813,6 +3857,8 @@ local function constructNew_HarryFicha()
         end, obj);
 
     function obj:_releaseEvents()
+        __o_rrpgObjs.removeEventListenerById(self._e_event51);
+        __o_rrpgObjs.removeEventListenerById(self._e_event50);
         __o_rrpgObjs.removeEventListenerById(self._e_event49);
         __o_rrpgObjs.removeEventListenerById(self._e_event48);
         __o_rrpgObjs.removeEventListenerById(self._e_event47);
@@ -3992,6 +4038,7 @@ local function constructNew_HarryFicha()
         if self.edit128 ~= nil then self.edit128:destroy(); self.edit128 = nil; end;
         if self.layout13 ~= nil then self.layout13:destroy(); self.layout13 = nil; end;
         if self.label35 ~= nil then self.label35:destroy(); self.label35 = nil; end;
+        if self.button4 ~= nil then self.button4:destroy(); self.button4 = nil; end;
         if self.edit32 ~= nil then self.edit32:destroy(); self.edit32 = nil; end;
         if self.layout5 ~= nil then self.layout5:destroy(); self.layout5 = nil; end;
         if self.label49 ~= nil then self.label49:destroy(); self.label49 = nil; end;
@@ -4252,6 +4299,7 @@ local function constructNew_HarryFicha()
         if self.rectangle53 ~= nil then self.rectangle53:destroy(); self.rectangle53 = nil; end;
         if self.layout21 ~= nil then self.layout21:destroy(); self.layout21 = nil; end;
         if self.label78 ~= nil then self.label78:destroy(); self.label78 = nil; end;
+        if self.sound ~= nil then self.sound:destroy(); self.sound = nil; end;
         if self.rectangle29 ~= nil then self.rectangle29:destroy(); self.rectangle29 = nil; end;
         if self.rectangle15 ~= nil then self.rectangle15:destroy(); self.rectangle15 = nil; end;
         if self.label75 ~= nil then self.label75:destroy(); self.label75 = nil; end;

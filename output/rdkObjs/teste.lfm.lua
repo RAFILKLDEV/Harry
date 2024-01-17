@@ -342,7 +342,7 @@ local function constructNew_feiticosFacil()
         end, obj);
 
     obj._e_event1 = obj.button1:addEventListener("onClick",
-        function (_)
+        function (_, event)
             enviarNaMesa()
         end, obj);
 

@@ -36,6 +36,15 @@ local function constructNew_feiticos()
         require("dialogs.lua");
         require("ndb.lua")
 
+        local function tocarAudio()
+        require("utils.lua");
+
+        local minhaMesa = Firecast.getRoomOf(sheet);
+        local track = "/audios/" .. sheet.Sound
+        minhaMesa.audioPlayer:play(track,0.8)
+
+        end
+
         local function Aceitar()
         Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
         function (confirmado)
@@ -136,8 +145,11 @@ local function constructNew_feiticos()
         if sheet.tipo == 'Ataque' then
         chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
         "Ataque de " .. sheet.nome)
+        setTimeout(tocarAudio, 5000)
+
         elseif sheet.tipo == 'Defesa' then
         chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
+        setTimeout(tocarAudio, 5000)
         end
 
         chat:enviarMensagem("----------------");
@@ -199,6 +211,7 @@ local function constructNew_feiticos()
         sheet.Range = ListaFeiticos[k].range
         sheet.Area = ListaFeiticos[k].area
         sheet.Duracao = ListaFeiticos[k].duracao
+        sheet.Sound = ListaFeiticos[k].sound or "noAudio.mp3"
         end
 
         end
@@ -280,7 +293,7 @@ local function constructNew_feiticos()
     obj.layout2 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout2:setParent(obj);
     obj.layout2:setAlign("left");
-    obj.layout2:setWidth(280);
+    obj.layout2:setWidth(270);
     obj.layout2:setName("layout2");
 
     obj.layout3 = GUI.fromHandle(_obj_newObject("layout"));
@@ -632,21 +645,31 @@ local function constructNew_feiticos()
     obj.button1:setParent(obj.layout16);
     obj.button1:setAlign("top");
     obj.button1:setText("Rolar");
-    obj.button1:setHeight(45);
+    obj.button1:setHeight(40);
+    obj.button1:setMargins({bottom=5});
     obj.button1:setName("button1");
 
     obj.button2 = GUI.fromHandle(_obj_newObject("button"));
     obj.button2:setParent(obj.layout16);
     obj.button2:setAlign("top");
     obj.button2:setText("Importar");
-    obj.button2:setHeight(45);
+    obj.button2:setHeight(40);
+    obj.button2:setMargins({bottom=5});
     obj.button2:setName("button2");
+
+    obj.sound = GUI.fromHandle(_obj_newObject("label"));
+    obj.sound:setParent(obj.layout16);
+    obj.sound:setName("sound");
+    obj.sound:setAlign("top");
+    obj.sound:setField("Sound");
+    obj.sound:setHeight(40);
+    obj.sound:setMargins({bottom=5});
 
     obj.button3 = GUI.fromHandle(_obj_newObject("button"));
     obj.button3:setParent(obj.layout16);
     obj.button3:setAlign("bottom");
     obj.button3:setText("Apagar");
-    obj.button3:setHeight(30);
+    obj.button3:setHeight(40);
     obj.button3:setName("button3");
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
@@ -681,17 +704,17 @@ local function constructNew_feiticos()
         end, obj);
 
     obj._e_event1 = obj.button1:addEventListener("onClick",
-        function (_)
+        function (_, event)
             enviarNaMesa()
         end, obj);
 
     obj._e_event2 = obj.button2:addEventListener("onClick",
-        function (_)
+        function (_, event)
             ListaDeFeitico()
         end, obj);
 
     obj._e_event3 = obj.button3:addEventListener("onClick",
-        function (_)
+        function (_, event)
             Aceitar()
         end, obj);
 
@@ -759,6 +782,7 @@ local function constructNew_feiticos()
         if self.label6 ~= nil then self.label6:destroy(); self.label6 = nil; end;
         if self.layout7 ~= nil then self.layout7:destroy(); self.layout7 = nil; end;
         if self.edit7 ~= nil then self.edit7:destroy(); self.edit7 = nil; end;
+        if self.sound ~= nil then self.sound:destroy(); self.sound = nil; end;
         if self.edit11 ~= nil then self.edit11:destroy(); self.edit11 = nil; end;
         if self.rectangle7 ~= nil then self.rectangle7:destroy(); self.rectangle7 = nil; end;
         if self.layout2 ~= nil then self.layout2:destroy(); self.layout2 = nil; end;

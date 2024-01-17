@@ -143,6 +143,7 @@
         range="7,5m"
         area="1,5m"
         duracao="0"
+        sound="confringo.mp3"
     />, <f10
         nome="Defodio"
         escola="Transmutação"
@@ -275,6 +276,7 @@
         range="4,5m"
         area="0"
         duracao="0"
+        sound="estupefaca.wav"
     />, <f18
         nome="Etesia"
         escola="Contra-Feitiço"
@@ -697,6 +699,7 @@
         range="1,5m"
         area="0"
         duracao="Instantaneo"
+        sound="protego.mp3"
     />, <f44
         nome="Protego"
         escola="Contra-Feitiço"
@@ -713,6 +716,7 @@
         range="0"
         area="0"
         duracao="Instantaneo"
+        sound="protego.mp3"
     />, <f45
         nome="Quod electrica"
         escola="Feitiço"

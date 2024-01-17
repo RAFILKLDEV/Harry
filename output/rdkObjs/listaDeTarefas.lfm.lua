@@ -86,7 +86,7 @@ local function constructNew_frmItemDeMagia()
         end, obj);
 
     obj._e_event1 = obj.button1:addEventListener("onClick",
-        function (_)
+        function (_, event)
             ndb.deleteNode(sheet);
         end, obj);
 
