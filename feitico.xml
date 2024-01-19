@@ -58,7 +58,7 @@
             read="true" />
          <label2 field="C_MAL_Total" color="DarkSlateBlue"
             text="Arte das Trevas" read="true" />
-         <button align="left" text="kek">
+         <!-- <button align="left" text="kek">
             <event name="onClick">
                require("ndb.lua");
                local minhaMesa = Firecast.getRoomOf(sheet);
@@ -70,9 +70,9 @@
                chat:enviarMensagem("Audio Por Ficha 🔇")
 
                showMessage(nick)
-               -- showMessage(tableToStr(Child[1].nome))
+               showMessage(tableToStr(Child[1].nome))
             </event>
-         </button>
+         </button> -->
       </layout>
 
    </layout>
@@ -113,7 +113,7 @@
    <layout align="top" height="600" padding="{top=5, left=5}">
       <layout left="20" top="15" width="500" height="35">
          <button align="left" name="botao" margins="{left=20}"
-            height="25" text="Lista Simplificada" width="150"
+            height="25" text="Lista Completa" width="150"
             onClick="alternarFeiticos();" />
          <button align="left" margins="{left=20}"
             height="25" text="Novo Feitiço" width="100"
@@ -129,7 +129,7 @@
          field="magias"
          itemHeight="200" templateForm="feiticos" left="20" top="60"
          width="760"
-         height="450" autoHeight="false">
+         height="450" visible="false" autoHeight="false">
          <event name="onCompare"><![CDATA[     
                    if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
                         return -1;
@@ -147,7 +147,7 @@
          field="magias"
          templateForm="feiticosFacil" left="20" top="60"
          width="760"
-         height="450" autoHeight="false" visible="false">
+         height="450" autoHeight="false">
       </recordList>
 
    </layout>

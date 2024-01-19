@@ -121,6 +121,7 @@
      <tabControl align="client">
           <import file="jogador.xml" />
           <import file="feitico.xml" />
+          <import file="anotacoes.xml" />
      </tabControl>
 
      <event name="onNodeReady">

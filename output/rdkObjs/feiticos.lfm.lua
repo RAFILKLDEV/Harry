@@ -40,8 +40,12 @@ local function constructNew_feiticos()
         require("utils.lua");
 
         local minhaMesa = Firecast.getRoomOf(sheet);
+
+        if sheet.Sound ~= nil then
         local track = "/audios/" .. sheet.Sound
         minhaMesa.audioPlayer:play(track,0.8)
+        end
+
 
         end
 

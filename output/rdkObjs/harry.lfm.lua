@@ -3047,12 +3047,6 @@ local function constructNew_HarryFicha()
     obj.edit124:setHorzTextAlign("center");
     obj.edit124:setName("edit124");
 
-    obj.button2 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button2:setParent(obj.layout47);
-    obj.button2:setAlign("left");
-    obj.button2:setText("kek");
-    obj.button2:setName("button2");
-
     obj.layout56 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout56:setParent(obj.tab7);
     obj.layout56:setAlign("top");
@@ -3211,26 +3205,26 @@ local function constructNew_HarryFicha()
     obj.botao:setName("botao");
     obj.botao:setMargins({left=20});
     obj.botao:setHeight(25);
-    obj.botao:setText("Lista Simplificada");
+    obj.botao:setText("Lista Completa");
     obj.botao:setWidth(150);
+
+    obj.button2 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button2:setParent(obj.layout62);
+    obj.button2:setAlign("left");
+    obj.button2:setMargins({left=20});
+    obj.button2:setHeight(25);
+    obj.button2:setText("Novo Feitiço");
+    obj.button2:setWidth(100);
+    obj.button2:setName("button2");
 
     obj.button3 = GUI.fromHandle(_obj_newObject("button"));
     obj.button3:setParent(obj.layout62);
     obj.button3:setAlign("left");
-    obj.button3:setMargins({left=20});
     obj.button3:setHeight(25);
-    obj.button3:setText("Novo Feitiço");
+    obj.button3:setText("Ordenar");
     obj.button3:setWidth(100);
+    obj.button3:setMargins({left=20});
     obj.button3:setName("button3");
-
-    obj.button4 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button4:setParent(obj.layout62);
-    obj.button4:setAlign("left");
-    obj.button4:setHeight(25);
-    obj.button4:setText("Ordenar");
-    obj.button4:setWidth(100);
-    obj.button4:setMargins({left=20});
-    obj.button4:setName("button4");
 
     obj.sound = GUI.fromHandle(_obj_newObject("button"));
     obj.sound:setParent(obj.layout62);
@@ -3251,6 +3245,7 @@ local function constructNew_HarryFicha()
     obj.rclMagias:setTop(60);
     obj.rclMagias:setWidth(760);
     obj.rclMagias:setHeight(450);
+    obj.rclMagias:setVisible(false);
     obj.rclMagias:setAutoHeight(false);
 
     obj.testezim = GUI.fromHandle(_obj_newObject("recordList"));
@@ -3263,7 +3258,125 @@ local function constructNew_HarryFicha()
     obj.testezim:setWidth(760);
     obj.testezim:setHeight(450);
     obj.testezim:setAutoHeight(false);
-    obj.testezim:setVisible(false);
+
+    obj.tab8 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab8:setParent(obj.tabControl1);
+    obj.tab8:setTitle("Anotações");
+    obj.tab8:setName("tab8");
+
+    obj.scrollBox2 = GUI.fromHandle(_obj_newObject("scrollBox"));
+    obj.scrollBox2:setParent(obj.tab8);
+    obj.scrollBox2:setAlign("client");
+    obj.scrollBox2:setName("scrollBox2");
+
+    obj.tabControl4 = GUI.fromHandle(_obj_newObject("tabControl"));
+    obj.tabControl4:setParent(obj.scrollBox2);
+    obj.tabControl4:setAlign("client");
+    obj.tabControl4:setName("tabControl4");
+
+    obj.tab9 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab9:setParent(obj.tabControl4);
+    obj.tab9:setTitle("Primeira Aba");
+    obj.tab9:setName("tab9");
+
+    obj.richEdit1 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit1:setParent(obj.tab9);
+    obj.richEdit1:setAlign("client");
+    lfm_setPropAsString(obj.richEdit1, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit1, "defaultFontColor",  "white");
+    obj.richEdit1:setField("txt1");
+    obj.richEdit1:setName("richEdit1");
+
+    obj.tab10 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab10:setParent(obj.tabControl4);
+    obj.tab10:setTitle("Segunda Aba");
+    obj.tab10:setName("tab10");
+
+    obj.richEdit2 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit2:setParent(obj.tab10);
+    obj.richEdit2:setAlign("client");
+    lfm_setPropAsString(obj.richEdit2, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit2, "defaultFontColor",  "white");
+    obj.richEdit2:setField("txt2");
+    obj.richEdit2:setName("richEdit2");
+
+    obj.tab11 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab11:setParent(obj.tabControl4);
+    obj.tab11:setTitle("Terceira Aba");
+    obj.tab11:setName("tab11");
+
+    obj.richEdit3 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit3:setParent(obj.tab11);
+    obj.richEdit3:setAlign("client");
+    lfm_setPropAsString(obj.richEdit3, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit3, "defaultFontColor",  "white");
+    obj.richEdit3:setField("txt3");
+    obj.richEdit3:setName("richEdit3");
+
+    obj.tab12 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab12:setParent(obj.tabControl4);
+    obj.tab12:setTitle("Quarta Aba");
+    obj.tab12:setName("tab12");
+
+    obj.richEdit4 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit4:setParent(obj.tab12);
+    obj.richEdit4:setAlign("client");
+    lfm_setPropAsString(obj.richEdit4, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit4, "defaultFontColor",  "white");
+    obj.richEdit4:setField("txt4");
+    obj.richEdit4:setName("richEdit4");
+
+    obj.tab13 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab13:setParent(obj.tabControl4);
+    obj.tab13:setTitle("Quinta Aba");
+    obj.tab13:setName("tab13");
+
+    obj.richEdit5 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit5:setParent(obj.tab13);
+    obj.richEdit5:setAlign("client");
+    lfm_setPropAsString(obj.richEdit5, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit5, "defaultFontColor",  "white");
+    obj.richEdit5:setField("txt5");
+    obj.richEdit5:setName("richEdit5");
+
+    obj.tab14 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab14:setParent(obj.tabControl4);
+    obj.tab14:setTitle("Sexta Aba");
+    obj.tab14:setName("tab14");
+
+    obj.richEdit6 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit6:setParent(obj.tab14);
+    obj.richEdit6:setAlign("client");
+    lfm_setPropAsString(obj.richEdit6, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit6, "defaultFontColor",  "white");
+    obj.richEdit6:setField("txt6");
+    obj.richEdit6:setName("richEdit6");
+
+    obj.tab15 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab15:setParent(obj.tabControl4);
+    obj.tab15:setTitle("Setima Aba");
+    obj.tab15:setName("tab15");
+
+    obj.richEdit7 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit7:setParent(obj.tab15);
+    obj.richEdit7:setAlign("client");
+    lfm_setPropAsString(obj.richEdit7, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit7, "defaultFontColor",  "white");
+    obj.richEdit7:setField("txt7");
+    obj.richEdit7:setName("richEdit7");
+
+    obj.tab16 = GUI.fromHandle(_obj_newObject("tab"));
+    obj.tab16:setParent(obj.tabControl4);
+    obj.tab16:setTitle("Oitava Aba");
+    obj.tab16:setName("tab16");
+
+    obj.richEdit8 = GUI.fromHandle(_obj_newObject("richEdit"));
+    obj.richEdit8:setParent(obj.tab16);
+    obj.richEdit8:setAlign("client");
+    lfm_setPropAsString(obj.richEdit8, "backgroundColor",  "black");
+    lfm_setPropAsString(obj.richEdit8, "defaultFontColor",  "white");
+    obj.richEdit8:setField("txt8");
+    obj.richEdit8:setName("richEdit8");
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
         function (_)
@@ -3784,22 +3897,7 @@ local function constructNew_HarryFicha()
         function (_)
         end, obj);
 
-    obj._e_event42 = obj.button2:addEventListener("onClick",
-        function (_, event)
-            require("ndb.lua");
-                           local minhaMesa = Firecast.getRoomOf(sheet);
-                           local chat = minhaMesa.chat;
-            
-                           local track = "/audios/estupefaca.wav"
-                           minhaMesa.audioPlayer:play(track,0.2)
-            
-                           chat:enviarMensagem("Audio Por Ficha 🔇")
-            
-                           showMessage(nick)
-                           -- showMessage(tableToStr(Child[1].nome))
-        end, obj);
-
-    obj._e_event43 = obj.edit125:addEventListener("onUserChange",
+    obj._e_event42 = obj.edit125:addEventListener("onUserChange",
         function (_)
             local minhaMesa = Firecast.getRoomOf(sheet);
                            local chat = minhaMesa.chat;
@@ -3808,7 +3906,7 @@ local function constructNew_HarryFicha()
                            sheet.fisico)
         end, obj);
 
-    obj._e_event44 = obj.edit126:addEventListener("onUserChange",
+    obj._e_event43 = obj.edit126:addEventListener("onUserChange",
         function (_)
             local minhaMesa = Firecast.getRoomOf(sheet);
                            local chat = minhaMesa.chat;
@@ -3817,35 +3915,35 @@ local function constructNew_HarryFicha()
                            sheet.mental)
         end, obj);
 
-    obj._e_event45 = obj.edit127:addEventListener("onUserChange",
+    obj._e_event44 = obj.edit127:addEventListener("onUserChange",
         function (_)
         end, obj);
 
-    obj._e_event46 = obj.edit128:addEventListener("onUserChange",
+    obj._e_event45 = obj.edit128:addEventListener("onUserChange",
         function (_)
         end, obj);
 
-    obj._e_event47 = obj.botao:addEventListener("onClick",
+    obj._e_event46 = obj.botao:addEventListener("onClick",
         function (_, event)
             alternarFeiticos();
         end, obj);
 
-    obj._e_event48 = obj.button3:addEventListener("onClick",
+    obj._e_event47 = obj.button2:addEventListener("onClick",
         function (_, event)
             self.rclMagias:append();
         end, obj);
 
-    obj._e_event49 = obj.button4:addEventListener("onClick",
+    obj._e_event48 = obj.button3:addEventListener("onClick",
         function (_, event)
             self.rclMagias:sort();
         end, obj);
 
-    obj._e_event50 = obj.sound:addEventListener("onClick",
+    obj._e_event49 = obj.sound:addEventListener("onClick",
         function (_, event)
             alternarAudio()
         end, obj);
 
-    obj._e_event51 = obj.rclMagias:addEventListener("onCompare",
+    obj._e_event50 = obj.rclMagias:addEventListener("onCompare",
         function (_, nodeA, nodeB)
             if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
                                     return -1;
@@ -3857,7 +3955,6 @@ local function constructNew_HarryFicha()
         end, obj);
 
     function obj:_releaseEvents()
-        __o_rrpgObjs.removeEventListenerById(self._e_event51);
         __o_rrpgObjs.removeEventListenerById(self._e_event50);
         __o_rrpgObjs.removeEventListenerById(self._e_event49);
         __o_rrpgObjs.removeEventListenerById(self._e_event48);
@@ -3943,9 +4040,11 @@ local function constructNew_HarryFicha()
         if self.layout37 ~= nil then self.layout37:destroy(); self.layout37 = nil; end;
         if self.VeiculosMagicos ~= nil then self.VeiculosMagicos:destroy(); self.VeiculosMagicos = nil; end;
         if self.Concentracao ~= nil then self.Concentracao:destroy(); self.Concentracao = nil; end;
+        if self.tab11 ~= nil then self.tab11:destroy(); self.tab11 = nil; end;
         if self.layout59 ~= nil then self.layout59:destroy(); self.layout59 = nil; end;
         if self.label69 ~= nil then self.label69:destroy(); self.label69 = nil; end;
         if self.edit60 ~= nil then self.edit60:destroy(); self.edit60 = nil; end;
+        if self.tab14 ~= nil then self.tab14:destroy(); self.tab14 = nil; end;
         if self.rectangle38 ~= nil then self.rectangle38:destroy(); self.rectangle38 = nil; end;
         if self.layout52 ~= nil then self.layout52:destroy(); self.layout52 = nil; end;
         if self.label39 ~= nil then self.label39:destroy(); self.label39 = nil; end;
@@ -3973,12 +4072,14 @@ local function constructNew_HarryFicha()
         if self.layout42 ~= nil then self.layout42:destroy(); self.layout42 = nil; end;
         if self.edit120 ~= nil then self.edit120:destroy(); self.edit120 = nil; end;
         if self.label7 ~= nil then self.label7:destroy(); self.label7 = nil; end;
+        if self.richEdit1 ~= nil then self.richEdit1:destroy(); self.richEdit1 = nil; end;
         if self.rectangle43 ~= nil then self.rectangle43:destroy(); self.rectangle43 = nil; end;
         if self.layout45 ~= nil then self.layout45:destroy(); self.layout45 = nil; end;
         if self.edit125 ~= nil then self.edit125:destroy(); self.edit125 = nil; end;
         if self.edit10 ~= nil then self.edit10:destroy(); self.edit10 = nil; end;
         if self.label81 ~= nil then self.label81:destroy(); self.label81 = nil; end;
         if self.edit85 ~= nil then self.edit85:destroy(); self.edit85 = nil; end;
+        if self.richEdit4 ~= nil then self.richEdit4:destroy(); self.richEdit4 = nil; end;
         if self.label11 ~= nil then self.label11:destroy(); self.label11 = nil; end;
         if self.rectangle8 ~= nil then self.rectangle8:destroy(); self.rectangle8 = nil; end;
         if self.edit15 ~= nil then self.edit15:destroy(); self.edit15 = nil; end;
@@ -4020,6 +4121,7 @@ local function constructNew_HarryFicha()
         if self.edit28 ~= nil then self.edit28:destroy(); self.edit28 = nil; end;
         if self.edit63 ~= nil then self.edit63:destroy(); self.edit63 = nil; end;
         if self.layout31 ~= nil then self.layout31:destroy(); self.layout31 = nil; end;
+        if self.tab9 ~= nil then self.tab9:destroy(); self.tab9 = nil; end;
         if self.tab2 ~= nil then self.tab2:destroy(); self.tab2 = nil; end;
         if self.Iniciativa ~= nil then self.Iniciativa:destroy(); self.Iniciativa = nil; end;
         if self.layout50 ~= nil then self.layout50:destroy(); self.layout50 = nil; end;
@@ -4038,7 +4140,6 @@ local function constructNew_HarryFicha()
         if self.edit128 ~= nil then self.edit128:destroy(); self.edit128 = nil; end;
         if self.layout13 ~= nil then self.layout13:destroy(); self.layout13 = nil; end;
         if self.label35 ~= nil then self.label35:destroy(); self.label35 = nil; end;
-        if self.button4 ~= nil then self.button4:destroy(); self.button4 = nil; end;
         if self.edit32 ~= nil then self.edit32:destroy(); self.edit32 = nil; end;
         if self.layout5 ~= nil then self.layout5:destroy(); self.layout5 = nil; end;
         if self.label49 ~= nil then self.label49:destroy(); self.label49 = nil; end;
@@ -4052,12 +4153,14 @@ local function constructNew_HarryFicha()
         if self.label5 ~= nil then self.label5:destroy(); self.label5 = nil; end;
         if self.edit80 ~= nil then self.edit80:destroy(); self.edit80 = nil; end;
         if self.Acrobacia ~= nil then self.Acrobacia:destroy(); self.Acrobacia = nil; end;
+        if self.richEdit3 ~= nil then self.richEdit3:destroy(); self.richEdit3 = nil; end;
         if self.rectangle45 ~= nil then self.rectangle45:destroy(); self.rectangle45 = nil; end;
         if self.label12 ~= nil then self.label12:destroy(); self.label12 = nil; end;
         if self.label20 ~= nil then self.label20:destroy(); self.label20 = nil; end;
         if self.edit12 ~= nil then self.edit12:destroy(); self.edit12 = nil; end;
         if self.label87 ~= nil then self.label87:destroy(); self.label87 = nil; end;
         if self.edit87 ~= nil then self.edit87:destroy(); self.edit87 = nil; end;
+        if self.richEdit6 ~= nil then self.richEdit6:destroy(); self.richEdit6 = nil; end;
         if self.label17 ~= nil then self.label17:destroy(); self.label17 = nil; end;
         if self.label27 ~= nil then self.label27:destroy(); self.label27 = nil; end;
         if self.edit17 ~= nil then self.edit17:destroy(); self.edit17 = nil; end;
@@ -4095,10 +4198,12 @@ local function constructNew_HarryFicha()
         if self.label63 ~= nil then self.label63:destroy(); self.label63 = nil; end;
         if self.edit66 ~= nil then self.edit66:destroy(); self.edit66 = nil; end;
         if self.layout36 ~= nil then self.layout36:destroy(); self.layout36 = nil; end;
+        if self.tab12 ~= nil then self.tab12:destroy(); self.tab12 = nil; end;
         if self.Azaracao ~= nil then self.Azaracao:destroy(); self.Azaracao = nil; end;
         if self.layout58 ~= nil then self.layout58:destroy(); self.layout58 = nil; end;
         if self.edit61 ~= nil then self.edit61:destroy(); self.edit61 = nil; end;
         if self.layout33 ~= nil then self.layout33:destroy(); self.layout33 = nil; end;
+        if self.tab15 ~= nil then self.tab15:destroy(); self.tab15 = nil; end;
         if self.rectangle39 ~= nil then self.rectangle39:destroy(); self.rectangle39 = nil; end;
         if self.label38 ~= nil then self.label38:destroy(); self.label38 = nil; end;
         if self.edit101 ~= nil then self.edit101:destroy(); self.edit101 = nil; end;
@@ -4128,6 +4233,7 @@ local function constructNew_HarryFicha()
         if self.edit124 ~= nil then self.edit124:destroy(); self.edit124 = nil; end;
         if self.label82 ~= nil then self.label82:destroy(); self.label82 = nil; end;
         if self.edit82 ~= nil then self.edit82:destroy(); self.edit82 = nil; end;
+        if self.richEdit5 ~= nil then self.richEdit5:destroy(); self.richEdit5 = nil; end;
         if self.rectangle47 ~= nil then self.rectangle47:destroy(); self.rectangle47 = nil; end;
         if self.label10 ~= nil then self.label10:destroy(); self.label10 = nil; end;
         if self.label22 ~= nil then self.label22:destroy(); self.label22 = nil; end;
@@ -4137,6 +4243,7 @@ local function constructNew_HarryFicha()
         if self.Resistencia ~= nil then self.Resistencia:destroy(); self.Resistencia = nil; end;
         if self.layout49 ~= nil then self.layout49:destroy(); self.layout49 = nil; end;
         if self.label85 ~= nil then self.label85:destroy(); self.label85 = nil; end;
+        if self.richEdit8 ~= nil then self.richEdit8:destroy(); self.richEdit8 = nil; end;
         if self.label15 ~= nil then self.label15:destroy(); self.label15 = nil; end;
         if self.rectangle4 ~= nil then self.rectangle4:destroy(); self.rectangle4 = nil; end;
         if self.label29 ~= nil then self.label29:destroy(); self.label29 = nil; end;
@@ -4176,6 +4283,8 @@ local function constructNew_HarryFicha()
         if self.edit64 ~= nil then self.edit64:destroy(); self.edit64 = nil; end;
         if self.layout30 ~= nil then self.layout30:destroy(); self.layout30 = nil; end;
         if self.edit109 ~= nil then self.edit109:destroy(); self.edit109 = nil; end;
+        if self.tab10 ~= nil then self.tab10:destroy(); self.tab10 = nil; end;
+        if self.tab8 ~= nil then self.tab8:destroy(); self.tab8 = nil; end;
         if self.label68 ~= nil then self.label68:destroy(); self.label68 = nil; end;
         if self.layout53 ~= nil then self.layout53:destroy(); self.layout53 = nil; end;
         if self.edit2 ~= nil then self.edit2:destroy(); self.edit2 = nil; end;
@@ -4206,6 +4315,7 @@ local function constructNew_HarryFicha()
         if self.edit11 ~= nil then self.edit11:destroy(); self.edit11 = nil; end;
         if self.label80 ~= nil then self.label80:destroy(); self.label80 = nil; end;
         if self.edit84 ~= nil then self.edit84:destroy(); self.edit84 = nil; end;
+        if self.richEdit7 ~= nil then self.richEdit7:destroy(); self.richEdit7 = nil; end;
         if self.rclMagias ~= nil then self.rclMagias:destroy(); self.rclMagias = nil; end;
         if self.label16 ~= nil then self.label16:destroy(); self.label16 = nil; end;
         if self.label24 ~= nil then self.label24:destroy(); self.label24 = nil; end;
@@ -4240,6 +4350,7 @@ local function constructNew_HarryFicha()
         if self.Aparar ~= nil then self.Aparar:destroy(); self.Aparar = nil; end;
         if self.rectangle18 ~= nil then self.rectangle18:destroy(); self.rectangle18 = nil; end;
         if self.edit98 ~= nil then self.edit98:destroy(); self.edit98 = nil; end;
+        if self.tabControl4 ~= nil then self.tabControl4:destroy(); self.tabControl4 = nil; end;
         if self.label65 ~= nil then self.label65:destroy(); self.label65 = nil; end;
         if self.edit21 ~= nil then self.edit21:destroy(); self.edit21 = nil; end;
         if self.layout38 ~= nil then self.layout38:destroy(); self.layout38 = nil; end;
@@ -4249,8 +4360,10 @@ local function constructNew_HarryFicha()
         if self.edit24 ~= nil then self.edit24:destroy(); self.edit24 = nil; end;
         if self.edit67 ~= nil then self.edit67:destroy(); self.edit67 = nil; end;
         if self.layout35 ~= nil then self.layout35:destroy(); self.layout35 = nil; end;
+        if self.tab13 ~= nil then self.tab13:destroy(); self.tab13 = nil; end;
         if self.edit62 ~= nil then self.edit62:destroy(); self.edit62 = nil; end;
         if self.layout32 ~= nil then self.layout32:destroy(); self.layout32 = nil; end;
+        if self.tab16 ~= nil then self.tab16:destroy(); self.tab16 = nil; end;
         if self.edit1 ~= nil then self.edit1:destroy(); self.edit1 = nil; end;
         if self.edit100 ~= nil then self.edit100:destroy(); self.edit100 = nil; end;
         if self.label47 ~= nil then self.label47:destroy(); self.label47 = nil; end;
@@ -4281,6 +4394,7 @@ local function constructNew_HarryFicha()
         if self.label4 ~= nil then self.label4:destroy(); self.label4 = nil; end;
         if self.label83 ~= nil then self.label83:destroy(); self.label83 = nil; end;
         if self.edit83 ~= nil then self.edit83:destroy(); self.edit83 = nil; end;
+        if self.richEdit2 ~= nil then self.richEdit2:destroy(); self.richEdit2 = nil; end;
         if self.rectangle46 ~= nil then self.rectangle46:destroy(); self.rectangle46 = nil; end;
         if self.label13 ~= nil then self.label13:destroy(); self.label13 = nil; end;
         if self.label23 ~= nil then self.label23:destroy(); self.label23 = nil; end;
@@ -4299,6 +4413,7 @@ local function constructNew_HarryFicha()
         if self.rectangle53 ~= nil then self.rectangle53:destroy(); self.rectangle53 = nil; end;
         if self.layout21 ~= nil then self.layout21:destroy(); self.layout21 = nil; end;
         if self.label78 ~= nil then self.label78:destroy(); self.label78 = nil; end;
+        if self.scrollBox2 ~= nil then self.scrollBox2:destroy(); self.scrollBox2 = nil; end;
         if self.sound ~= nil then self.sound:destroy(); self.sound = nil; end;
         if self.rectangle29 ~= nil then self.rectangle29:destroy(); self.rectangle29 = nil; end;
         if self.rectangle15 ~= nil then self.rectangle15:destroy(); self.rectangle15 = nil; end;

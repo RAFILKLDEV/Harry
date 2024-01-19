@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tab title="Anotações">
+     <scrollBox align="client">
+          <tabControl align="client">
+               <tab title="Primeira Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt1" />
+               </tab>
+
+               <tab title="Segunda Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt2" />
+               </tab>
+               <tab title="Terceira Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt3" />
+               </tab>
+
+               <tab title="Quarta Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt4" />
+               </tab>
+               <tab title="Quinta Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt5" />
+               </tab>
+
+               <tab title="Sexta Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt6" />
+               </tab>
+               <tab title="Setima Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt7" />
+               </tab>
+
+               <tab title="Oitava Aba">
+                    <richEdit align="client" backgroundColor="black" defaultFontColor="white"
+                         field="txt8" />
+               </tab>
+          </tabControl>
+
+
+     </scrollBox>
+</tab>

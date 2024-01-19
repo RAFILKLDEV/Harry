@@ -35,6 +35,18 @@ local function constructNew_feiticosFacil()
         -- Primeiro, é necessário usar a unidade "dialogs.lua"
         require("dialogs.lua");
 
+        local function tocarAudio()
+        require("utils.lua");
+
+        local minhaMesa = Firecast.getRoomOf(sheet);
+        
+        if sheet.Sound ~= nil then
+        local track = "/audios/" .. sheet.Sound
+        minhaMesa.audioPlayer:play(track,0.8)
+        end
+
+        end
+
         local function Aceitar()
         Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
         function (confirmado)
@@ -137,11 +149,13 @@ local function constructNew_feiticosFacil()
         end
 
         if sheet.tipo == 'Ataque' then
-        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "+" .. (node.acerto or 0),
+        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
         "Ataque de " .. sheet.nome)
+        setTimeout(tocarAudio, 5000)
+
         elseif sheet.tipo == 'Defesa' then
         chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
-
+        setTimeout(tocarAudio, 5000)
         end
 
         chat:enviarMensagem("----------------");
@@ -229,7 +243,7 @@ local function constructNew_feiticosFacil()
     obj.layout1 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout1:setParent(obj);
     obj.layout1:setAlign("top");
-    obj.layout1:setHeight(50);
+    obj.layout1:setHeight(70);
     obj.layout1:setName("layout1");
 
     obj.layout2 = GUI.fromHandle(_obj_newObject("layout"));
@@ -259,7 +273,9 @@ local function constructNew_feiticosFacil()
     obj.edit1:setParent(obj.layout2);
     obj.edit1:setTop(27);
     obj.edit1:setWidth(150);
-    obj.edit1:setHeight(25);
+    obj.edit1:setHeight(35);
+    lfm_setPropAsString(obj.edit1, "fontStyle",  "bold");
+    obj.edit1:setFontSize(15);
     obj.edit1:setField("nome");
     obj.edit1:setHorzTextAlign("center");
     obj.edit1:setName("edit1");

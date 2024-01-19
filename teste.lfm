@@ -5,6 +5,18 @@
         -- Primeiro, é necessário usar a unidade "dialogs.lua"
         require("dialogs.lua");
 
+        local function tocarAudio()
+        require("utils.lua");
+
+        local minhaMesa = Firecast.getRoomOf(sheet);
+        
+        if sheet.Sound ~= nil then
+        local track = "/audios/" .. sheet.Sound
+        minhaMesa.audioPlayer:play(track,0.8)
+        end
+
+        end
+
         local function Aceitar()
         Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
         function (confirmado)
@@ -107,11 +119,13 @@
         end
 
         if sheet.tipo == 'Ataque' then
-        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "+" .. (node.acerto or 0),
+        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
         "Ataque de " .. sheet.nome)
+        setTimeout(tocarAudio, 5000)
+
         elseif sheet.tipo == 'Defesa' then
         chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
-
+        setTimeout(tocarAudio, 5000)
         end
 
         chat:enviarMensagem("----------------");
@@ -197,13 +211,13 @@
         </event>
     </dataLink>
 
-    <layout align="top" height="50">
+    <layout align="top" height="70">
 
         <layout align="left" margins="{left=10}" width="150">
             <rectangle top="7" left="7" color="DarkSlateBlue" width="120" height="20">
                 <label align="client" text="Feitiço" horzTextAlign="center" />
             </rectangle>
-            <edit top="27" width="150" height="25" field="nome" horzTextAlign="center" />
+            <edit top="27" width="150" height="35" fontStyle="bold" fontSize="15" field="nome" horzTextAlign="center" />
         </layout>
 
         <layout align="left" margins="{left=10}" width="80">
