@@ -15,7 +15,7 @@
 
      <dataLink
           fields="{'AGI','DES', 'FOR','LUT','VIG','INTE','PRE','SAB','ACR_Grad','ACR_Out','ATL_Grad',
-          'ATL_Out','COR_Grad','COR_Out','FUR_Grad','FUR_Out','PRE_Grad','PRE_Out','VEI_Grad','VEI_Out',
+          'ATL_Out','COR_Grad','COR_Out','ENG_Grad', 'ENG_Out','FUR_Grad','FUR_Out','PRE_Grad','PRE_Out','VEI_Grad','VEI_Out',
           'CON_Grad','CON_Out','INT_Grad','INT_Out','INTU_Grad','INTU_Out','PERC_Grad','PERC_Out','PERS_Grad','PERS_Out',
           'TRA_Grad','TRA_Out','ATU_Grad','ATU_Out','C_ADI_Grad','C_ADI_Out','C_AZA_Grad','C_AZA_Out','C_CON_Grad','C_CON_Out',
           'C_CRI_Grad','C_CRI_Out','C_ENC_Grad','C_ENC_Out','C_FEI_Grad','C_FEI_Out','C_HER_Grad','C_HER_Out','C_MAL_Grad','C_MAL_Out','C_POC_Grad','C_POC_Out',
@@ -134,6 +134,9 @@
           end
 
           end
+
+          local node = NDB.getRoot(sheet)
+          node.soundControl = "ligado"
      </event>
 
 </form>

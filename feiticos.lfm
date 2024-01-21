@@ -6,17 +6,30 @@
         -- Primeiro, é necessário usar a unidade "dialogs.lua"
         require("dialogs.lua");
         require("ndb.lua")
+        require("utils.lua");
+
+
+        local function testezz()
+
+        local node = NDB.getRoot(sheet)
+        showMessage(node.soundControl)
+
+        end
 
         local function tocarAudio()
         require("utils.lua");
 
         local minhaMesa = Firecast.getRoomOf(sheet);
+        local node = NDB.getRoot(sheet)
+
+        if node.soundControl == "ligado" then
 
         if sheet.Sound ~= nil then
         local track = "/audios/" .. sheet.Sound
         minhaMesa.audioPlayer:play(track,0.8)
         end
 
+        end
 
         end
 
@@ -187,6 +200,19 @@
         sheet.Area = ListaFeiticos[k].area
         sheet.Duracao = ListaFeiticos[k].duracao
         sheet.Sound = ListaFeiticos[k].sound or "noAudio.mp3"
+
+        sheet.nome2 = ListaFeiticos[k].nome
+        sheet.escola2 = ListaFeiticos[k].escola
+        sheet.tipo2 = ListaFeiticos[k].cast
+        sheet.Grad2 = ListaFeiticos[k].grad
+        sheet.CD2 = ListaFeiticos[k].cdf
+        sheet.Efeito2 = ListaFeiticos[k].efeito
+        sheet.Poder2 = ListaFeiticos[k].poder
+        sheet.Dano2 = ListaFeiticos[k].dano
+        sheet.Bonus2 = ListaFeiticos[k].bonus
+        sheet.Range2 = ListaFeiticos[k].range
+        sheet.Area2 = ListaFeiticos[k].area
+        sheet.Duracao2 = ListaFeiticos[k].duracao
         end
 
         end
@@ -251,15 +277,83 @@
     </layout>
 
     <layout width="100" align="left">
-        <button align="top" text="Rolar" height="40" margins="{bottom=5}" onClick="enviarNaMesa()" />
-        <button align="top" text="Importar" height="40" margins="{bottom=5}"
+        <button align="top" text="Rolar" height="35" margins="{bottom=5}" onClick="enviarNaMesa()" />
+        <button align="top" text="Importar" height="35" margins="{bottom=5}"
             onClick="ListaDeFeitico()" />
-        <label name="sound" align="top" field="Sound" height="40" margins="{bottom=5}" />
-        <button align="bottom" text="Apagar" height="40" onClick="Aceitar()" />
+        <button align="bottom" text="Apagar" height="35" margins="{bottom=5}" onClick="Aceitar()" />
+        <button align="bottom" text="Comparar" height="35" onClick="self.popMeuPopup:show()" />
     </layout>
 
-    <event name="onNodeReady">
+    <popup name="popMeuPopup" width="400" height="400" backOpacity="0.5">
+        <event name="onNodeReady">
+            self.popMeuPopup.node.Dano = 5
+            self.popMeuPopup.Dano2 = 5
+            self.popMeuPopup.nodofoda.Dano = 5
+            sheet.Dano2 = 5
+        </event>
+        <layout align="left" width="200">
+            <label align="top" height="30" text="Original" />
+            <layout align="top" height="300">
+                <rectangle align="left" width="100" color="blue">
+                    <label margins="{bottom=5}" align="top" text="GRAD" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="CD" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="EFEITO" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="PODER" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="DANO" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="BONUS" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="RANGE" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="AREA" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="DURAÇÃO" horzTextAlign="center" />
+                </rectangle>
+                <rectangle align="left" width="100" color="green">
+                    <label margins="{bottom=5}" align="top" field="Grad2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="CD2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Efeito2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Poder2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Dano2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Bonus2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Range2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Area2" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Duracao2" horzTextAlign="center" />
+                </rectangle>
+            </layout>
+        </layout>
 
+        -- Coluna 2
+
+        <layout align="left" width="200">
+            <label align="top" height="30" text="Atual" />
+            <layout align="top" height="300">
+                <rectangle align="left" width="100" color="blue">
+                    <label margins="{bottom=5}" align="top" text="GRAD" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="CD" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="EFEITO" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="PODER" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="DANO" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="BONUS" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="RANGE" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="AREA" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" text="DURAÇÃO" horzTextAlign="center" />
+                </rectangle>
+                <rectangle align="left" width="100" color="green">
+                    <label margins="{bottom=5}" align="top" field="Grad" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="CD" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Efeito" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Poder" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Dano" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Bonus" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Range" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Area" horzTextAlign="center" />
+                    <label margins="{bottom=5}" align="top" field="Duracao" horzTextAlign="center" />
+                </rectangle>
+            </layout>
+
+        </layout>
+
+        
+    </popup>
+
+    <event name="onNodeReady">
 
         local campos = {"Grad","CD","Efeito","Poder","Dano","Bonus","Range","Area","Duracao"}
 

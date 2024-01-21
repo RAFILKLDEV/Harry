@@ -39,10 +39,15 @@ local function constructNew_feiticosFacil()
         require("utils.lua");
 
         local minhaMesa = Firecast.getRoomOf(sheet);
-        
+        local node = NDB.getRoot(sheet)
+
+        if node.soundControl == "ligado" then
+
         if sheet.Sound ~= nil then
         local track = "/audios/" .. sheet.Sound
         minhaMesa.audioPlayer:play(track,0.8)
+        end
+
         end
 
         end

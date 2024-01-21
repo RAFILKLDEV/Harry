@@ -47,7 +47,7 @@ local function constructNew_HarryFicha()
     obj.dataLink1 = GUI.fromHandle(_obj_newObject("dataLink"));
     obj.dataLink1:setParent(obj);
     obj.dataLink1:setFields({'AGI','DES', 'FOR','LUT','VIG','INTE','PRE','SAB','ACR_Grad','ACR_Out','ATL_Grad',
-          'ATL_Out','COR_Grad','COR_Out','FUR_Grad','FUR_Out','PRE_Grad','PRE_Out','VEI_Grad','VEI_Out',
+          'ATL_Out','COR_Grad','COR_Out','ENG_Grad', 'ENG_Out','FUR_Grad','FUR_Out','PRE_Grad','PRE_Out','VEI_Grad','VEI_Out',
           'CON_Grad','CON_Out','INT_Grad','INT_Out','INTU_Grad','INTU_Out','PERC_Grad','PERC_Out','PERS_Grad','PERS_Out',
           'TRA_Grad','TRA_Out','ATU_Grad','ATU_Out','C_ADI_Grad','C_ADI_Out','C_AZA_Grad','C_AZA_Out','C_CON_Grad','C_CON_Out',
           'C_CRI_Grad','C_CRI_Out','C_ENC_Grad','C_ENC_Out','C_FEI_Grad','C_FEI_Out','C_HER_Grad','C_HER_Out','C_MAL_Grad','C_MAL_Out','C_POC_Grad','C_POC_Out',
@@ -2751,6 +2751,8 @@ local function constructNew_HarryFicha()
     obj.layout46:setName("layout46");
 
 
+
+
          local function alternarFeiticos()
 
          if self.rclMagias.visible == true then
@@ -2766,11 +2768,16 @@ local function constructNew_HarryFicha()
          end
 
          local function alternarAudio()
+         local node = NDB.getRoot(sheet)
 
          if self.sound.text == "🔊" then
          self.sound.text = "🔇"
-         else self.sound.text = "🔊"
+         node.soundControl = "desligado"
+         else
+         self.sound.text = "🔊"
+         node.soundControl = "ligado"
          end
+
 
          end
       
@@ -3184,23 +3191,23 @@ local function constructNew_HarryFicha()
     obj.edit128:setHorzTextAlign("center");
     obj.edit128:setName("edit128");
 
+    obj.aqui = GUI.fromHandle(_obj_newObject("layout"));
+    obj.aqui:setParent(obj.tab7);
+    obj.aqui:setName("aqui");
+    obj.aqui:setAlign("top");
+    obj.aqui:setHeight(600);
+    obj.aqui:setPadding({top=5, left=5});
+
     obj.layout61 = GUI.fromHandle(_obj_newObject("layout"));
-    obj.layout61:setParent(obj.tab7);
-    obj.layout61:setAlign("top");
-    obj.layout61:setHeight(600);
-    obj.layout61:setPadding({top=5, left=5});
+    obj.layout61:setParent(obj.aqui);
+    obj.layout61:setLeft(20);
+    obj.layout61:setTop(15);
+    obj.layout61:setWidth(500);
+    obj.layout61:setHeight(35);
     obj.layout61:setName("layout61");
 
-    obj.layout62 = GUI.fromHandle(_obj_newObject("layout"));
-    obj.layout62:setParent(obj.layout61);
-    obj.layout62:setLeft(20);
-    obj.layout62:setTop(15);
-    obj.layout62:setWidth(500);
-    obj.layout62:setHeight(35);
-    obj.layout62:setName("layout62");
-
     obj.botao = GUI.fromHandle(_obj_newObject("button"));
-    obj.botao:setParent(obj.layout62);
+    obj.botao:setParent(obj.layout61);
     obj.botao:setAlign("left");
     obj.botao:setName("botao");
     obj.botao:setMargins({left=20});
@@ -3209,7 +3216,7 @@ local function constructNew_HarryFicha()
     obj.botao:setWidth(150);
 
     obj.button2 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button2:setParent(obj.layout62);
+    obj.button2:setParent(obj.layout61);
     obj.button2:setAlign("left");
     obj.button2:setMargins({left=20});
     obj.button2:setHeight(25);
@@ -3218,7 +3225,7 @@ local function constructNew_HarryFicha()
     obj.button2:setName("button2");
 
     obj.button3 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button3:setParent(obj.layout62);
+    obj.button3:setParent(obj.layout61);
     obj.button3:setAlign("left");
     obj.button3:setHeight(25);
     obj.button3:setText("Ordenar");
@@ -3227,7 +3234,7 @@ local function constructNew_HarryFicha()
     obj.button3:setName("button3");
 
     obj.sound = GUI.fromHandle(_obj_newObject("button"));
-    obj.sound:setParent(obj.layout62);
+    obj.sound:setParent(obj.layout61);
     obj.sound:setName("sound");
     obj.sound:setAlign("left");
     obj.sound:setHeight(25);
@@ -3236,7 +3243,7 @@ local function constructNew_HarryFicha()
     obj.sound:setMargins({left=20});
 
     obj.rclMagias = GUI.fromHandle(_obj_newObject("recordList"));
-    obj.rclMagias:setParent(obj.layout61);
+    obj.rclMagias:setParent(obj.aqui);
     obj.rclMagias:setName("rclMagias");
     obj.rclMagias:setField("magias");
     obj.rclMagias:setItemHeight(200);
@@ -3249,7 +3256,7 @@ local function constructNew_HarryFicha()
     obj.rclMagias:setAutoHeight(false);
 
     obj.testezim = GUI.fromHandle(_obj_newObject("recordList"));
-    obj.testezim:setParent(obj.layout61);
+    obj.testezim:setParent(obj.aqui);
     obj.testezim:setName("testezim");
     obj.testezim:setField("magias");
     obj.testezim:setTemplateForm("feiticosFacil");
@@ -3389,6 +3396,9 @@ local function constructNew_HarryFicha()
                       end
             
                       end
+            
+                      local node = NDB.getRoot(sheet)
+                      node.soundControl = "ligado"
         end, obj);
 
     obj._e_event1 = obj.dataLink1:addEventListener("onChange",
@@ -4128,7 +4138,6 @@ local function constructNew_HarryFicha()
         if self.edit5 ~= nil then self.edit5:destroy(); self.edit5 = nil; end;
         if self.edit104 ~= nil then self.edit104:destroy(); self.edit104 = nil; end;
         if self.edit69 ~= nil then self.edit69:destroy(); self.edit69 = nil; end;
-        if self.layout62 ~= nil then self.layout62:destroy(); self.layout62 = nil; end;
         if self.image2 ~= nil then self.image2:destroy(); self.image2 = nil; end;
         if self.label43 ~= nil then self.label43:destroy(); self.label43 = nil; end;
         if self.tab7 ~= nil then self.tab7:destroy(); self.tab7 = nil; end;
@@ -4296,6 +4305,7 @@ local function constructNew_HarryFicha()
         if self.layout19 ~= nil then self.layout19:destroy(); self.layout19 = nil; end;
         if self.button2 ~= nil then self.button2:destroy(); self.button2 = nil; end;
         if self.edit38 ~= nil then self.edit38:destroy(); self.edit38 = nil; end;
+        if self.aqui ~= nil then self.aqui:destroy(); self.aqui = nil; end;
         if self.label8 ~= nil then self.label8:destroy(); self.label8 = nil; end;
         if self.layout12 ~= nil then self.layout12:destroy(); self.layout12 = nil; end;
         if self.label34 ~= nil then self.label34:destroy(); self.label34 = nil; end;

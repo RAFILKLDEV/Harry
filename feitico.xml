@@ -5,6 +5,8 @@
    <layout align="top" height="100" padding="{top=5, left=5}">
 
       <script>
+
+
          local function alternarFeiticos()
 
          if self.rclMagias.visible == true then
@@ -20,11 +22,16 @@
          end
 
          local function alternarAudio()
+         local node = NDB.getRoot(sheet)
 
          if self.sound.text == "🔊" then
          self.sound.text = "🔇"
-         else self.sound.text = "🔊"
+         node.soundControl = "desligado"
+         else
+         self.sound.text = "🔊"
+         node.soundControl = "ligado"
          end
+
 
          end
       </script>
@@ -110,7 +117,7 @@
       <label2 field="acerto" color="purple" text="Acerto" read="false" />
    </layout>
 
-   <layout align="top" height="600" padding="{top=5, left=5}">
+   <layout name="aqui" align="top" height="600" padding="{top=5, left=5}">
       <layout left="20" top="15" width="500" height="35">
          <button align="left" name="botao" margins="{left=20}"
             height="25" text="Lista Completa" width="150"
