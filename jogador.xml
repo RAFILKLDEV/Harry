@@ -23,6 +23,7 @@
                     <tabControl align="left" width="300">
                          <import file="defesas.xml" />
                          <import file="tarefas.xml" />
+                         <import file="treino.xml" />
                     </tabControl>
 
                </layout>

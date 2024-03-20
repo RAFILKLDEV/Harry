@@ -16,7 +16,7 @@
      <dataLink
           fields="{'AGI','DES', 'FOR','LUT','VIG','INTE','PRE','SAB','ACR_Grad','ACR_Out','ATL_Grad',
           'ATL_Out','COR_Grad','COR_Out','ENG_Grad', 'ENG_Out','FUR_Grad','FUR_Out','PRE_Grad','PRE_Out','VEI_Grad','VEI_Out',
-          'CON_Grad','CON_Out','INT_Grad','INT_Out','INTU_Grad','INTU_Out','PERC_Grad','PERC_Out','PERS_Grad','PERS_Out',
+          'CON_Grad','CON_Out','INT_Grad','INT_Out','INTU_Grad','INTU_Out','INV_Grad','INV_Out','PERC_Grad','PERC_Out','PERS_Grad','PERS_Out',
           'TRA_Grad','TRA_Out','ATU_Grad','ATU_Out','C_ADI_Grad','C_ADI_Out','C_AZA_Grad','C_AZA_Out','C_CON_Grad','C_CON_Out',
           'C_CRI_Grad','C_CRI_Out','C_ENC_Grad','C_ENC_Out','C_FEI_Grad','C_FEI_Out','C_HER_Grad','C_HER_Out','C_MAL_Grad','C_MAL_Out','C_POC_Grad','C_POC_Out',
           'C_RUN_Grad','C_RUN_Out','C_TRA_Grad','C_TRA_Out', 'INI_Grad', 'INI_Out', 'APA_Grad','APA_Out', 'FORT_Grad', 'FORT_Out',
@@ -52,6 +52,9 @@
                sheet.INTU_Total = (tonumber(sheet.INTU_Grad) or 0) +
                (tonumber(sheet.SAB) or 0) +
                (tonumber(sheet.INTU_Out) or 0)
+               sheet.INV_Total = (tonumber(sheet.INV_Grad) or 0) +
+               (tonumber(sheet.INTE) or 0) +
+               (tonumber(sheet.INV_Out) or 0)
                sheet.PERC_Total = (tonumber(sheet.PERC_Grad) or 0) +
                (tonumber(sheet.SAB) or 0) +
                (tonumber(sheet.PERC_Out) or 0)
@@ -136,7 +139,7 @@
           end
 
           local node = NDB.getRoot(sheet)
-          node.soundControl = "ligado"
+          node.soundControl = "desligado"
      </event>
 
 </form>

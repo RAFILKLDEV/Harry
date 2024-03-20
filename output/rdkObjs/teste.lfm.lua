@@ -129,8 +129,9 @@ local function constructNew_feiticosFacil()
         return msg
         end
 
-        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "+" ..
-        (node.concentracao or 0) .. (sheet.ext_Penalidade == nil and 0 or "-" .. sheet.ext_Penalidade)
+        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) ..
+        (node.concentracao == nil and 0 or ("-" .. node.concentracao)) .. (sheet.ext_Penalidade ==
+        nil and 0 or ("-" .. sheet.ext_Penalidade))
 
         chat:enviarMensagem("----------------");
 
@@ -313,6 +314,8 @@ local function constructNew_feiticosFacil()
     obj.edit2:setTop(27);
     obj.edit2:setWidth(80);
     obj.edit2:setHeight(25);
+    obj.edit2:setType("number");
+    obj.edit2:setMin(0);
     obj.edit2:setField("ext_Penalidade");
     obj.edit2:setHorzTextAlign("center");
     obj.edit2:setName("edit2");

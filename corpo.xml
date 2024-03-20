@@ -1,8 +1,8 @@
 <tab title="  Corpo              " width="134">
-     <layout height="250"
+     <layout height="400"
           align="top" margins="{left=35}">
           <label align="top" height="50" text="Corpo"
-               horzTextAlign="center" />
+               horzTextAlign="center" fontSize="20"/>
           <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
                align="top" />
           <LabelComEdit wid="120" nome="Acrobacia"

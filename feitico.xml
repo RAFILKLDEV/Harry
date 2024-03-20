@@ -43,7 +43,7 @@
                <label align="client" text="$(text)" horzTextAlign="center" />
             </rectangle>
             <edit top="30" width="120" field="$(field)" readOnly="$(read)"
-               horzTextAlign="center">
+               horzTextAlign="center" type="number" min="0" >
                <event name="onUserChange">
 
                </event>
@@ -52,7 +52,7 @@
       </template>
 
       <layout align="top" height="70" margins="{top=10, left=0}">
-         <label2 field="DES" text="Destreza" color="DarkSlateBlue" read="true" />
+         <label2 field="DES" text="Destreza" color="#C59E01" read="true" />
          <label2 field="C_ADI_Total" color="DarkSlateBlue" text="Adivinhação"
             read="true" />
          <label2 field="C_AZA_Total" color="DarkSlateBlue" text="Azaração" read="true" />
@@ -89,7 +89,7 @@
          <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
             <label align="client" text="Fisico" horzTextAlign="center" />
          </rectangle>
-         <edit top="30" width="120" field="fisico" horzTextAlign="center">
+         <edit top="30" width="120" field="fisico"  horzTextAlign="center">
             <event name="onUserChange">
                local minhaMesa = Firecast.getRoomOf(sheet);
                local chat = minhaMesa.chat;
@@ -129,7 +129,7 @@
             align="left" height="25" text="Ordenar" width="100" margins="{left=20}"
             onClick="self.rclMagias:sort();" />
          <button name="sound"
-            align="left" height="25" text="🔊" width="35" margins="{left=20}"
+            align="left" height="25" text="🔇" width="35" margins="{left=20}"
             onClick="alternarAudio()" />
       </layout>
       <recordList name="rclMagias"

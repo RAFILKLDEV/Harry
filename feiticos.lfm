@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form name="feiticos" width="600" height="170" margins="{top=2,bottom=2}">
 
-
     <script>
         -- Primeiro, é necessário usar a unidade "dialogs.lua"
         require("dialogs.lua");
@@ -226,6 +225,13 @@
 
         end
 
+        local function abrirPopUp()
+
+
+        self.popUp:show()
+        self.popUp:setNodeObject(sheet)
+
+        end
 
     </script>
 
@@ -281,76 +287,72 @@
         <button align="top" text="Importar" height="35" margins="{bottom=5}"
             onClick="ListaDeFeitico()" />
         <button align="bottom" text="Apagar" height="35" margins="{bottom=5}" onClick="Aceitar()" />
-        <button align="bottom" text="Comparar" height="35" onClick="self.popMeuPopup:show()" />
+        <button align="bottom" text="Comparar" height="35" onClick="abrirPopUp()" />
     </layout>
 
-    <popup name="popMeuPopup" width="400" height="400" backOpacity="0.5">
-        <event name="onNodeReady">
-            self.popMeuPopup.node.Dano = 5
-            self.popMeuPopup.Dano2 = 5
-            self.popMeuPopup.nodofoda.Dano = 5
-            sheet.Dano2 = 5
-        </event>
+    <popup name="popUp" width="306" height="360" backOpacity="0.5">
+
         <layout align="left" width="200">
-            <label align="top" height="30" text="Original" />
-            <layout align="top" height="300">
-                <rectangle align="left" width="100" color="blue">
-                    <label margins="{bottom=5}" align="top" text="GRAD" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="CD" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="EFEITO" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="PODER" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="DANO" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="BONUS" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="RANGE" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="AREA" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="DURAÇÃO" horzTextAlign="center" />
+            <layout align="top" height="30">
+                <label align="left" width="100" text="" horzTextAlign="center" />
+                <label align="left" width="100" text="Original" horzTextAlign="center" />
+            </layout>
+
+            <layout align="top" height="400">
+                <rectangle align="left" width="100" color="black">
+                    <edit transparent="true" margins="{top=5,bottom=5}" align="top" text="GRAD"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="CD"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="EFEITO"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="PODER"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="DANO"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="BONUS"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="RANGE"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="AREA"
+                        horzTextAlign="center" />
+                    <edit transparent="true" margins="{bottom=5}" align="top" text="DURAÇÃO"
+                        horzTextAlign="center" />
                 </rectangle>
-                <rectangle align="left" width="100" color="green">
-                    <label margins="{bottom=5}" align="top" field="Grad2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="CD2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Efeito2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Poder2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Dano2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Bonus2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Range2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Area2" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Duracao2" horzTextAlign="center" />
+
+                <rectangle align="left" width="100" color="black">
+                    <edit margins="{top=5,bottom=5}" align="top" field="Grad2"
+                        horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="CD2" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Efeito2" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Poder2" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Dano2" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Bonus2" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Range2" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Area2" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Duracao2" horzTextAlign="center" />
                 </rectangle>
             </layout>
         </layout>
 
-        -- Coluna 2
 
-        <layout align="left" width="200">
-            <label align="top" height="30" text="Atual" />
-            <layout align="top" height="300">
-                <rectangle align="left" width="100" color="blue">
-                    <label margins="{bottom=5}" align="top" text="GRAD" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="CD" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="EFEITO" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="PODER" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="DANO" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="BONUS" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="RANGE" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="AREA" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" text="DURAÇÃO" horzTextAlign="center" />
-                </rectangle>
-                <rectangle align="left" width="100" color="green">
-                    <label margins="{bottom=5}" align="top" field="Grad" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="CD" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Efeito" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Poder" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Dano" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Bonus" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Range" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Area" horzTextAlign="center" />
-                    <label margins="{bottom=5}" align="top" field="Duracao" horzTextAlign="center" />
+        <layout align="left" width="100">
+            <label align="top" height="30" text="Atual" horzTextAlign="center" />
+            <layout align="top" height="360">
+                <rectangle align="left" width="100" color="black">
+                    <edit margins="{top=5,bottom=5}" align="top" field="Grad" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="CD" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Efeito" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Poder" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Dano" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Bonus" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Range" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Area" horzTextAlign="center" />
+                    <edit margins="{bottom=5}" align="top" field="Duracao" horzTextAlign="center" />
                 </rectangle>
             </layout>
-
         </layout>
 
-        
     </popup>
 
     <event name="onNodeReady">

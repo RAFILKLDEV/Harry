@@ -2,10 +2,10 @@
     <layout height="320"
         align="top">
 
-        <button left="20" top="20" height="25" text="Nova Magia" width="80"
+        <button left="20" top="20" height="25" text="Nova Tarefa" width="80"
             onClick="self.kekzin:append();" />
 
-        <recordList name="kekzin" field="kekzim" templateForm="frmItemDeMagia"
+        <recordList name="kekzin" field="tarefasRecordList" templateForm="frmItemDeMagia"
             left="0" top="60" width="300" autoHeight="true" />
     </layout>
 </tab>

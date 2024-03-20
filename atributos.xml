@@ -5,7 +5,7 @@
          <label left="5" top="5" text="Nome Jogador" width="90" height="25" />
          <label left="5" top="35" text="Nome Personagem" width="110"
               height="25" />
-         <label left="5" top="65" text="Cidade" width="90" height="25" />
+         <label left="5" top="65" text="Casa" width="90" height="25" />
          <label left="5" top="95" text="Continente" width="90" height="25" />
          <label left="5" top="125" text="Classe" width="90" height="25" />
          <label left="130" top="125" text="Level" width="90" height="25" />

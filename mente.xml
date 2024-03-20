@@ -1,8 +1,8 @@
 <tab title="  Mente              " width="134">
-     <layout height="320" margins="{left=35}"
+     <layout height="500" margins="{left=35}"
           align="top">
           <label align="top" height="50" text="Mente"
-               horzTextAlign="center" />
+               horzTextAlign="center" fontSize="20" />
           <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
                align="top" />
           <LabelComEdit wid="120" margins="{top=5}"
@@ -32,6 +32,13 @@
                atr="SAB"
                total="INTU_Total"
                grad="INTU_Grad" out="INTU_Out" align="top"
+               height="30" />
+          <LabelComEdit wid="120" margins="{top=5}"
+               nome="Investigação"
+               name="Investigacao"
+               atr="INTE"
+               total="INV_Total"
+               grad="INV_Grad" out="INV_Out" align="top"
                height="30" />
           <LabelComEdit wid="120" margins="{top=5}"
                nome="Percepção"

@@ -3,7 +3,7 @@
           align="top">
           <label
                align="top" height="50" text="Conhecimentos"
-               horzTextAlign="center" />
+               horzTextAlign="center" fontSize="20"/>
           <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
                align="top" />
           <LabelComEdit wid="120"
