@@ -715,7 +715,7 @@ local function constructNew_HarryFicha()
     obj.label15:setAlign("top");
     obj.label15:setHeight(35);
     obj.label15:setMargins({top=50});
-    obj.label15:setText("Ficha na Versão 2.0");
+    obj.label15:setText("Ficha na Versão 2.2");
     obj.label15:setName("label15");
 
     obj.layout4 = GUI.fromHandle(_obj_newObject("layout"));
@@ -5362,7 +5362,12 @@ local function constructNew_HarryFicha()
                                 self.Acrobacia.text == "Corpo-a-Corpo" or
                                 self.Acrobacia.text == "Furtividade" or
                                 self.Acrobacia.text == "Prestidigitação" or
-                                self.Acrobacia.text == "Veiculos Mágicos" then
+                                self.Acrobacia.text == "Veiculos Mágicos" or
+                                self.Acrobacia.text == "Iniciativa" or
+                                self.Acrobacia.text == "Aparar" or
+                                self.Acrobacia.text == "Fortitude" or
+                                self.Acrobacia.text == "Reflexo" or
+                                self.Acrobacia.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5407,7 +5412,12 @@ local function constructNew_HarryFicha()
                                 self.Atletismo.text == "Corpo-a-Corpo" or
                                 self.Atletismo.text == "Furtividade" or
                                 self.Atletismo.text == "Prestidigitação" or
-                                self.Atletismo.text == "Veiculos Mágicos" then
+                                self.Atletismo.text == "Veiculos Mágicos" or
+                                self.Atletismo.text == "Iniciativa" or
+                                self.Atletismo.text == "Aparar" or
+                                self.Atletismo.text == "Fortitude" or
+                                self.Atletismo.text == "Reflexo" or
+                                self.Atletismo.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5452,7 +5462,12 @@ local function constructNew_HarryFicha()
                                 self.CorpoACorpo.text == "Corpo-a-Corpo" or
                                 self.CorpoACorpo.text == "Furtividade" or
                                 self.CorpoACorpo.text == "Prestidigitação" or
-                                self.CorpoACorpo.text == "Veiculos Mágicos" then
+                                self.CorpoACorpo.text == "Veiculos Mágicos" or
+                                self.CorpoACorpo.text == "Iniciativa" or
+                                self.CorpoACorpo.text == "Aparar" or
+                                self.CorpoACorpo.text == "Fortitude" or
+                                self.CorpoACorpo.text == "Reflexo" or
+                                self.CorpoACorpo.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5497,7 +5512,12 @@ local function constructNew_HarryFicha()
                                 self.Furtividade.text == "Corpo-a-Corpo" or
                                 self.Furtividade.text == "Furtividade" or
                                 self.Furtividade.text == "Prestidigitação" or
-                                self.Furtividade.text == "Veiculos Mágicos" then
+                                self.Furtividade.text == "Veiculos Mágicos" or
+                                self.Furtividade.text == "Iniciativa" or
+                                self.Furtividade.text == "Aparar" or
+                                self.Furtividade.text == "Fortitude" or
+                                self.Furtividade.text == "Reflexo" or
+                                self.Furtividade.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5542,7 +5562,12 @@ local function constructNew_HarryFicha()
                                 self.Prestidigitacao.text == "Corpo-a-Corpo" or
                                 self.Prestidigitacao.text == "Furtividade" or
                                 self.Prestidigitacao.text == "Prestidigitação" or
-                                self.Prestidigitacao.text == "Veiculos Mágicos" then
+                                self.Prestidigitacao.text == "Veiculos Mágicos" or
+                                self.Prestidigitacao.text == "Iniciativa" or
+                                self.Prestidigitacao.text == "Aparar" or
+                                self.Prestidigitacao.text == "Fortitude" or
+                                self.Prestidigitacao.text == "Reflexo" or
+                                self.Prestidigitacao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5587,7 +5612,12 @@ local function constructNew_HarryFicha()
                                 self.VeiculosMagicos.text == "Corpo-a-Corpo" or
                                 self.VeiculosMagicos.text == "Furtividade" or
                                 self.VeiculosMagicos.text == "Prestidigitação" or
-                                self.VeiculosMagicos.text == "Veiculos Mágicos" then
+                                self.VeiculosMagicos.text == "Veiculos Mágicos" or
+                                self.VeiculosMagicos.text == "Iniciativa" or
+                                self.VeiculosMagicos.text == "Aparar" or
+                                self.VeiculosMagicos.text == "Fortitude" or
+                                self.VeiculosMagicos.text == "Reflexo" or
+                                self.VeiculosMagicos.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5632,7 +5662,12 @@ local function constructNew_HarryFicha()
                                 self.Concentracao.text == "Corpo-a-Corpo" or
                                 self.Concentracao.text == "Furtividade" or
                                 self.Concentracao.text == "Prestidigitação" or
-                                self.Concentracao.text == "Veiculos Mágicos" then
+                                self.Concentracao.text == "Veiculos Mágicos" or
+                                self.Concentracao.text == "Iniciativa" or
+                                self.Concentracao.text == "Aparar" or
+                                self.Concentracao.text == "Fortitude" or
+                                self.Concentracao.text == "Reflexo" or
+                                self.Concentracao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5677,7 +5712,12 @@ local function constructNew_HarryFicha()
                                 self.Enganacao.text == "Corpo-a-Corpo" or
                                 self.Enganacao.text == "Furtividade" or
                                 self.Enganacao.text == "Prestidigitação" or
-                                self.Enganacao.text == "Veiculos Mágicos" then
+                                self.Enganacao.text == "Veiculos Mágicos" or
+                                self.Enganacao.text == "Iniciativa" or
+                                self.Enganacao.text == "Aparar" or
+                                self.Enganacao.text == "Fortitude" or
+                                self.Enganacao.text == "Reflexo" or
+                                self.Enganacao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5722,7 +5762,12 @@ local function constructNew_HarryFicha()
                                 self.Intimidacao.text == "Corpo-a-Corpo" or
                                 self.Intimidacao.text == "Furtividade" or
                                 self.Intimidacao.text == "Prestidigitação" or
-                                self.Intimidacao.text == "Veiculos Mágicos" then
+                                self.Intimidacao.text == "Veiculos Mágicos" or
+                                self.Intimidacao.text == "Iniciativa" or
+                                self.Intimidacao.text == "Aparar" or
+                                self.Intimidacao.text == "Fortitude" or
+                                self.Intimidacao.text == "Reflexo" or
+                                self.Intimidacao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5767,7 +5812,12 @@ local function constructNew_HarryFicha()
                                 self.Intuicao.text == "Corpo-a-Corpo" or
                                 self.Intuicao.text == "Furtividade" or
                                 self.Intuicao.text == "Prestidigitação" or
-                                self.Intuicao.text == "Veiculos Mágicos" then
+                                self.Intuicao.text == "Veiculos Mágicos" or
+                                self.Intuicao.text == "Iniciativa" or
+                                self.Intuicao.text == "Aparar" or
+                                self.Intuicao.text == "Fortitude" or
+                                self.Intuicao.text == "Reflexo" or
+                                self.Intuicao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5812,7 +5862,12 @@ local function constructNew_HarryFicha()
                                 self.Investigacao.text == "Corpo-a-Corpo" or
                                 self.Investigacao.text == "Furtividade" or
                                 self.Investigacao.text == "Prestidigitação" or
-                                self.Investigacao.text == "Veiculos Mágicos" then
+                                self.Investigacao.text == "Veiculos Mágicos" or
+                                self.Investigacao.text == "Iniciativa" or
+                                self.Investigacao.text == "Aparar" or
+                                self.Investigacao.text == "Fortitude" or
+                                self.Investigacao.text == "Reflexo" or
+                                self.Investigacao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5857,7 +5912,12 @@ local function constructNew_HarryFicha()
                                 self.Percepcao.text == "Corpo-a-Corpo" or
                                 self.Percepcao.text == "Furtividade" or
                                 self.Percepcao.text == "Prestidigitação" or
-                                self.Percepcao.text == "Veiculos Mágicos" then
+                                self.Percepcao.text == "Veiculos Mágicos" or
+                                self.Percepcao.text == "Iniciativa" or
+                                self.Percepcao.text == "Aparar" or
+                                self.Percepcao.text == "Fortitude" or
+                                self.Percepcao.text == "Reflexo" or
+                                self.Percepcao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5902,7 +5962,12 @@ local function constructNew_HarryFicha()
                                 self.Persuacao.text == "Corpo-a-Corpo" or
                                 self.Persuacao.text == "Furtividade" or
                                 self.Persuacao.text == "Prestidigitação" or
-                                self.Persuacao.text == "Veiculos Mágicos" then
+                                self.Persuacao.text == "Veiculos Mágicos" or
+                                self.Persuacao.text == "Iniciativa" or
+                                self.Persuacao.text == "Aparar" or
+                                self.Persuacao.text == "Fortitude" or
+                                self.Persuacao.text == "Reflexo" or
+                                self.Persuacao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5947,7 +6012,12 @@ local function constructNew_HarryFicha()
                                 self.Tratamento.text == "Corpo-a-Corpo" or
                                 self.Tratamento.text == "Furtividade" or
                                 self.Tratamento.text == "Prestidigitação" or
-                                self.Tratamento.text == "Veiculos Mágicos" then
+                                self.Tratamento.text == "Veiculos Mágicos" or
+                                self.Tratamento.text == "Iniciativa" or
+                                self.Tratamento.text == "Aparar" or
+                                self.Tratamento.text == "Fortitude" or
+                                self.Tratamento.text == "Reflexo" or
+                                self.Tratamento.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -5992,7 +6062,12 @@ local function constructNew_HarryFicha()
                                 self.Atualidades.text == "Corpo-a-Corpo" or
                                 self.Atualidades.text == "Furtividade" or
                                 self.Atualidades.text == "Prestidigitação" or
-                                self.Atualidades.text == "Veiculos Mágicos" then
+                                self.Atualidades.text == "Veiculos Mágicos" or
+                                self.Atualidades.text == "Iniciativa" or
+                                self.Atualidades.text == "Aparar" or
+                                self.Atualidades.text == "Fortitude" or
+                                self.Atualidades.text == "Reflexo" or
+                                self.Atualidades.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6037,7 +6112,12 @@ local function constructNew_HarryFicha()
                                 self.Adivinhacao.text == "Corpo-a-Corpo" or
                                 self.Adivinhacao.text == "Furtividade" or
                                 self.Adivinhacao.text == "Prestidigitação" or
-                                self.Adivinhacao.text == "Veiculos Mágicos" then
+                                self.Adivinhacao.text == "Veiculos Mágicos" or
+                                self.Adivinhacao.text == "Iniciativa" or
+                                self.Adivinhacao.text == "Aparar" or
+                                self.Adivinhacao.text == "Fortitude" or
+                                self.Adivinhacao.text == "Reflexo" or
+                                self.Adivinhacao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6082,7 +6162,12 @@ local function constructNew_HarryFicha()
                                 self.Azaracao.text == "Corpo-a-Corpo" or
                                 self.Azaracao.text == "Furtividade" or
                                 self.Azaracao.text == "Prestidigitação" or
-                                self.Azaracao.text == "Veiculos Mágicos" then
+                                self.Azaracao.text == "Veiculos Mágicos" or
+                                self.Azaracao.text == "Iniciativa" or
+                                self.Azaracao.text == "Aparar" or
+                                self.Azaracao.text == "Fortitude" or
+                                self.Azaracao.text == "Reflexo" or
+                                self.Azaracao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6127,7 +6212,12 @@ local function constructNew_HarryFicha()
                                 self.ContraFeitico.text == "Corpo-a-Corpo" or
                                 self.ContraFeitico.text == "Furtividade" or
                                 self.ContraFeitico.text == "Prestidigitação" or
-                                self.ContraFeitico.text == "Veiculos Mágicos" then
+                                self.ContraFeitico.text == "Veiculos Mágicos" or
+                                self.ContraFeitico.text == "Iniciativa" or
+                                self.ContraFeitico.text == "Aparar" or
+                                self.ContraFeitico.text == "Fortitude" or
+                                self.ContraFeitico.text == "Reflexo" or
+                                self.ContraFeitico.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6172,7 +6262,12 @@ local function constructNew_HarryFicha()
                                 self.CriaturasMagicas.text == "Corpo-a-Corpo" or
                                 self.CriaturasMagicas.text == "Furtividade" or
                                 self.CriaturasMagicas.text == "Prestidigitação" or
-                                self.CriaturasMagicas.text == "Veiculos Mágicos" then
+                                self.CriaturasMagicas.text == "Veiculos Mágicos" or
+                                self.CriaturasMagicas.text == "Iniciativa" or
+                                self.CriaturasMagicas.text == "Aparar" or
+                                self.CriaturasMagicas.text == "Fortitude" or
+                                self.CriaturasMagicas.text == "Reflexo" or
+                                self.CriaturasMagicas.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6217,7 +6312,12 @@ local function constructNew_HarryFicha()
                                 self.Encantamentos.text == "Corpo-a-Corpo" or
                                 self.Encantamentos.text == "Furtividade" or
                                 self.Encantamentos.text == "Prestidigitação" or
-                                self.Encantamentos.text == "Veiculos Mágicos" then
+                                self.Encantamentos.text == "Veiculos Mágicos" or
+                                self.Encantamentos.text == "Iniciativa" or
+                                self.Encantamentos.text == "Aparar" or
+                                self.Encantamentos.text == "Fortitude" or
+                                self.Encantamentos.text == "Reflexo" or
+                                self.Encantamentos.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6262,7 +6362,12 @@ local function constructNew_HarryFicha()
                                 self.Feiticos.text == "Corpo-a-Corpo" or
                                 self.Feiticos.text == "Furtividade" or
                                 self.Feiticos.text == "Prestidigitação" or
-                                self.Feiticos.text == "Veiculos Mágicos" then
+                                self.Feiticos.text == "Veiculos Mágicos" or
+                                self.Feiticos.text == "Iniciativa" or
+                                self.Feiticos.text == "Aparar" or
+                                self.Feiticos.text == "Fortitude" or
+                                self.Feiticos.text == "Reflexo" or
+                                self.Feiticos.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6307,7 +6412,12 @@ local function constructNew_HarryFicha()
                                 self.Herbologia.text == "Corpo-a-Corpo" or
                                 self.Herbologia.text == "Furtividade" or
                                 self.Herbologia.text == "Prestidigitação" or
-                                self.Herbologia.text == "Veiculos Mágicos" then
+                                self.Herbologia.text == "Veiculos Mágicos" or
+                                self.Herbologia.text == "Iniciativa" or
+                                self.Herbologia.text == "Aparar" or
+                                self.Herbologia.text == "Fortitude" or
+                                self.Herbologia.text == "Reflexo" or
+                                self.Herbologia.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6352,7 +6462,12 @@ local function constructNew_HarryFicha()
                                 self.DCAT.text == "Corpo-a-Corpo" or
                                 self.DCAT.text == "Furtividade" or
                                 self.DCAT.text == "Prestidigitação" or
-                                self.DCAT.text == "Veiculos Mágicos" then
+                                self.DCAT.text == "Veiculos Mágicos" or
+                                self.DCAT.text == "Iniciativa" or
+                                self.DCAT.text == "Aparar" or
+                                self.DCAT.text == "Fortitude" or
+                                self.DCAT.text == "Reflexo" or
+                                self.DCAT.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6397,7 +6512,12 @@ local function constructNew_HarryFicha()
                                 self.Pocoes.text == "Corpo-a-Corpo" or
                                 self.Pocoes.text == "Furtividade" or
                                 self.Pocoes.text == "Prestidigitação" or
-                                self.Pocoes.text == "Veiculos Mágicos" then
+                                self.Pocoes.text == "Veiculos Mágicos" or
+                                self.Pocoes.text == "Iniciativa" or
+                                self.Pocoes.text == "Aparar" or
+                                self.Pocoes.text == "Fortitude" or
+                                self.Pocoes.text == "Reflexo" or
+                                self.Pocoes.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6442,7 +6562,12 @@ local function constructNew_HarryFicha()
                                 self.Runas.text == "Corpo-a-Corpo" or
                                 self.Runas.text == "Furtividade" or
                                 self.Runas.text == "Prestidigitação" or
-                                self.Runas.text == "Veiculos Mágicos" then
+                                self.Runas.text == "Veiculos Mágicos" or
+                                self.Runas.text == "Iniciativa" or
+                                self.Runas.text == "Aparar" or
+                                self.Runas.text == "Fortitude" or
+                                self.Runas.text == "Reflexo" or
+                                self.Runas.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6487,7 +6612,12 @@ local function constructNew_HarryFicha()
                                 self.Transmutacao.text == "Corpo-a-Corpo" or
                                 self.Transmutacao.text == "Furtividade" or
                                 self.Transmutacao.text == "Prestidigitação" or
-                                self.Transmutacao.text == "Veiculos Mágicos" then
+                                self.Transmutacao.text == "Veiculos Mágicos" or
+                                self.Transmutacao.text == "Iniciativa" or
+                                self.Transmutacao.text == "Aparar" or
+                                self.Transmutacao.text == "Fortitude" or
+                                self.Transmutacao.text == "Reflexo" or
+                                self.Transmutacao.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6537,7 +6667,12 @@ local function constructNew_HarryFicha()
                                 self.Iniciativa.text == "Corpo-a-Corpo" or
                                 self.Iniciativa.text == "Furtividade" or
                                 self.Iniciativa.text == "Prestidigitação" or
-                                self.Iniciativa.text == "Veiculos Mágicos" then
+                                self.Iniciativa.text == "Veiculos Mágicos" or
+                                self.Iniciativa.text == "Iniciativa" or
+                                self.Iniciativa.text == "Aparar" or
+                                self.Iniciativa.text == "Fortitude" or
+                                self.Iniciativa.text == "Reflexo" or
+                                self.Iniciativa.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6582,7 +6717,12 @@ local function constructNew_HarryFicha()
                                 self.Aparar.text == "Corpo-a-Corpo" or
                                 self.Aparar.text == "Furtividade" or
                                 self.Aparar.text == "Prestidigitação" or
-                                self.Aparar.text == "Veiculos Mágicos" then
+                                self.Aparar.text == "Veiculos Mágicos" or
+                                self.Aparar.text == "Iniciativa" or
+                                self.Aparar.text == "Aparar" or
+                                self.Aparar.text == "Fortitude" or
+                                self.Aparar.text == "Reflexo" or
+                                self.Aparar.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6627,7 +6767,12 @@ local function constructNew_HarryFicha()
                                 self.Fortitude.text == "Corpo-a-Corpo" or
                                 self.Fortitude.text == "Furtividade" or
                                 self.Fortitude.text == "Prestidigitação" or
-                                self.Fortitude.text == "Veiculos Mágicos" then
+                                self.Fortitude.text == "Veiculos Mágicos" or
+                                self.Fortitude.text == "Iniciativa" or
+                                self.Fortitude.text == "Aparar" or
+                                self.Fortitude.text == "Fortitude" or
+                                self.Fortitude.text == "Reflexo" or
+                                self.Fortitude.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6672,7 +6817,12 @@ local function constructNew_HarryFicha()
                                 self.Reflexo.text == "Corpo-a-Corpo" or
                                 self.Reflexo.text == "Furtividade" or
                                 self.Reflexo.text == "Prestidigitação" or
-                                self.Reflexo.text == "Veiculos Mágicos" then
+                                self.Reflexo.text == "Veiculos Mágicos" or
+                                self.Reflexo.text == "Iniciativa" or
+                                self.Reflexo.text == "Aparar" or
+                                self.Reflexo.text == "Fortitude" or
+                                self.Reflexo.text == "Reflexo" or
+                                self.Reflexo.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6717,7 +6867,12 @@ local function constructNew_HarryFicha()
                                 self.Resistencia.text == "Corpo-a-Corpo" or
                                 self.Resistencia.text == "Furtividade" or
                                 self.Resistencia.text == "Prestidigitação" or
-                                self.Resistencia.text == "Veiculos Mágicos" then
+                                self.Resistencia.text == "Veiculos Mágicos" or
+                                self.Resistencia.text == "Iniciativa" or
+                                self.Resistencia.text == "Aparar" or
+                                self.Resistencia.text == "Fortitude" or
+                                self.Resistencia.text == "Reflexo" or
+                                self.Resistencia.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
@@ -6762,7 +6917,12 @@ local function constructNew_HarryFicha()
                                 self.Vontade.text == "Corpo-a-Corpo" or
                                 self.Vontade.text == "Furtividade" or
                                 self.Vontade.text == "Prestidigitação" or
-                                self.Vontade.text == "Veiculos Mágicos" then
+                                self.Vontade.text == "Veiculos Mágicos" or
+                                self.Vontade.text == "Iniciativa" or
+                                self.Vontade.text == "Aparar" or
+                                self.Vontade.text == "Fortitude" or
+                                self.Vontade.text == "Reflexo" or
+                                self.Vontade.text == "Resistencia" then
             
                                 if sheet.Exausto then
                                 return -5
