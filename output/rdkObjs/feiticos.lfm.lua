@@ -12,7 +12,7 @@ local function constructNew_feiticos()
     local self = obj;
     local sheet = nil;
 
-    rawset(obj, "_oldSetNodeObjectFunction", rawget(obj, "setNodeObject"));
+    rawset(obj, "_oldSetNodeObjectFunction", obj.setNodeObject);
 
     function obj:setNodeObject(nodeObject)
         sheet = nodeObject;
@@ -36,7 +36,34 @@ local function constructNew_feiticos()
         require("dialogs.lua");
         require("ndb.lua")
         require("utils.lua");
+        local node = NDB.getRoot(sheet)
 
+        local function condition(tipo)
+
+        if tipo == "fisico" then
+
+        if node.Exausto then
+        return -5
+        end
+
+        if node.Fadigado then
+        return -2
+        end
+
+        elseif tipo == "mental" then
+
+        if node.Tiltado then
+        return -5
+        end
+
+        if node.Frustrado then
+        return -2
+        end
+
+        end
+
+        return nil
+        end
 
         local function testezz()
 
@@ -144,7 +171,9 @@ local function constructNew_feiticos()
 
         chat:enviarMensagem("----------------");
 
-        chat:rolarDados("1d20+" .. somatoria, "Cast " .. sheet.nome .. " CD " .. sheet.CD, function
+        chat:rolarDados("1d20+" .. somatoria .. (condition("mental") and (condition("mental")) or
+        ""), "Cast " ..
+        sheet.nome .. " CD " .. sheet.CD, function
         (rolagem)
 
         chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta usando [§K6]" .. sheet.nome)
@@ -160,12 +189,14 @@ local function constructNew_feiticos()
         end
 
         if sheet.tipo == 'Ataque' then
-        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
+        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0) ..
+        (condition("fisico") and (condition("fisico")) or""),
         "Ataque de " .. sheet.nome)
         setTimeout(tocarAudio, 5000)
 
         elseif sheet.tipo == 'Defesa' then
-        chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
+        chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus ..
+        (condition("fisico") and (condition("fisico")) or ""), "CA " .. sheet.nome)
         setTimeout(tocarAudio, 5000)
         end
 
@@ -189,77 +220,6 @@ local function constructNew_feiticos()
 
         end)
 
-
-        end
-
-        -- FUNÇÂO DE FEITICO
-
-        local function ListaDeFeitico()
-        require("utils.lua");
-
-        local Raiz = NDB.load("listfetico.xml");
-        local Filho = NDB.getChildNodes(Raiz);
-
-        ListaFeiticos = {} -- new array
-        ListaNomesFeitico = {} -- new array
-
-        for i = 1, #Filho, 1 do
-        ListaFeiticos[i] = Raiz["f" .. i]
-        ListaNomesFeitico[i] = Raiz["f" .. i].nome
-        end
-
-        Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
-        function(selected, selectedIndex, selectedText)
-
-        if selected then
-
-        for k = 1, #Filho, 1 do
-
-        if tostring(selectedText) == ListaFeiticos[k].nome then
-        sheet.nome = ListaFeiticos[k].nome
-        sheet.escola = ListaFeiticos[k].escola
-        sheet.tipo = ListaFeiticos[k].cast
-        sheet.Grad = ListaFeiticos[k].grad
-        sheet.CD = ListaFeiticos[k].cdf
-        sheet.Efeito = ListaFeiticos[k].efeito
-        sheet.Poder = ListaFeiticos[k].poder
-        sheet.Dano = ListaFeiticos[k].dano
-        sheet.Bonus = ListaFeiticos[k].bonus
-        sheet.Range = ListaFeiticos[k].range
-        sheet.Area = ListaFeiticos[k].area
-        sheet.Duracao = ListaFeiticos[k].duracao
-        sheet.Sound = ListaFeiticos[k].sound or "noAudio.mp3"
-
-        sheet.nome2 = ListaFeiticos[k].nome
-        sheet.escola2 = ListaFeiticos[k].escola
-        sheet.tipo2 = ListaFeiticos[k].cast
-        sheet.Grad2 = ListaFeiticos[k].grad
-        sheet.CD2 = ListaFeiticos[k].cdf
-        sheet.Efeito2 = ListaFeiticos[k].efeito
-        sheet.Poder2 = ListaFeiticos[k].poder
-        sheet.Dano2 = ListaFeiticos[k].dano
-        sheet.Bonus2 = ListaFeiticos[k].bonus
-        sheet.Range2 = ListaFeiticos[k].range
-        sheet.Area2 = ListaFeiticos[k].area
-        sheet.Duracao2 = ListaFeiticos[k].duracao
-        end
-
-        end
-
-        else
-
-        end;
-
-        end)
-
-
-        end
-
-        local function abrirPopUp()
-
-
-        self.popUp:show()
-        self.popUp:setNodeObject(sheet)
 
         end
 
@@ -289,7 +249,7 @@ local function constructNew_feiticos()
 
     obj.edit1 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit1:setParent(obj.layout1);
-    lfm_setPropAsString(obj.edit1, "fontStyle",  "bold italic");
+    lfm_setPropAsString(obj.edit1, "fontStyle", "bold italic");
     obj.edit1:setHorzTextAlign("center");
     obj.edit1:setAlign("top");
     obj.edit1:setField("nome");
@@ -1017,7 +977,7 @@ local function constructNew_feiticos()
     obj.edit38:setName("edit38");
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
-        function (_)
+        function ()
             local campos = {"Grad","CD","Efeito","Poder","Dano","Bonus","Range","Area","Duracao"}
             
                     for x = 1, #campos, 1 do
@@ -1045,27 +1005,27 @@ local function constructNew_feiticos()
                     sheet.Order = 99
             
                     end
-        end, obj);
+        end);
 
     obj._e_event1 = obj.button1:addEventListener("onClick",
-        function (_, event)
+        function (event)
             enviarNaMesa()
-        end, obj);
+        end);
 
     obj._e_event2 = obj.button2:addEventListener("onClick",
-        function (_, event)
+        function (event)
             ListaDeFeitico()
-        end, obj);
+        end);
 
     obj._e_event3 = obj.button3:addEventListener("onClick",
-        function (_, event)
+        function (event)
             Aceitar()
-        end, obj);
+        end);
 
     obj._e_event4 = obj.button4:addEventListener("onClick",
-        function (_, event)
+        function (event)
             abrirPopUp()
-        end, obj);
+        end);
 
     function obj:_releaseEvents()
         __o_rrpgObjs.removeEventListenerById(self._e_event4);
@@ -1211,6 +1171,7 @@ local _feiticos = {
     dataType = "", 
     formType = "undefined", 
     formComponentName = "form", 
+    cacheMode = "none", 
     title = "", 
     description=""};
 

@@ -1,8 +1,8 @@
 <tab title="Defesas" width="220">
     <layout height="320" margins="{left=20}"
         align="top">
-        <label align="top" height="50" text="Defesas Ativas"
-            horzTextAlign="center" />
+        <label align="top" height="50" text="Defesas"
+            horzTextAlign="center" fontSize="20" />
         <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
             align="top" />
         <LabelComEdit wid="120" nome="Iniciativa"

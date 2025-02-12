@@ -7,7 +7,7 @@
     </event>
 
     <rectangle name="rectangle" padding="{top=5, bottom=5}" align="top" height="35">
-        <edit align="left" width="200" field="nome" margins="{left=5}" />
+        <edit align="left" width="180" field="nome" margins="{left=5}" />
         <edit align="left" width="25" field="atual" margins="{left=5}" />
         <edit align="left" width="25" field="max" margins="{left=5}" />
         <checkBox align="left" width="30" name="checkBox" field="checkBox1"
@@ -21,7 +21,19 @@
             </event>
         </checkBox>
     </rectangle>
+    
+    <button align="top" text="Apagar" height="15">
+        <event name="onClick">
+            require("dialogs.lua");
 
-    <button align="top" text="Apagar" height="15"
-        onClick="ndb.deleteNode(sheet);" />
+            Dialogs.confirmOkCancel("Deseja realmente excluir esta tarefa ?",
+            function (confirmado)
+            if confirmado then
+            ndb.deleteNode(sheet)
+            else
+            -- usuário escolheu CANCEL
+            end;
+            end);
+        </event>
+    </button>
 </form>

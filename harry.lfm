@@ -4,6 +4,8 @@
      title="Ficha Harry Potter Nova!" name="HarryFicha">
 
      <script>
+
+
           local function TotalPericia(ATR, MOD, OUT)
           local total = 0
 
@@ -11,6 +13,20 @@
 
           return total
           end
+
+     <![CDATA[
+          local function cadaDez(numero)
+               local result = -1
+
+               while numero >= 0 do
+                    result = result + 1
+                    numero = numero - 10
+               end
+
+               return result
+          end
+     ]]>
+
      </script>
 
      <dataLink
@@ -20,104 +36,197 @@
           'TRA_Grad','TRA_Out','ATU_Grad','ATU_Out','C_ADI_Grad','C_ADI_Out','C_AZA_Grad','C_AZA_Out','C_CON_Grad','C_CON_Out',
           'C_CRI_Grad','C_CRI_Out','C_ENC_Grad','C_ENC_Out','C_FEI_Grad','C_FEI_Out','C_HER_Grad','C_HER_Out','C_MAL_Grad','C_MAL_Out','C_POC_Grad','C_POC_Out',
           'C_RUN_Grad','C_RUN_Out','C_TRA_Grad','C_TRA_Out', 'INI_Grad', 'INI_Out', 'APA_Grad','APA_Out', 'FORT_Grad', 'FORT_Out',
-          'REF_Grad', 'REF_Out', 'RES_Grad', 'RES_Out', 'VON_Grad', 'VON_Out'    }">
+          'REF_Grad', 'REF_Out', 'RES_Grad', 'RES_Out', 'VON_Grad', 'VON_Out', 'ANTE_QUAD_OUT', 'APAN_QUAD_OUT', 'ATRA_QUAD_OUT', 'DRI_QUAD_OUT', 'GOL_QUAD_OUT',
+          'FALTA_QUAD_OUT', 'PASS_QUAD_OUT', 'REBA_QUAD_OUT', 'ROU_QUAD_OUT' , 'VEL_QUAD_OUT', 'DEFE_QUAD_GRAD' , 'DEFE_QUAD_OUT' }">
           <event name="onChange">
+
+               -- CORPO
+
                sheet.ACR_Total = (tonumber(sheet.ACR_Grad) or 0) +
                (tonumber(sheet.AGI) or 0) +
                (tonumber(sheet.ACR_Out) or 0)
+
                sheet.ATL_Total = (tonumber(sheet.ATL_Grad) or 0) +
                (tonumber(sheet.FOR) or 0) +
                (tonumber(sheet.ATL_Out) or 0)
+
                sheet.COR_Total = (tonumber(sheet.COR_Grad) or 0) +
                (tonumber(sheet.LUT) or 0) +
                (tonumber(sheet.COR_Out) or 0)
+
                sheet.FUR_Total = (tonumber(sheet.FUR_Grad) or 0) +
                (tonumber(sheet.AGI) or 0) +
                (tonumber(sheet.FUR_Out) or 0)
+
                sheet.PRE_Total = (tonumber(sheet.PRE_Grad) or 0) +
                (tonumber(sheet.DES) or 0) +
                (tonumber(sheet.PRE_Out) or 0)
+
                sheet.VEI_Total = (tonumber(sheet.VEI_Grad) or 0) +
                (tonumber(sheet.AGI) or 0) +
                (tonumber(sheet.VEI_Out) or 0)
+
+               -- MENTE
+
                sheet.CON_Total = (tonumber(sheet.CON_Grad) or 0) +
                (tonumber(sheet.SAB) or 0) +
                (tonumber(sheet.CON_Out) or 0)
+
                sheet.ENG_Total = (tonumber(sheet.ENG_Grad) or 0) +
                (tonumber(sheet.PRE) or 0) +
                (tonumber(sheet.ENG_Out) or 0)
+
                sheet.INT_Total = (tonumber(sheet.INT_Grad) or 0) +
                (tonumber(sheet.PRE) or 0) +
                (tonumber(sheet.INT_Out) or 0)
+
                sheet.INTU_Total = (tonumber(sheet.INTU_Grad) or 0) +
                (tonumber(sheet.SAB) or 0) +
                (tonumber(sheet.INTU_Out) or 0)
+
                sheet.INV_Total = (tonumber(sheet.INV_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.INV_Out) or 0)
+
                sheet.PERC_Total = (tonumber(sheet.PERC_Grad) or 0) +
                (tonumber(sheet.SAB) or 0) +
                (tonumber(sheet.PERC_Out) or 0)
+
                sheet.PERS_Total = (tonumber(sheet.PERS_Grad) or 0) +
                (tonumber(sheet.PRE) or 0) +
                (tonumber(sheet.PERS_Out) or 0)
+
                sheet.TRA_Total = (tonumber(sheet.TRA_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.TRA_Out) or 0)
+
+               -- CONHECIMENTOS
+
                sheet.ATU_Total = (tonumber(sheet.ATU_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.ATU_Out) or 0)
+
                sheet.C_ADI_Total = (tonumber(sheet.C_ADI_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_ADI_Out) or 0)
+
                sheet.C_AZA_Total = (tonumber(sheet.C_AZA_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_AZA_Out) or 0)
+
                sheet.C_CON_Total = (tonumber(sheet.C_CON_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_CON_Out) or 0)
+
                sheet.C_CRI_Total = (tonumber(sheet.C_CRI_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_CRI_Out) or 0)
+
                sheet.C_ENC_Total = (tonumber(sheet.C_ENC_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_ENC_Out) or 0)
+
                sheet.C_FEI_Total = (tonumber(sheet.C_FEI_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_FEI_Out) or 0)
+
                sheet.C_HER_Total = (tonumber(sheet.C_HER_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_HER_Out) or 0)
+
                sheet.C_MAL_Total = (tonumber(sheet.C_MAL_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_MAL_Out) or 0)
+
                sheet.C_POC_Total = (tonumber(sheet.C_POC_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_POC_Out) or 0)
+
                sheet.C_RUN_Total = (tonumber(sheet.C_RUN_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_RUN_Out) or 0)
+
                sheet.C_TRA_Total = (tonumber(sheet.C_TRA_Grad) or 0) +
                (tonumber(sheet.INTE) or 0) +
                (tonumber(sheet.C_TRA_Out) or 0)
+
+               -- DEFESAS
+
                sheet.INI_Total = (tonumber(sheet.INI_Grad) or 0) +
                (tonumber(sheet.AGI) or 0) +
                (tonumber(sheet.INI_OUT) or 0)
+
                sheet.APA_Total = (tonumber(sheet.APA_Grad) or 0) +
                (tonumber(sheet.LUT) or 0) +
                (tonumber(sheet.APA_Out) or 0)
+
                sheet.FORT_Total = (tonumber(sheet.FORT_Grad) or 0) +
                (tonumber(sheet.VIG) or 0) +
                (tonumber(sheet.FORT_Out) or 0)
+
                sheet.REF_Total = (tonumber(sheet.REF_Grad) or 0) +
                (tonumber(sheet.AGI) or 0) +
                (tonumber(sheet.REF_Out) or 0)
+
                sheet.RES_Total = (tonumber(sheet.RES_Grad) or 0) +
                (tonumber(sheet.VIG) or 0) +
                (tonumber(sheet.RES_Out) or 0)
+
                sheet.VON_Total = (tonumber(sheet.VON_Grad) or 0) +
                (tonumber(sheet.SAB) or 0) +
                (tonumber(sheet.VON_Out) or 0)
+
+               -- QUADRIBOL
+
+               sheet.ANTE_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.SAB) or 0)
+               +
+               (tonumber(sheet.ANTE_QUAD_OUT) or 0)
+
+               sheet.APAN_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.DES) or 0)
+               +
+               (tonumber(sheet.APAN_QUAD_OUT) or 0)
+
+               sheet.ATRA_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.INTE) or 0)
+               +
+               (tonumber(sheet.ATRA_QUAD_OUT) or 0)
+
+               sheet.DRI_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.AGI) or 0)
+               +
+               (tonumber(sheet.DRI_QUAD_OUT) or 0)
+
+               sheet.GOL_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.FOR) or 0)
+               +
+               (tonumber(sheet.GOL_QUAD_OUT) or 0)
+
+               sheet.FALTA_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.PRE) or 0)
+               +
+               (tonumber(sheet.FALTA_QUAD_OUT) or 0)
+
+               sheet.PASS_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.FOR) or 0)
+               +
+               (tonumber(sheet.PASS_QUAD_OUT) or 0)
+
+               sheet.REBA_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.FOR) or 0)
+               +
+               (tonumber(sheet.REBA_QUAD_OUT) or 0)
+
+               sheet.ROU_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.LUT) or 0)
+               +
+               (tonumber(sheet.ROU_QUAD_OUT) or 0)
+
+               sheet.VEL_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.AGI) or 0)
+               +
+               (tonumber(sheet.VEL_QUAD_OUT) or 0)
+
+               sheet.DEFE_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.AGI) or 0)
+               +
+               (tonumber(sheet.DEFE_QUAD_OUT) or 0)
+
+               sheet.GOL_MOD = cadaDez(sheet.GOL_QUAD_TOTAL + 10) .. "q"
+               sheet.PAS_MOD = cadaDez(sheet.PASS_QUAD_TOTAL + 10) .. "q"
+               sheet.REB_MOD = cadaDez(sheet.REBA_QUAD_TOTAL + 10) .. "q"
+               sheet.VEL_MOD = cadaDez(sheet.VEL_QUAD_TOTAL + 10) .. "q"
+
           </event>
      </dataLink>
 

@@ -1,8 +1,8 @@
-<tab title="  Corpo              " width="134">
+<tab title="Corpo">
      <layout height="400"
           align="top" margins="{left=35}">
           <label align="top" height="50" text="Corpo"
-               horzTextAlign="center" fontSize="20"/>
+               horzTextAlign="center" fontSize="20" />
           <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
                align="top" />
           <LabelComEdit wid="120" nome="Acrobacia"
@@ -12,8 +12,8 @@
                grad="ACR_Grad" out="ACR_Out" align="top"
                height="30" />
           <LabelComEdit wid="120" margins="{top=5}"
-               nome="Atlestismo" nome2="Atletismo" atr="FOR"
-               name="Atlestismo"
+               nome="Atletismo" nome2="Atletismo" atr="FOR"
+               name="Atletismo"
                total="ATL_Total"
                grad="ATL_Grad" out="ATL_Out" align="top"
                height="30" />

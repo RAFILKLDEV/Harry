@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form name="outrasPericias" height="40" margins="{top=2,bottom=2}">
+    <event name="onNodeReady">
+
+    </event>
+
+    <dataLink name="DATALINK" fields="{'ATR','OUT','GRAD','ATRIBUTO','AGI'}">
+        <event name="onChange">
+            local node = NDB.getRoot(sheet)
+            if sheet.ATRIBUTO == "AGI" then
+            sheet.TOTAL = (node.AGI or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            elseif sheet.ATRIBUTO == "DES" then
+            sheet.TOTAL = (node.DES or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            elseif sheet.ATRIBUTO == "FOR" then
+            sheet.TOTAL = (node.FOR or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            elseif sheet.ATRIBUTO == "LUT" then
+            sheet.TOTAL = (node.LUT or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            elseif sheet.ATRIBUTO == "VIG" then
+            sheet.TOTAL = (node.VIG or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            elseif sheet.ATRIBUTO == "INTE" then
+            sheet.TOTAL = (node.INTE or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            elseif sheet.ATRIBUTO == "PRE" then
+            sheet.TOTAL = (node.PRE or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            elseif sheet.ATRIBUTO == "SAB" then
+            sheet.TOTAL = (node.SAB or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            else
+            sheet.TOTAL = 0 + (sheet.GRAD or 0) + (sheet.OUT or 0)
+            end
+        </event>
+    </dataLink>
+
+    <layout height="30" align="top" margins="{top=3}">
+        <button margins="{right=5}" align="left" text="R" width="30">
+            <event name="onClick">
+                local mesaDoPersonagem = rrpg.getMesaDe(sheet);
+                local chat = mesaDoPersonagem.chat
+
+                chat:rolarDados("1d20 + " .. (sheet.TOTAL or 0),
+                sheet.NOME,
+                function (rolado)
+
+                end);
+            </event>
+        </button>
+
+        <edit field="ATRIBUTO" visible="false" />
+
+        <edit align="left" width="120" horzTextAlign="center" field="NOME" />
+
+        <edit type="number" name="ATR" field="ATR" align="left"
+            margins="{left = 5}" width="30" readOnly="true"
+            horzTextAlign="center">
+            <event name="onClick">
+                Dialogs.choose("Selecione o Atributo", {"Agilidade", "Destreza", "Força",
+                "Luta", "Vigor", "Inteligência", "Presença", "Destreza"},
+                function(selected, selectedIndex, selectedText)
+
+                local node = NDB.getRoot(sheet)
+
+                if selectedIndex == 1 then
+
+                sheet.ATRIBUTO = "AGI"
+                sheet.ATR = node.AGI
+
+                elseif selectedIndex == 2 then
+
+                sheet.ATRIBUTO = "DES"
+                sheet.ATR = node.DES
+
+                elseif selectedIndex == 3 then
+
+                sheet.ATRIBUTO = "FOR"
+                sheet.ATR = node.FOR
+
+                elseif selectedIndex == 4 then
+
+                sheet.ATRIBUTO = "LUT"
+                sheet.ATR = node.LUT
+
+                elseif selectedIndex == 5 then
+
+                sheet.ATRIBUTO = "VIG"
+                sheet.ATR = node.VIG
+
+                elseif selectedIndex == 6 then
+
+                sheet.ATRIBUTO = "INTE"
+                sheet.ATR = node.INTE
+
+                elseif selectedIndex == 7 then
+
+                sheet.ATRIBUTO = "PRE"
+                sheet.ATR = node.PRE
+
+                elseif selectedIndex == 8 then
+
+                sheet.ATRIBUTO = "SAB"
+                sheet.ATR = node.SAB
+
+                else
+
+                end;
+
+                end)
+            </event>
+        </edit>
+        <edit type="number" field="GRAD" align="left"
+            margins="{left = 5}" width="30"
+            horzTextAlign="center" />
+        <edit type="number" field="OUT" align="left"
+            margins="{left = 5}" width="30"
+            horzTextAlign="center" />
+        <label field="TOTAL" align="left"
+            margins="{left = 5}" width="30"
+            horzTextAlign="center" />
+
+        <button margins="{left=15}" align="right" text="X" width="22">
+            <event name="onClick">
+                require("dialogs.lua");
+
+                Dialogs.confirmOkCancel("Deseja realmente excluir esta pericia ?",
+                function (confirmado)
+                if confirmado then
+                ndb.deleteNode(sheet)
+                else
+                -- usuário escolheu CANCEL
+                end;
+                end);
+            </event>
+        </button>
+    </layout>
+
+
+</form>

@@ -8,15 +8,18 @@
         local chat = mesaDoPersonagem.chat
         local node = NDB.getRoot(sheet)
 
-        chat:rolarDados("1d20 + " .. (sheet.VIG or 0), "Treinamento Corpo: CD " .. sheet.treinoCD + (node.fisico or 0))
+        chat:rolarDados("1d20 + " .. (sheet.VIG or 0), "Treinamento Corpo: CD " .. (sheet.treinoCD or 0) +
+        (node.fisico or 0))
         end
 
         local function rolarMente()
 
+        local node = NDB.getRoot(sheet)
         local mesaDoPersonagem = rrpg.getMesaDe(sheet);
         local chat = mesaDoPersonagem.chat
 
-        chat:rolarDados("1d20 + " .. (sheet.INTE or 0), "Treinamento Mente: CD " .. sheet.treinoCD + (node.mental or 0))
+        chat:rolarDados("1d20 + " .. (sheet.INTE or 0), "Treinamento Mente: CD " .. (sheet.treinoCD or 0) +
+        (node.mental or 0))
         end
 
         local function ListaDeFeitico()
@@ -68,11 +71,11 @@
             margins="{left = 5, top = 10, right = 5}"
             horzTextAlign="center" />
 
-        <layout align="top" height="32" margins="{top=20}" padding="{left = 5, top = 15, right = 5}">
+        <layout align="top" height="50" margins="{top=20}" padding="{left = 5, top = 15, right = 5}">
             <label text="Dificuldade" align="left"
                 margins="{left = 5, top = 5, right = 5}"
                 horzTextAlign="center" />
-            <edit field="treinoCD" align="left" width="155"
+            <edit field="treinoCD" align="left" width="145"
                 margins="{left = 5, top = 5, right = 5}"
                 horzTextAlign="center" />
         </layout>

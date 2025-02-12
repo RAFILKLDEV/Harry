@@ -12,7 +12,7 @@ local function constructNew_feiticosFacil()
     local self = obj;
     local sheet = nil;
 
-    rawset(obj, "_oldSetNodeObjectFunction", rawget(obj, "setNodeObject"));
+    rawset(obj, "_oldSetNodeObjectFunction", obj.setNodeObject);
 
     function obj:setNodeObject(nodeObject)
         sheet = nodeObject;
@@ -34,6 +34,43 @@ local function constructNew_feiticosFacil()
 
         -- Primeiro, é necessário usar a unidade "dialogs.lua"
         require("dialogs.lua");
+        require("ndb.lua")
+        require("utils.lua");
+        local node = NDB.getRoot(sheet)
+
+        local function condition(tipo)
+
+        if tipo == "fisico" then
+
+        if node.Exausto then
+        return -5
+        end
+
+        if node.Fadigado then
+        return -2
+        end
+
+        elseif tipo == "mental" then
+
+        if node.Tiltado then
+        return -5
+        end
+
+        if node.Frustrado then
+        return -2
+        end
+
+        end
+
+        return nil
+        end
+
+        local function testezz()
+
+        local node = NDB.getRoot(sheet)
+        showMessage(node.soundControl)
+
+        end
 
         local function tocarAudio()
         require("utils.lua");
@@ -52,25 +89,13 @@ local function constructNew_feiticosFacil()
 
         end
 
-        local function Aceitar()
-        Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
-        function (confirmado)
-        if confirmado then
-        ndb.deleteNode(sheet);
-        else
-        return
-        end;
-        end);
-
-        end
-
         local function enviarNaMesa()
 
         local minhaMesa = Firecast.getRoomOf(sheet);
         local chat = minhaMesa.chat;
         local nick = minhaMesa.meuJogador.nick
 
-        node = ndb.getParent(ndb.getParent(sheet))
+        node = NDB.getParent(NDB.getParent(sheet))
 
         local function definirEscola()
         if sheet.escola == 'Adivinhação' then
@@ -129,13 +154,14 @@ local function constructNew_feiticosFacil()
         return msg
         end
 
-        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) ..
-        (node.concentracao == nil and 0 or ("-" .. node.concentracao)) .. (sheet.ext_Penalidade ==
-        nil and 0 or ("-" .. sheet.ext_Penalidade))
+        local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "-" ..
+        (node.concentracao or 0)
 
         chat:enviarMensagem("----------------");
 
-        chat:rolarDados("1d20+" .. somatoria, "Cast " .. sheet.nome .. " CD " .. sheet.CD, function
+        chat:rolarDados("1d20+" .. somatoria .. (condition("mental") and (condition("mental")) or
+        ""), "Cast " ..
+        sheet.nome .. " CD " .. sheet.CD, function
         (rolagem)
 
         chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta usando [§K6]" .. sheet.nome)
@@ -150,17 +176,15 @@ local function constructNew_feiticosFacil()
         chat:enviarMensagem("[§K10]Efeito: " .. "[§K1]" .. sheet.Efeito)
         end
 
-        if sheet.extra ~= 0 and sheet.extra ~= nil then
-        chat:enviarMensagem("[§K8]Extra: " .. "[§K1]" .. sheet.extra)
-        end
-
         if sheet.tipo == 'Ataque' then
-        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0),
+        chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. node.DES .. "-" .. (node.acerto or 0) ..
+        (condition("fisico") and (condition("fisico")) or""),
         "Ataque de " .. sheet.nome)
         setTimeout(tocarAudio, 5000)
 
         elseif sheet.tipo == 'Defesa' then
-        chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus, "CA " .. sheet.nome)
+        chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus ..
+        (condition("fisico") and (condition("fisico")) or ""), "CA " .. sheet.nome)
         setTimeout(tocarAudio, 5000)
         end
 
@@ -186,57 +210,6 @@ local function constructNew_feiticosFacil()
 
 
         end
-
-        -- FUNÇÂO DE FEITICO
-
-        local function ListaDeFeitico()
-        require("ndb.lua");
-        require("utils.lua");
-
-        local Raiz = ndb.load("listfetico.xml");
-        local Filho = ndb.getChildNodes(Raiz);
-
-        ListaFeiticos = {} -- new array
-        ListaNomesFeitico = {} -- new array
-
-        for i = 1, #Filho, 1 do
-        ListaFeiticos[i] = Raiz["f" .. i]
-        ListaNomesFeitico[i] = Raiz["f" .. i].nome
-        end
-
-        Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
-        function(selected, selectedIndex, selectedText)
-
-        if selected then
-
-        for k = 1, #Filho, 1 do
-
-        if tostring(selectedText) == ListaFeiticos[k].nome then
-        sheet.nome = ListaFeiticos[k].nome
-        sheet.escola = ListaFeiticos[k].escola
-        sheet.tipo = ListaFeiticos[k].cast
-        sheet.Grad = ListaFeiticos[k].grad
-        sheet.CD = ListaFeiticos[k].cdf
-        sheet.Efeito = ListaFeiticos[k].efeito
-        sheet.Poder = ListaFeiticos[k].poder
-        sheet.Dano = ListaFeiticos[k].dano
-        sheet.Bonus = ListaFeiticos[k].bonus
-        sheet.Range = ListaFeiticos[k].range
-        sheet.Area = ListaFeiticos[k].area
-        sheet.Duracao = ListaFeiticos[k].duracao
-        end
-
-        end
-
-        else
-
-        end;
-
-        end)
-
-
-        end
-
 
     
 
@@ -280,7 +253,7 @@ local function constructNew_feiticosFacil()
     obj.edit1:setTop(27);
     obj.edit1:setWidth(150);
     obj.edit1:setHeight(35);
-    lfm_setPropAsString(obj.edit1, "fontStyle",  "bold");
+    lfm_setPropAsString(obj.edit1, "fontStyle", "bold");
     obj.edit1:setFontSize(15);
     obj.edit1:setField("nome");
     obj.edit1:setHorzTextAlign("center");
@@ -361,14 +334,14 @@ local function constructNew_feiticosFacil()
     obj.button1:setName("button1");
 
     obj._e_event0 = obj.dataLink1:addEventListener("onChange",
-        function (_, field, oldValue, newValue)
+        function (field, oldValue, newValue)
             sheet.extra = math.floor((sheet.ext_Penalidade or 0) / 2)
-        end, obj);
+        end);
 
     obj._e_event1 = obj.button1:addEventListener("onClick",
-        function (_, event)
+        function (event)
             enviarNaMesa()
-        end, obj);
+        end);
 
     function obj:_releaseEvents()
         __o_rrpgObjs.removeEventListenerById(self._e_event1);
@@ -430,6 +403,7 @@ local _feiticosFacil = {
     dataType = "", 
     formType = "undefined", 
     formComponentName = "form", 
+    cacheMode = "none", 
     title = "", 
     description=""};
 

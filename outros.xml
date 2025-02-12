@@ -1,0 +1,31 @@
+<tab title="Outros">
+     <layout height="400"
+          align="top" padding="{left=10, right=10}">
+          <label align="top" height="50" text="Outros"
+               horzTextAlign="center" fontSize="20" />
+
+          <button align="top" height="25" text="Nova Pericia" width="80"
+               onClick="self.outrasPericias_record:append();" />
+
+          <layout height="30" align="top" margins="{top=3, left=35}">
+               <label text="Pericias" top="5"
+                    horzTextAlign="center" align="left" />
+               <label text="Atr" align="left"
+                    margins="{left = 5}" width="30"
+                    horzTextAlign="center" />
+               <label text="Grad" align="left"
+                    margins="{left = 5}" width="30"
+                    horzTextAlign="center" />
+               <label text="Out" align="left"
+                    margins="{left = 5}" width="30"
+                    horzTextAlign="center" />
+               <label text="Total" align="left"
+                    margins="{left = 5}" width="30"
+                    horzTextAlign="center" />
+          </layout>
+
+          <recordList name="outrasPericias_record" field="outrasPericias"
+               templateForm="outrasPericias"
+               align="top" autoHeight="true" />
+     </layout>
+</tab>

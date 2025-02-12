@@ -1,5 +1,5 @@
 <tab title="Tarefas" width="220">
-    <layout height="320"
+    <scrollBox  height="600"
         align="top">
 
         <button left="20" top="20" height="25" text="Nova Tarefa" width="80"
@@ -7,5 +7,5 @@
 
         <recordList name="kekzin" field="tarefasRecordList" templateForm="frmItemDeMagia"
             left="0" top="60" width="300" autoHeight="true" />
-    </layout>
+    </scrollBox >
 </tab>

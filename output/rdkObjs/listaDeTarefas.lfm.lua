@@ -12,7 +12,7 @@ local function constructNew_frmItemDeMagia()
     local self = obj;
     local sheet = nil;
 
-    rawset(obj, "_oldSetNodeObjectFunction", rawget(obj, "setNodeObject"));
+    rawset(obj, "_oldSetNodeObjectFunction", obj.setNodeObject);
 
     function obj:setNodeObject(nodeObject)
         sheet = nodeObject;
@@ -40,7 +40,7 @@ local function constructNew_frmItemDeMagia()
     obj.edit1 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit1:setParent(obj.rectangle);
     obj.edit1:setAlign("left");
-    obj.edit1:setWidth(200);
+    obj.edit1:setWidth(180);
     obj.edit1:setField("nome");
     obj.edit1:setMargins({left=5});
     obj.edit1:setName("edit1");
@@ -77,25 +77,34 @@ local function constructNew_frmItemDeMagia()
     obj.button1:setName("button1");
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
-        function (_)
+        function ()
             if self.checkBox.checked then
                     self.rectangle.color = "green"
                     end
-        end, obj);
+        end);
 
     obj._e_event1 = obj.checkBox:addEventListener("onChange",
-        function (_)
+        function ()
             if self.checkBox.checked then
                             self.rectangle.color = "green"
                             else
                             self.rectangle.color = "gray"
                             end
-        end, obj);
+        end);
 
     obj._e_event2 = obj.button1:addEventListener("onClick",
-        function (_, event)
-            ndb.deleteNode(sheet);
-        end, obj);
+        function (event)
+            require("dialogs.lua");
+            
+                        Dialogs.confirmOkCancel("Deseja realmente excluir esta tarefa ?",
+                        function (confirmado)
+                        if confirmado then
+                        ndb.deleteNode(sheet)
+                        else
+                        -- usuário escolheu CANCEL
+                        end;
+                        end);
+        end);
 
     function obj:_releaseEvents()
         __o_rrpgObjs.removeEventListenerById(self._e_event2);
@@ -149,6 +158,7 @@ local _frmItemDeMagia = {
     dataType = "", 
     formType = "undefined", 
     formComponentName = "form", 
+    cacheMode = "none", 
     title = "", 
     description=""};
 

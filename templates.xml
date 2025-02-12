@@ -1,4 +1,43 @@
 <layout>
+
+    <template name="CheckCondition">
+        <script>
+
+        </script>
+        <rectangle height="35" align="top" margins="{top=3}" color="$(cor)">
+            <checkBox align="left" width="20" text="Caixa de marcação" field="$(name)">
+                <event name="onChange">
+                    local mesaDoPersonagem = Firecast.getRoomOf(sheet);
+                    local chat = mesaDoPersonagem.chat
+                    local jogador = mesaDoPersonagem.meuJogador
+
+                    if sheet.$(name) then
+
+                    if self.$(name).text == "Exausto" then
+
+                    sheet.Fadigado = nil
+                    chat:enviarMensagem(jogador.nick .. " estava Fatigado agora está " ..
+                    self.$(name).text)
+                    elseif self.$(name).text == "Tiltado" then
+                    sheet.Frustrado = nil
+                    chat:enviarMensagem(jogador.nick .. " estava Frustrado agora está " ..
+                    self.$(name).text)
+                    else
+                    chat:enviarMensagem(jogador.nick .. " agora está " .. self.$(name).text)
+
+                    end
+
+                    else
+                    chat:enviarMensagem(jogador.nick .. " não está mais " .. self.$(name).text)
+                    end
+
+
+                </event>
+            </checkBox>
+            <label name="$(name)" align="left" width="80" text="$(name)" />
+        </rectangle>
+    </template>
+
     <template name="LabelComEdit">
         <layout height="30" align="top" margins="{top=3}">
             <rectangle color="black" align="left" width="$(wid)">
@@ -9,7 +48,40 @@
                     local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                     local chat = mesaDoPersonagem.chat
 
-                    chat:rolarDados("1d20 + " .. (sheet.$(total) or 0),
+                    local function condition()
+
+                    if self.$(name).text == "Acrobacia" or
+                    self.$(name).text == "Atletismo" or
+                    self.$(name).text == "Corpo-a-Corpo" or
+                    self.$(name).text == "Furtividade" or
+                    self.$(name).text == "Prestidigitação" or
+                    self.$(name).text == "Veiculos Mágicos" then
+
+                    if sheet.Exausto then
+                    return -5
+                    end
+
+                    if sheet.Fadigado then
+                    return -2
+                    end
+
+                    else
+
+                    if sheet.Tiltado then
+                    return -5
+                    end
+
+                    if sheet.Frustrado then
+                    return -2
+                    end
+
+                    end
+
+                    return nil
+                    end
+
+                    chat:rolarDados("1d20 + " .. (sheet.$(total) or 0) .. (condition()
+                    and (condition()) or ""),
                     self.$(name).text,
                     function (rolado)
 
@@ -17,15 +89,78 @@
                 </event>
             </rectangle>
 
+            <edit field="$(atr)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" readOnly="true" />
             <edit field="$(grad)" align="left"
                 margins="{left = 5}" width="30"
                 horzTextAlign="center" />
             <edit field="$(out)" align="left"
                 margins="{left = 5}" width="30"
                 horzTextAlign="center" />
+            <label field="$(total)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" />
+        </layout>
+    </template>
+
+    <template name="Quadribol">
+        <layout height="30" align="top" margins="{top=3}">
+            <rectangle color="black" align="left" width="$(wid)">
+                <label name="$(name)" text="$(nome)" top="5"
+                    horzTextAlign="center">
+                </label>
+                <event name="onClick">
+                    local mesaDoPersonagem = rrpg.getMesaDe(sheet);
+                    local chat = mesaDoPersonagem.chat
+
+                    local function condition()
+
+                    if self.$(name).text == "Antecipar" or
+                    self.$(name).text == "Atrapalhar" or
+                    self.$(name).text == "Marcar Falta" then
+
+                    if sheet.Tiltado then
+                    return -5
+                    end
+
+                    if sheet.Frustrado then
+                    return -2
+                    end
+
+                    else
+
+                    if sheet.Exausto then
+                    return -5
+                    end
+
+                    if sheet.Fadigado then
+                    return -2
+                    end
+
+                    end
+
+                    return nil
+                    end
+
+                    chat:rolarDados("1d20 + " .. (sheet.$(total) or 0) .. (condition() and
+                    (condition()) or ""),
+                    self.$(name).text,
+                    function (rolado)
+
+                    end);
+                </event>
+            </rectangle>
+
             <edit field="$(atr)" align="left"
                 margins="{left = 5}" width="30"
                 horzTextAlign="center" readOnly="true" />
+            <edit field="$(grad)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" readOnly="true" />
+            <edit field="$(out)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" />
             <label field="$(total)" align="left"
                 margins="{left = 5}" width="30"
                 horzTextAlign="center" />
@@ -36,13 +171,13 @@
         <layout height="30" align="top" margins="{top=3}">
             <label text="$(name)" top="5"
                 horzTextAlign="center" align="left" />
+            <label text="$(atr)" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" />
             <label text="$(grad)" align="left"
                 margins="{left = 5}" width="30"
                 horzTextAlign="center" />
             <label text="$(out)" align="left"
-                margins="{left = 5}" width="30"
-                horzTextAlign="center" />
-            <label text="$(atr)" align="left"
                 margins="{left = 5}" width="30"
                 horzTextAlign="center" />
             <label text="$(total)" align="left"
@@ -53,13 +188,56 @@
 
     <template name="Atributo">
         <rectangle padding="{top=3,bottom=5}" align="top" height="35"
-            color="blue">
+            color="black">
             <label margins="{left=5}" align="left" horzTextAlign="center"
-                width="100" text="$(text1)" />
+                width="100" text="$(text1)" name="$(name)" />
             <edit margins="{left=5}" align="left" horzTextAlign="center"
                 width="40" field="$(field1)" />
             <edit margins="{left=5}" align="left" horzTextAlign="center"
                 width="40" field="$(field2)" />
+            <event name="onClick">
+                local mesaDoPersonagem = rrpg.getMesaDe(sheet);
+                local chat = mesaDoPersonagem.chat
+
+                local function condition()
+
+                if self.$(name).text == "AGILIDADE" or
+                self.$(name).text == "DESTREZA" or
+                self.$(name).text == "FORÇA" or
+                self.$(name).text == "LUTA" or
+                self.$(name).text == "VIGOR" then
+
+                if sheet.Exausto then
+                return -5
+                end
+
+                if sheet.Fadigado then
+                return -2
+                end
+
+                else
+
+                if sheet.Tiltado then
+                return -5
+                end
+
+                if sheet.Frustrado then
+                return -2
+                end
+
+                end
+
+                return nil
+                end
+
+
+                chat:rolarDados("1d20 + " .. (sheet.$(field2) or sheet.$(field1)) .. (condition()
+                and (condition()) or ""),
+                self.$(name).text,
+                function (rolado)
+
+                end);
+            </event>
         </rectangle>
     </template>
 

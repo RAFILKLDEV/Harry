@@ -13,19 +13,20 @@
 
           <layout left="240" top="200" width="1300" height="600">
 
-               <layout width="800" height="700">
+               <layout align="top" height="700">
                     <tabControl align="left" width="350">
                          <import file="corpo.xml" />
                          <import file="mente.xml" />
                          <import file="conhecimento.xml" />
+                         <import file="outros.xml" />
                     </tabControl>
 
                     <tabControl align="left" width="300">
                          <import file="defesas.xml" />
                          <import file="tarefas.xml" />
                          <import file="treino.xml" />
+                         <import file="quadribol.xml" />
                     </tabControl>
-
                </layout>
 
           </layout>

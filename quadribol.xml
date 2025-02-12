@@ -1,0 +1,133 @@
+<tab title="Quadribol" width="220">
+    <layout height="600" margins="{left=20}"
+        align="top">
+
+        <label align="top" height="50" text="QUADRIBOL"
+            horzTextAlign="center" />
+
+        <layout height="30" align="top">
+            <rectangle color="black" align="left" width="90">
+                <label text="Golear" width="90" top="5"
+                    horzTextAlign="center">
+                </label>
+            </rectangle>
+
+            <edit field="GOL_MOD" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" readOnly="true" />
+
+            <rectangle color="black" align="left" width="90" margins="{left = 10}">
+                <label text="Passe" width="90" top="5"
+                    horzTextAlign="center">
+                </label>
+            </rectangle>
+
+            <edit field="PAS_MOD" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" readOnly="true" />
+        </layout>
+
+        <layout height="30" align="top"  margins="{top=5}">
+            <rectangle color="black" align="left" width="90">
+                <label text="Rebater" width="90" top="5"
+                    horzTextAlign="center">
+                </label>
+            </rectangle>
+
+            <edit field="REB_MOD" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" readOnly="true" />
+
+            <rectangle color="black" align="left" width="90" margins="{left = 10}">
+                <label text="Velocidade" width="90" top="5"
+                    horzTextAlign="center">
+                </label>
+            </rectangle>
+
+            <edit field="VEL_MOD" align="left"
+                margins="{left = 5}" width="30"
+                horzTextAlign="center" readOnly="true" />
+        </layout>
+
+        <Guia name="Pericias" grad="Grad" out="Out" total="Total" atr="Atr" wid="120" height="30"
+            align="top" />
+
+        <Quadribol wid="120" nome="Antecipar"
+            name="ANTE_QUAD"
+            atr="SAB"
+            total="ANTE_QUAD_TOTAL"
+            grad="VEI_Grad" out="ANTE_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Apanhar Pomo"
+            name="APAN_QUAD"
+            atr="DES"
+            total="APAN_QUAD_TOTAL"
+            grad="VEI_Grad" out="APAN_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Atrapalhar"
+            name="ATRA_QUAD"
+            atr="INTE"
+            total="ATRA_QUAD_TOTAL"
+            grad="VEI_Grad" out="ATRA_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Defender"
+            name="DEFE_QUAD"
+            atr="AGI"
+            total="DEFE_QUAD_TOTAL"
+            grad="VEI_Grad" out="DEFE_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Driblar"
+            name="DRI_QUAD"
+            atr="AGI"
+            total="DRI_QUAD_TOTAL"
+            grad="VEI_Grad" out="DRI_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Golear"
+            name="GOL_QUAD"
+            atr="FOR"
+            total="GOL_QUAD_TOTAL"
+            grad="VEI_Grad" out="GOL_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Marcar Falta"
+            name="FALTA_QUAD"
+            atr="PRE"
+            total="FALTA_QUAD_TOTAL"
+            grad="VEI_Grad" out="FALTA_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Passar a Bola"
+            name="PASS_QUAD"
+            atr="FOR"
+            total="PASS_QUAD_TOTAL"
+            grad="VEI_Grad" out="PASS_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Rebater Balasso"
+            name="REBA_QUAD"
+            atr="FOR"
+            total="REBA_QUAD_TOTAL"
+            grad="VEI_Grad" out="REBA_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Roubar a bola"
+            name="ROU_QUAD"
+            atr="LUT"
+            total="ROU_QUAD_TOTAL"
+            grad="VEI_Grad" out="ROU_QUAD_OUT" align="top"
+            height="30" />
+
+        <Quadribol wid="120" nome="Velocidade"
+            name="VEL_QUAD"
+            atr="AGI"
+            total="VEL_QUAD_TOTAL"
+            grad="VEI_Grad" out="VEL_QUAD_OUT" align="top"
+            height="30" />
+
+    </layout>
+</tab>  

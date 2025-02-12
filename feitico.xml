@@ -1,71 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tab title="Feitiços">
-   <image style="autoFit" top="0" width="1300" height="800"
-      src="/imagens/wizard.jpg" />
-   <layout align="top" height="100" padding="{top=5, left=5}">
+   <scrollBox align="client">
+      <image style="autoFit" top="0" width="1300" height="800" src="/imagens/wizard.jpg" />
+      <layout align="top" height="100" padding="{top=5, left=5}">
 
-      <script>
+         <script>
+            local function onChange(node, attribute, oldValue)
+            showMessage(oldValue)
+
+            end
+
+            local function alternarFeiticos()
+
+            if self.rclMagias.visible == true then
+            self.botao.text = "Lista Completa"
+            self.rclMagias.visible = false
+            self.testezim.visible = true
+            else
+            self.botao.text = "Lista Simplificada"
+            self.rclMagias.visible = true
+            self.testezim.visible = false
+            end
+
+            end
+
+            local function alternarAudio()
+            local node = NDB.getRoot(sheet)
+
+            if self.sound.text == "🔊" then
+            self.sound.text = "🔇"
+            node.soundControl = "desligado"
+            else
+            self.sound.text = "🔊"
+            node.soundControl = "ligado"
+            end
 
 
-         local function alternarFeiticos()
+            end
+         </script>
 
-         if self.rclMagias.visible == true then
-         self.botao.text = "Lista Completa"
-         self.rclMagias.visible = false
-         self.testezim.visible = true
-         else
-         self.botao.text = "Lista Simplificada"
-         self.rclMagias.visible = true
-         self.testezim.visible = false
-         end
+         <template name="label2">
+            <layout align="left" margins="{left=20}" width="120" height="70">
+               <rectangle top="5" left="10" color="$(color)" width="90" height="25">
+                  <label align="client" text="$(text)" horzTextAlign="center" />
+               </rectangle>
+               <edit top="30" width="120" field="$(field)" readOnly="$(read)" horzTextAlign="center"
+                  type="number" min="0">
+                  <event name="onUserChange">
 
-         end
+                  </event>
+               </edit>
+            </layout>
+         </template>
 
-         local function alternarAudio()
-         local node = NDB.getRoot(sheet)
-
-         if self.sound.text == "🔊" then
-         self.sound.text = "🔇"
-         node.soundControl = "desligado"
-         else
-         self.sound.text = "🔊"
-         node.soundControl = "ligado"
-         end
-
-
-         end
-      </script>
-
-      <template name="label2">
-         <layout align="left" margins="{left=20}" width="120" height="70">
-            <rectangle top="5" left="10" color="$(color)" width="90"
-               height="25">
-               <label align="client" text="$(text)" horzTextAlign="center" />
-            </rectangle>
-            <edit top="30" width="120" field="$(field)" readOnly="$(read)"
-               horzTextAlign="center" type="number" min="0" >
-               <event name="onUserChange">
-
-               </event>
-            </edit>
-         </layout>
-      </template>
-
-      <layout align="top" height="70" margins="{top=10, left=0}">
-         <label2 field="DES" text="Destreza" color="#C59E01" read="true" />
-         <label2 field="C_ADI_Total" color="DarkSlateBlue" text="Adivinhação"
-            read="true" />
-         <label2 field="C_AZA_Total" color="DarkSlateBlue" text="Azaração" read="true" />
-         <label2 field="C_CON_Total" color="DarkSlateBlue"
-            text="Contra-Feitiço" read="true" />
-         <label2 field="C_ENC_Total" color="DarkSlateBlue" text="Encantamento"
-            read="true" />
-         <label2 field="C_FEI_Total" color="DarkSlateBlue" text="Feitiço" read="true" />
-         <label2 field="C_TRA_Total" color="DarkSlateBlue" text="Transmutação"
-            read="true" />
-         <label2 field="C_MAL_Total" color="DarkSlateBlue"
-            text="Arte das Trevas" read="true" />
-         <!-- <button align="left" text="kek">
+         <layout align="top" height="70" margins="{top=10, left=0}">
+            <label2 field="DES" text="Destreza" color="#C59E01" read="true" />
+            <label2 field="C_ADI_Total" color="DarkSlateBlue" text="Adivinhação" read="true" />
+            <label2 field="C_AZA_Total" color="DarkSlateBlue" text="Azaração" read="true" />
+            <label2 field="C_CON_Total" color="DarkSlateBlue" text="Contra-Feitiço" read="true" />
+            <label2 field="C_ENC_Total" color="DarkSlateBlue" text="Encantamento" read="true" />
+            <label2 field="C_FEI_Total" color="DarkSlateBlue" text="Feitiço" read="true" />
+            <label2 field="C_TRA_Total" color="DarkSlateBlue" text="Transmutação" read="true" />
+            <label2 field="C_MAL_Total" color="DarkSlateBlue" text="Arte das Trevas" read="true" />
+            <!-- <button align="left" text="kek">
             <event name="onClick">
                require("ndb.lua");
                local minhaMesa = Firecast.getRoomOf(sheet);
@@ -80,64 +77,80 @@
                showMessage(tableToStr(Child[1].nome))
             </event>
          </button> -->
+         </layout>
+
       </layout>
 
-   </layout>
+      <layout align="top" height="80" margins="{top=0, left=0}">
+         <layout align="left" margins="{left=20}" width="120" height="80">
+            <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+               <label align="client" text="Fisico" horzTextAlign="center" />
+            </rectangle>
+            <edit top="30" width="120" field="fisico" horzTextAlign="center" />
+            <dataLink field="fisico">
+               <event name="onUserChange">
 
-   <layout align="top" height="80" margins="{top=0, left=0}">
-      <layout align="left" margins="{left=20}" width="120" height="80">
-         <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-            <label align="client" text="Fisico" horzTextAlign="center" />
-         </rectangle>
-         <edit top="30" width="120" field="fisico"  horzTextAlign="center">
-            <event name="onUserChange">
-               local minhaMesa = Firecast.getRoomOf(sheet);
-               local chat = minhaMesa.chat;
+                  -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
 
-               chat:enviarAcao("esta com penalidade em Fisico de " ..
-               sheet.fisico)
-            </event>
-         </edit>
+                  local minhaMesa = Firecast.getRoomOf(sheet);
+                  local chat = minhaMesa.chat;
+
+                  if oldValue == nil then
+                  return
+                  end
+
+                  local novoValor = math.abs(newValue or 0)
+                  local antigoValor = math.abs(oldValue or 0)
+
+                  chat:enviarAcao("Estava com penalidade de Fisica de " .. antigoValor ..
+                  " e agora esta com " .. novoValor)
+
+                  sheet.fisico = novoValor
+               </event>
+            </dataLink>
+         </layout>
+         <layout align="left" margins="{left=20}" width="120" height="80">
+            <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+               <label align="client" text="Mental" horzTextAlign="center" />
+            </rectangle>
+            <edit top="30" width="120" field="mental" horzTextAlign="center" />
+            <dataLink field="mental">
+               <event name="onUserChange">
+
+                  -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
+
+                  local minhaMesa = Firecast.getRoomOf(sheet);
+                  local chat = minhaMesa.chat;
+
+                  local novoValor = math.abs(newValue or 0)
+                  local antigoValor = math.abs(oldValue or 0)
+
+                  chat:enviarAcao("Estava com penalidade de Mental de " .. antigoValor ..
+                  " e agora esta com " .. novoValor)
+
+                  sheet.mental = novoValor
+               </event>
+            </dataLink>
+         </layout>
+         <label2 field="concentracao" color="purple" text="Concentração" read="false" />
+         <label2 field="acerto" color="purple" text="Acerto" read="false" />
       </layout>
-      <layout align="left" margins="{left=20}" width="120" height="80">
-         <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-            <label align="client" text="Mental" horzTextAlign="center" />
-         </rectangle>
-         <edit top="30" width="120" field="mental" horzTextAlign="center">
-            <event name="onUserChange">
-               local minhaMesa = Firecast.getRoomOf(sheet);
-               local chat = minhaMesa.chat;
 
-               chat:enviarAcao("esta com penalidade em Mental de " ..
-               sheet.mental)
-            </event>
-         </edit>
-      </layout>
-      <label2 field="concentracao" color="purple" text="Concentração" read="false" />
-      <label2 field="acerto" color="purple" text="Acerto" read="false" />
-   </layout>
-
-   <layout name="aqui" align="top" height="600" padding="{top=5, left=5}">
-      <layout left="20" top="15" width="500" height="35">
-         <button align="left" name="botao" margins="{left=20}"
-            height="25" text="Lista Completa" width="150"
-            onClick="alternarFeiticos();" />
-         <button align="left" margins="{left=20}"
-            height="25" text="Novo Feitiço" width="100"
-            onClick="self.rclMagias:append();" />
-         <button
-            align="left" height="25" text="Ordenar" width="100" margins="{left=20}"
-            onClick="self.rclMagias:sort();" />
-         <button name="sound"
-            align="left" height="25" text="🔇" width="35" margins="{left=20}"
-            onClick="alternarAudio()" />
-      </layout>
-      <recordList name="rclMagias"
-         field="magias"
-         itemHeight="200" templateForm="feiticos" left="20" top="60"
-         width="760"
-         height="450" visible="false" autoHeight="false">
-         <event name="onCompare"><![CDATA[     
+      <layout name="aqui" align="top" height="600" padding="{top=5, left=5}">
+         <layout left="20" top="15" width="500" height="35">
+            <button align="left" name="botao" margins="{left=20}" height="25" text="Lista Completa"
+               width="150" onClick="alternarFeiticos();" />
+            <button align="left" margins="{left=20}" height="25" text="Novo Feitiço" width="100"
+               onClick="self.rclMagias:append();" />
+            <button align="left" height="25" text="Ordenar" width="100" margins="{left=20}"
+               onClick="self.rclMagias:sort();" />
+            <button name="sound" align="left" height="25" text="🔇" width="35" margins="{left=20}"
+               onClick="alternarAudio()" />
+         </layout>
+         <recordList name="rclMagias" field="magias" itemHeight="200" templateForm="feiticos"
+            left="20"
+            top="60" width="760" height="450" visible="false" autoHeight="false">
+            <event name="onCompare"><![CDATA[     
                    if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
                         return -1;
                    elseif (tonumber(nodeA.Order) or 0) > (tonumber(nodeB.Order) or 0) then
@@ -147,15 +160,13 @@
                    end;               
 
                    ]]>
-               </event>
-      </recordList>
+         </event>
+         </recordList>
 
-      <recordList name="testezim"
-         field="magias"
-         templateForm="feiticosFacil" left="20" top="60"
-         width="760"
-         height="450" autoHeight="false">
-      </recordList>
+         <recordList name="testezim" field="magias" templateForm="feiticosFacil" left="20" top="60"
+            width="760" height="450" autoHeight="false">
+         </recordList>
 
-   </layout>
+      </layout>
+   </scrollBox>
 </tab>
