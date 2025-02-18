@@ -92,7 +92,7 @@
         return node.C_FEI_Total
         elseif sheet.escola == 'Transmutação' then
         return node.C_TRA_Total
-        elseif sheet.escola == 'Arte das Trevas' then
+        elseif sheet.escola == 'Maldição' then
         return node.C_MAL_Total
         end
 
@@ -101,36 +101,44 @@
         local function stats()
         local msg = ""
 
-        if sheet.Grad then
+        if sheet.Grad ~= "" then
         msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. sheet.Grad
+        else
         end
 
-        if sheet.CD then
+        if sheet.CD ~= "" then
         msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. sheet.CD
+        else
         end
 
-        if sheet.Dano then
+        if sheet.Dano ~= "" then
         msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. sheet.Dano
+        else
         end
 
-        if sheet.Poder then
+        if sheet.Poder ~= "" then
         msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. sheet.Poder
+        else
         end
 
-        if sheet.Bonus then
+        if sheet.Bonus ~= "" then
         msg = msg .. "[§K10]" .. " Bonus: " .. "[§K1]" .. sheet.Bonus
+        else
         end
 
-        if sheet.Range then
+        if sheet.Range ~= "" then
         msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. sheet.Range
+        else
         end
 
-        if sheet.Area then
+        if sheet.Area ~= "" then
         msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. sheet.Area
+        else
         end
 
-        if sheet.Duracao then
+        if sheet.Duracao ~= "" then
         msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" .. sheet.Duracao
+        else
         end
 
         return msg
@@ -146,11 +154,8 @@
         sheet.nome .. " CD " .. sheet.CD, function
         (rolagem)
 
-        chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta usando [§K6]" .. sheet.nome)
-
-
         if rolagem.resultado >= tonumber(sheet.CD) then
-        chat:enviarMensagem("[§K9]Sucesso!");
+        chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta castando [§K6]" .. sheet.nome  ..  "[§K9] Sucesso!")
 
         chat:enviarMensagem("[§K6]" .. sheet.nome .. " " .. stats())
 
@@ -190,47 +195,132 @@
 
         end)
 
+        end
 
+        -- FUNÇÂO DE FEITICO
+        local function ListaDeFeitico()
+        require("utils.lua");
+        local Raiz = NDB.load("listfetico.xml");
+        local Filho = NDB.getChildNodes(Raiz);
+        ListaFeiticos = {} -- new array
+        ListaNomesFeitico = {} -- new array
+        for i = 1, #Filho, 1 do
+        ListaFeiticos[i] = Raiz["f" .. i]
+        ListaNomesFeitico[i] = Raiz["f" .. i].nome
+        table.sort(ListaNomesFeitico)
+        end
+        Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
+        function(selected, selectedIndex, selectedText)
+        if selected then
+        for k = 1, #Filho, 1 do
+        if tostring(selectedText) == ListaFeiticos[k].nome then
+
+        sheet.nome = ListaFeiticos[k].nome
+        sheet.escola = ListaFeiticos[k].escola
+        sheet.tipo = ListaFeiticos[k].cast
+        sheet.Efeito = ListaFeiticos[k].efeito
+
+        sheet.Grad = totable(ListaFeiticos[k].gradArray)[1]
+        sheet.Grad_name = "Grad"
+        sheet.Grad_grad = 1
+        sheet.Grad_array = ListaFeiticos[k].gradArray
+
+        sheet.CD = totable(ListaFeiticos[k].cdfArray)[1]
+        sheet.CD_name = "CD"
+        sheet.CD_grad = 1
+        sheet.CD_array = ListaFeiticos[k].cdfArray
+
+        sheet.Dano = totable(ListaFeiticos[k].danoArray)[1]
+        sheet.Dano_name = "Dano"
+        sheet.Dano_grad = 1
+        sheet.Dano_array = ListaFeiticos[k].danoArray
+
+        sheet.Poder = totable(ListaFeiticos[k].poderArray)[1]
+        sheet.Poder_name = "Poder"
+        sheet.Poder_grad = 1
+        sheet.Poder_array = ListaFeiticos[k].poderArray
+
+        sheet.Range = totable(ListaFeiticos[k].rangeArray)[1]
+        sheet.Range_name = "Range"
+        sheet.Range_grad = 1
+        sheet.Range_array = ListaFeiticos[k].rangeArray
+
+
+        sheet.Area = totable(ListaFeiticos[k].areaArray)[1]
+        sheet.Area_name = "Area"
+        sheet.Area_grad = 1
+        sheet.Area_array = ListaFeiticos[k].areaArray
+
+        sheet.Duracao = totable(ListaFeiticos[k].duracaoArray)[1]
+        sheet.Duracao_name = "Duracao"
+        sheet.Duracao_grad = 1
+        sheet.Duracao_array = ListaFeiticos[k].duracaoArray
+
+
+        end
+        end
+        else
+        end;
+        end)
         end
 
     </script>
 
-    <template name="label3">
-        <layout align="left" margins="{left=10}" width="80">
-            <rectangle top="7" left="7" color="DarkSlateBlue" width="65" height="20">
-                <label align="client" text="$(text)" horzTextAlign="center" />
-            </rectangle>
-            <edit top="27" width="80" height="25" field="$(field)" horzTextAlign="center" />
-        </layout>
-    </template>
+    <import file="templates.xml" />
 
-    <rectangle color="grey" opacity="0.35" width="1020" height="170" />
-    <layout align="left" width="300">
-        <label align="top" margins="{left=130,top=5}" text="Nome" />
-        <edit fontStyle="bold italic" horzTextAlign="center" align="top" field="nome" />
-        <label align="top" margins="{left=130,top=5}" text="Escola" />
-        <comboBox name="escola" field="escola" horzTextAlign="center" align="top" height="30"
-            items="{'Adivinhação', 'Azaração', 'Contra-Feitiço', 'Encantamento','Feitiço','Transmutação', 'Arte das Trevas'}" />
-        <label align="top" margins="{left=130,top=5}" text="Ação" />
-        <comboBox name="tipo" field="tipo" horzTextAlign="center" align="top" height="30"
-            items="{'Ataque', 'Defesa', 'Cast'}" />
+    <rectangle name="rectangle" color="grey" opacity="0.35" width="1020" height="170" />
+    <layout align="left" margins="{left=10}" width="180">
+        <label align="top" margins="{left=75,top=5}" text="Nome" />
+        <edit fontStyle="bold italic" fontSize="15" horzTextAlign="center" align="top" field="nome" />
+        <label align="top" margins="{left=75,top=5}" text="Escola" />
+        <edit name="escola" horzTextAlign="center" fontStyle="bold italic" align="top" readOnly="true"
+            field="escola">
+            <event name="onChange">
+                if sheet.escola == "Contra-Feitiço" then
+                    self.escola.fontColor = "#EABFCB"
+                elseif sheet.escola == "Encantamento" then
+                    self.escola.fontColor = "#2BD9FE"
+                elseif sheet.escola == "Feitiço" then
+                    self.escola.fontColor = "#7765E3"
+                elseif sheet.escola == "Azaração" then
+                    self.escola.fontColor = "#A1683A"
+                elseif sheet.escola == "Transmutação" then
+                    self.escola.fontColor = "#E4572E"
+                elseif sheet.escola == "Maldição" then
+                    self.escola.fontColor = "#32936F"    
+                end
+            </event>
+        </edit>
+        <label align="top" margins="{left=75,top=8}" text="Ação" />
+        <edit name="tipo" horzTextAlign="center" fontStyle="bold italic" align="top" readOnly="true"
+            field="tipo">
+            <event name="onChange">
+                if sheet.tipo == "Ataque" then
+                self.tipo.fontColor = "#FF0022"
+                elseif sheet.tipo == "Defesa" then
+                self.tipo.fontColor = "#53FF45"
+                elseif sheet.tipo == "Cast" then
+                self.tipo.fontColor = "#E8C547"
+                end
+            </event>
+        </edit>
     </layout>
 
-    <layout align="left" width="270">
+    <layout align="left" width="400">
         <layout align="top" height="55">
-            <label3 field="Grad" text="Grad" />
-            <label3 field="CD" text="CD" />
-            <label3 field="Efeito" text="Efeito" />
+            <levelLabel name="Grad" field="Grad" text="Grad" />
+            <levelLabel name="CD" field="CD" text="CD" />
+            <levelLabel name="Efeito" field="Efeito" text="Efeito" />
         </layout>
         <layout align="top" height="55">
-            <label3 field="Poder" text="Poder" />
-            <label3 field="Dano" text="Dano" />
-            <label3 field="Bonus" text="Bonus" />
+            <levelLabel name="Poder" field="Poder" text="Poder" />
+            <levelLabel name="Dano" field="Dano" text="Dano" />
+            <levelLabel name="Bonus" field="Bonus" text="Bonus" />
         </layout>
         <layout align="top" height="55">
-            <label3 field="Range" text="Range" />
-            <label3 field="Area" text="Area" />
-            <label3 field="Duracao" text="Duração" />
+            <levelLabel name="Range" field="Range" text="Range" />
+            <levelLabel name="Area" field="Area" text="Area" />
+            <levelLabel name="Duracao" field="Duracao" text="Duração" />
         </layout>
     </layout>
 
@@ -344,6 +434,43 @@
         sheet.Order = 99
 
         end
+
+        local function layoutFeitico()
+
+        if sheet.tipo == "Ataque" then
+        self.tipo.fontColor = "#FF0022"
+        elseif sheet.tipo == "Defesa" then
+        self.tipo.fontColor = "#53FF45"
+        elseif sheet.tipo == "Cast" then
+        self.tipo.fontColor = "#E8C547"
+        end
+
+        if sheet.escola == "Contra-Feitiço" then
+        self.escola.fontColor = "#EABFCB"
+        elseif sheet.escola == "Encantamento" then
+        self.escola.fontColor = "#2BD9FE"
+        elseif sheet.escola == "Feitiço" then
+        self.escola.fontColor = "#7765E3"
+        elseif sheet.escola == "Azaração" then
+        self.escola.fontColor = "#A1683A"
+        elseif sheet.escola == "Transmutação" then
+        self.escola.fontColor = "#E4572E"
+        elseif sheet.escola == "Maldição" then
+        self.escola.fontColor = "#32936F"
+        end
+
+        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
+        (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+
+        if sheet.Grad == tonumber(graduacoes) and self.rectangle then
+            self.rectangle.color = "gray"
+        elseif sheet.Grad > tonumber(graduacoes) then
+            self.rectangle.color = "green"
+        end
+
+        end
+
+        layoutFeitico()
 
     </event>
 

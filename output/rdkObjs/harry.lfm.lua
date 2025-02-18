@@ -142,29 +142,20 @@ local function constructNew_HarryFicha()
     obj.label1:setHeight(25);
     obj.label1:setName("label1");
 
-    obj.label3 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label3:setParent(obj.rectangle2);
-    obj.label3:setLeft(5);
-    obj.label3:setTop(35);
-    obj.label3:setText("Nome Personagem");
-    obj.label3:setWidth(110);
-    obj.label3:setHeight(25);
-    obj.label3:setName("label3");
-
     obj.label4 = GUI.fromHandle(_obj_newObject("label"));
     obj.label4:setParent(obj.rectangle2);
     obj.label4:setLeft(5);
-    obj.label4:setTop(65);
-    obj.label4:setText("Casa");
-    obj.label4:setWidth(90);
+    obj.label4:setTop(35);
+    obj.label4:setText("Nome Personagem");
+    obj.label4:setWidth(110);
     obj.label4:setHeight(25);
     obj.label4:setName("label4");
 
     obj.label5 = GUI.fromHandle(_obj_newObject("label"));
     obj.label5:setParent(obj.rectangle2);
     obj.label5:setLeft(5);
-    obj.label5:setTop(95);
-    obj.label5:setText("Continente");
+    obj.label5:setTop(65);
+    obj.label5:setText("Casa");
     obj.label5:setWidth(90);
     obj.label5:setHeight(25);
     obj.label5:setName("label5");
@@ -172,29 +163,38 @@ local function constructNew_HarryFicha()
     obj.label6 = GUI.fromHandle(_obj_newObject("label"));
     obj.label6:setParent(obj.rectangle2);
     obj.label6:setLeft(5);
-    obj.label6:setTop(125);
-    obj.label6:setText("Classe");
+    obj.label6:setTop(95);
+    obj.label6:setText("Continente");
     obj.label6:setWidth(90);
     obj.label6:setHeight(25);
     obj.label6:setName("label6");
 
     obj.label7 = GUI.fromHandle(_obj_newObject("label"));
     obj.label7:setParent(obj.rectangle2);
-    obj.label7:setLeft(130);
+    obj.label7:setLeft(5);
     obj.label7:setTop(125);
-    obj.label7:setText("Level");
+    obj.label7:setText("Classe");
     obj.label7:setWidth(90);
     obj.label7:setHeight(25);
     obj.label7:setName("label7");
 
     obj.label8 = GUI.fromHandle(_obj_newObject("label"));
     obj.label8:setParent(obj.rectangle2);
-    obj.label8:setLeft(222);
+    obj.label8:setLeft(130);
     obj.label8:setTop(125);
-    obj.label8:setText("XP");
+    obj.label8:setText("Level");
     obj.label8:setWidth(90);
     obj.label8:setHeight(25);
     obj.label8:setName("label8");
+
+    obj.label9 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label9:setParent(obj.rectangle2);
+    obj.label9:setLeft(222);
+    obj.label9:setTop(125);
+    obj.label9:setText("XP");
+    obj.label9:setWidth(90);
+    obj.label9:setHeight(25);
+    obj.label9:setName("label9");
 
     obj.edit1 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit1:setParent(obj.rectangle2);
@@ -368,22 +368,13 @@ local function constructNew_HarryFicha()
     obj.rectangle8:setColor("#1F2328");
     obj.rectangle8:setName("rectangle8");
 
-    obj.label9 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label9:setParent(obj.rectangle8);
-    obj.label9:setMargins({left=5});
-    obj.label9:setHorzTextAlign("center");
-    obj.label9:setAlign("left");
-    obj.label9:setWidth(100);
-    obj.label9:setText("CORPO");
-    obj.label9:setName("label9");
-
     obj.label10 = GUI.fromHandle(_obj_newObject("label"));
     obj.label10:setParent(obj.rectangle8);
     obj.label10:setMargins({left=5});
     obj.label10:setHorzTextAlign("center");
     obj.label10:setAlign("left");
-    obj.label10:setWidth(40);
-    obj.label10:setText("MOD");
+    obj.label10:setWidth(100);
+    obj.label10:setText("CORPO");
     obj.label10:setName("label10");
 
     obj.label11 = GUI.fromHandle(_obj_newObject("label"));
@@ -392,8 +383,17 @@ local function constructNew_HarryFicha()
     obj.label11:setHorzTextAlign("center");
     obj.label11:setAlign("left");
     obj.label11:setWidth(40);
-    obj.label11:setText("OUT");
+    obj.label11:setText("MOD");
     obj.label11:setName("label11");
+
+    obj.label12 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label12:setParent(obj.rectangle8);
+    obj.label12:setMargins({left=5});
+    obj.label12:setHorzTextAlign("center");
+    obj.label12:setAlign("left");
+    obj.label12:setWidth(40);
+    obj.label12:setText("OUT");
+    obj.label12:setName("label12");
 
     obj.rectangle9 = GUI.fromHandle(_obj_newObject("rectangle"));
     obj.rectangle9:setParent(obj.layout3);
@@ -578,22 +578,13 @@ local function constructNew_HarryFicha()
     obj.rectangle14:setColor("#1F2328");
     obj.rectangle14:setName("rectangle14");
 
-    obj.label12 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label12:setParent(obj.rectangle14);
-    obj.label12:setMargins({left=5});
-    obj.label12:setHorzTextAlign("center");
-    obj.label12:setAlign("left");
-    obj.label12:setWidth(100);
-    obj.label12:setText("MENTE");
-    obj.label12:setName("label12");
-
     obj.label13 = GUI.fromHandle(_obj_newObject("label"));
     obj.label13:setParent(obj.rectangle14);
     obj.label13:setMargins({left=5});
     obj.label13:setHorzTextAlign("center");
     obj.label13:setAlign("left");
-    obj.label13:setWidth(40);
-    obj.label13:setText("MOD");
+    obj.label13:setWidth(100);
+    obj.label13:setText("MENTE");
     obj.label13:setName("label13");
 
     obj.label14 = GUI.fromHandle(_obj_newObject("label"));
@@ -602,8 +593,17 @@ local function constructNew_HarryFicha()
     obj.label14:setHorzTextAlign("center");
     obj.label14:setAlign("left");
     obj.label14:setWidth(40);
-    obj.label14:setText("OUT");
+    obj.label14:setText("MOD");
     obj.label14:setName("label14");
+
+    obj.label15 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label15:setParent(obj.rectangle14);
+    obj.label15:setMargins({left=5});
+    obj.label15:setHorzTextAlign("center");
+    obj.label15:setAlign("left");
+    obj.label15:setWidth(40);
+    obj.label15:setText("OUT");
+    obj.label15:setName("label15");
 
     obj.rectangle15 = GUI.fromHandle(_obj_newObject("rectangle"));
     obj.rectangle15:setParent(obj.layout3);
@@ -710,13 +710,13 @@ local function constructNew_HarryFicha()
     obj.edit23:setField("SAB_OUT");
     obj.edit23:setName("edit23");
 
-    obj.label15 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label15:setParent(obj.layout3);
-    obj.label15:setAlign("top");
-    obj.label15:setHeight(35);
-    obj.label15:setMargins({top=50});
-    obj.label15:setText("Ficha na Versão 2.2");
-    obj.label15:setName("label15");
+    obj.label16 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label16:setParent(obj.layout3);
+    obj.label16:setAlign("top");
+    obj.label16:setHeight(35);
+    obj.label16:setMargins({top=50});
+    obj.label16:setText("Ficha na Versão 2.2");
+    obj.label16:setName("label16");
 
     obj.layout4 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout4:setParent(obj.scrollBox1);
@@ -750,14 +750,14 @@ local function constructNew_HarryFicha()
     obj.layout6:setMargins({left=35});
     obj.layout6:setName("layout6");
 
-    obj.label16 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label16:setParent(obj.layout6);
-    obj.label16:setAlign("top");
-    obj.label16:setHeight(50);
-    obj.label16:setText("Corpo");
-    obj.label16:setHorzTextAlign("center");
-    obj.label16:setFontSize(20);
-    obj.label16:setName("label16");
+    obj.label17 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label17:setParent(obj.layout6);
+    obj.label17:setAlign("top");
+    obj.label17:setHeight(50);
+    obj.label17:setText("Corpo");
+    obj.label17:setHorzTextAlign("center");
+    obj.label17:setFontSize(20);
+    obj.label17:setName("label17");
 
     obj.layout7 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout7:setParent(obj.layout6);
@@ -766,26 +766,17 @@ local function constructNew_HarryFicha()
     obj.layout7:setMargins({top=3});
     obj.layout7:setName("layout7");
 
-    obj.label17 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label17:setParent(obj.layout7);
-    obj.label17:setText("Pericias");
-    obj.label17:setTop(5);
-    obj.label17:setHorzTextAlign("center");
-    obj.label17:setAlign("left");
-    obj.label17:setName("label17");
-
     obj.label18 = GUI.fromHandle(_obj_newObject("label"));
     obj.label18:setParent(obj.layout7);
-    obj.label18:setText("Atr");
-    obj.label18:setAlign("left");
-    obj.label18:setMargins({left = 5});
-    obj.label18:setWidth(30);
+    obj.label18:setText("Pericias");
+    obj.label18:setTop(5);
     obj.label18:setHorzTextAlign("center");
+    obj.label18:setAlign("left");
     obj.label18:setName("label18");
 
     obj.label19 = GUI.fromHandle(_obj_newObject("label"));
     obj.label19:setParent(obj.layout7);
-    obj.label19:setText("Grad");
+    obj.label19:setText("Atr");
     obj.label19:setAlign("left");
     obj.label19:setMargins({left = 5});
     obj.label19:setWidth(30);
@@ -794,7 +785,7 @@ local function constructNew_HarryFicha()
 
     obj.label20 = GUI.fromHandle(_obj_newObject("label"));
     obj.label20:setParent(obj.layout7);
-    obj.label20:setText("Out");
+    obj.label20:setText("Grad");
     obj.label20:setAlign("left");
     obj.label20:setMargins({left = 5});
     obj.label20:setWidth(30);
@@ -803,12 +794,21 @@ local function constructNew_HarryFicha()
 
     obj.label21 = GUI.fromHandle(_obj_newObject("label"));
     obj.label21:setParent(obj.layout7);
-    obj.label21:setText("Total");
+    obj.label21:setText("Out");
     obj.label21:setAlign("left");
     obj.label21:setMargins({left = 5});
     obj.label21:setWidth(30);
     obj.label21:setHorzTextAlign("center");
     obj.label21:setName("label21");
+
+    obj.label22 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label22:setParent(obj.layout7);
+    obj.label22:setText("Total");
+    obj.label22:setAlign("left");
+    obj.label22:setMargins({left = 5});
+    obj.label22:setWidth(30);
+    obj.label22:setHorzTextAlign("center");
+    obj.label22:setName("label22");
 
     obj.layout8 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout8:setParent(obj.layout6);
@@ -859,14 +859,14 @@ local function constructNew_HarryFicha()
     obj.edit26:setHorzTextAlign("center");
     obj.edit26:setName("edit26");
 
-    obj.label22 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label22:setParent(obj.layout8);
-    obj.label22:setField("ACR_Total");
-    obj.label22:setAlign("left");
-    obj.label22:setMargins({left = 5});
-    obj.label22:setWidth(30);
-    obj.label22:setHorzTextAlign("center");
-    obj.label22:setName("label22");
+    obj.label23 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label23:setParent(obj.layout8);
+    obj.label23:setField("ACR_Total");
+    obj.label23:setAlign("left");
+    obj.label23:setMargins({left = 5});
+    obj.label23:setWidth(30);
+    obj.label23:setHorzTextAlign("center");
+    obj.label23:setName("label23");
 
     obj.layout9 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout9:setParent(obj.layout6);
@@ -917,14 +917,14 @@ local function constructNew_HarryFicha()
     obj.edit29:setHorzTextAlign("center");
     obj.edit29:setName("edit29");
 
-    obj.label23 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label23:setParent(obj.layout9);
-    obj.label23:setField("ATL_Total");
-    obj.label23:setAlign("left");
-    obj.label23:setMargins({left = 5});
-    obj.label23:setWidth(30);
-    obj.label23:setHorzTextAlign("center");
-    obj.label23:setName("label23");
+    obj.label24 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label24:setParent(obj.layout9);
+    obj.label24:setField("ATL_Total");
+    obj.label24:setAlign("left");
+    obj.label24:setMargins({left = 5});
+    obj.label24:setWidth(30);
+    obj.label24:setHorzTextAlign("center");
+    obj.label24:setName("label24");
 
     obj.layout10 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout10:setParent(obj.layout6);
@@ -975,14 +975,14 @@ local function constructNew_HarryFicha()
     obj.edit32:setHorzTextAlign("center");
     obj.edit32:setName("edit32");
 
-    obj.label24 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label24:setParent(obj.layout10);
-    obj.label24:setField("COR_Total");
-    obj.label24:setAlign("left");
-    obj.label24:setMargins({left = 5});
-    obj.label24:setWidth(30);
-    obj.label24:setHorzTextAlign("center");
-    obj.label24:setName("label24");
+    obj.label25 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label25:setParent(obj.layout10);
+    obj.label25:setField("COR_Total");
+    obj.label25:setAlign("left");
+    obj.label25:setMargins({left = 5});
+    obj.label25:setWidth(30);
+    obj.label25:setHorzTextAlign("center");
+    obj.label25:setName("label25");
 
     obj.layout11 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout11:setParent(obj.layout6);
@@ -1033,14 +1033,14 @@ local function constructNew_HarryFicha()
     obj.edit35:setHorzTextAlign("center");
     obj.edit35:setName("edit35");
 
-    obj.label25 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label25:setParent(obj.layout11);
-    obj.label25:setField("FUR_Total");
-    obj.label25:setAlign("left");
-    obj.label25:setMargins({left = 5});
-    obj.label25:setWidth(30);
-    obj.label25:setHorzTextAlign("center");
-    obj.label25:setName("label25");
+    obj.label26 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label26:setParent(obj.layout11);
+    obj.label26:setField("FUR_Total");
+    obj.label26:setAlign("left");
+    obj.label26:setMargins({left = 5});
+    obj.label26:setWidth(30);
+    obj.label26:setHorzTextAlign("center");
+    obj.label26:setName("label26");
 
     obj.layout12 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout12:setParent(obj.layout6);
@@ -1091,14 +1091,14 @@ local function constructNew_HarryFicha()
     obj.edit38:setHorzTextAlign("center");
     obj.edit38:setName("edit38");
 
-    obj.label26 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label26:setParent(obj.layout12);
-    obj.label26:setField("PRE_Total");
-    obj.label26:setAlign("left");
-    obj.label26:setMargins({left = 5});
-    obj.label26:setWidth(30);
-    obj.label26:setHorzTextAlign("center");
-    obj.label26:setName("label26");
+    obj.label27 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label27:setParent(obj.layout12);
+    obj.label27:setField("PRE_Total");
+    obj.label27:setAlign("left");
+    obj.label27:setMargins({left = 5});
+    obj.label27:setWidth(30);
+    obj.label27:setHorzTextAlign("center");
+    obj.label27:setName("label27");
 
     obj.layout13 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout13:setParent(obj.layout6);
@@ -1149,14 +1149,14 @@ local function constructNew_HarryFicha()
     obj.edit41:setHorzTextAlign("center");
     obj.edit41:setName("edit41");
 
-    obj.label27 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label27:setParent(obj.layout13);
-    obj.label27:setField("VEI_Total");
-    obj.label27:setAlign("left");
-    obj.label27:setMargins({left = 5});
-    obj.label27:setWidth(30);
-    obj.label27:setHorzTextAlign("center");
-    obj.label27:setName("label27");
+    obj.label28 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label28:setParent(obj.layout13);
+    obj.label28:setField("VEI_Total");
+    obj.label28:setAlign("left");
+    obj.label28:setMargins({left = 5});
+    obj.label28:setWidth(30);
+    obj.label28:setHorzTextAlign("center");
+    obj.label28:setName("label28");
 
     obj.tab3 = GUI.fromHandle(_obj_newObject("tab"));
     obj.tab3:setParent(obj.tabControl2);
@@ -1171,14 +1171,14 @@ local function constructNew_HarryFicha()
     obj.layout14:setAlign("top");
     obj.layout14:setName("layout14");
 
-    obj.label28 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label28:setParent(obj.layout14);
-    obj.label28:setAlign("top");
-    obj.label28:setHeight(50);
-    obj.label28:setText("Mente");
-    obj.label28:setHorzTextAlign("center");
-    obj.label28:setFontSize(20);
-    obj.label28:setName("label28");
+    obj.label29 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label29:setParent(obj.layout14);
+    obj.label29:setAlign("top");
+    obj.label29:setHeight(50);
+    obj.label29:setText("Mente");
+    obj.label29:setHorzTextAlign("center");
+    obj.label29:setFontSize(20);
+    obj.label29:setName("label29");
 
     obj.layout15 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout15:setParent(obj.layout14);
@@ -1187,26 +1187,17 @@ local function constructNew_HarryFicha()
     obj.layout15:setMargins({top=3});
     obj.layout15:setName("layout15");
 
-    obj.label29 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label29:setParent(obj.layout15);
-    obj.label29:setText("Pericias");
-    obj.label29:setTop(5);
-    obj.label29:setHorzTextAlign("center");
-    obj.label29:setAlign("left");
-    obj.label29:setName("label29");
-
     obj.label30 = GUI.fromHandle(_obj_newObject("label"));
     obj.label30:setParent(obj.layout15);
-    obj.label30:setText("Atr");
-    obj.label30:setAlign("left");
-    obj.label30:setMargins({left = 5});
-    obj.label30:setWidth(30);
+    obj.label30:setText("Pericias");
+    obj.label30:setTop(5);
     obj.label30:setHorzTextAlign("center");
+    obj.label30:setAlign("left");
     obj.label30:setName("label30");
 
     obj.label31 = GUI.fromHandle(_obj_newObject("label"));
     obj.label31:setParent(obj.layout15);
-    obj.label31:setText("Grad");
+    obj.label31:setText("Atr");
     obj.label31:setAlign("left");
     obj.label31:setMargins({left = 5});
     obj.label31:setWidth(30);
@@ -1215,7 +1206,7 @@ local function constructNew_HarryFicha()
 
     obj.label32 = GUI.fromHandle(_obj_newObject("label"));
     obj.label32:setParent(obj.layout15);
-    obj.label32:setText("Out");
+    obj.label32:setText("Grad");
     obj.label32:setAlign("left");
     obj.label32:setMargins({left = 5});
     obj.label32:setWidth(30);
@@ -1224,12 +1215,21 @@ local function constructNew_HarryFicha()
 
     obj.label33 = GUI.fromHandle(_obj_newObject("label"));
     obj.label33:setParent(obj.layout15);
-    obj.label33:setText("Total");
+    obj.label33:setText("Out");
     obj.label33:setAlign("left");
     obj.label33:setMargins({left = 5});
     obj.label33:setWidth(30);
     obj.label33:setHorzTextAlign("center");
     obj.label33:setName("label33");
+
+    obj.label34 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label34:setParent(obj.layout15);
+    obj.label34:setText("Total");
+    obj.label34:setAlign("left");
+    obj.label34:setMargins({left = 5});
+    obj.label34:setWidth(30);
+    obj.label34:setHorzTextAlign("center");
+    obj.label34:setName("label34");
 
     obj.layout16 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout16:setParent(obj.layout14);
@@ -1280,14 +1280,14 @@ local function constructNew_HarryFicha()
     obj.edit44:setHorzTextAlign("center");
     obj.edit44:setName("edit44");
 
-    obj.label34 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label34:setParent(obj.layout16);
-    obj.label34:setField("CON_Total");
-    obj.label34:setAlign("left");
-    obj.label34:setMargins({left = 5});
-    obj.label34:setWidth(30);
-    obj.label34:setHorzTextAlign("center");
-    obj.label34:setName("label34");
+    obj.label35 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label35:setParent(obj.layout16);
+    obj.label35:setField("CON_Total");
+    obj.label35:setAlign("left");
+    obj.label35:setMargins({left = 5});
+    obj.label35:setWidth(30);
+    obj.label35:setHorzTextAlign("center");
+    obj.label35:setName("label35");
 
     obj.layout17 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout17:setParent(obj.layout14);
@@ -1338,14 +1338,14 @@ local function constructNew_HarryFicha()
     obj.edit47:setHorzTextAlign("center");
     obj.edit47:setName("edit47");
 
-    obj.label35 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label35:setParent(obj.layout17);
-    obj.label35:setField("ENG_Total");
-    obj.label35:setAlign("left");
-    obj.label35:setMargins({left = 5});
-    obj.label35:setWidth(30);
-    obj.label35:setHorzTextAlign("center");
-    obj.label35:setName("label35");
+    obj.label36 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label36:setParent(obj.layout17);
+    obj.label36:setField("ENG_Total");
+    obj.label36:setAlign("left");
+    obj.label36:setMargins({left = 5});
+    obj.label36:setWidth(30);
+    obj.label36:setHorzTextAlign("center");
+    obj.label36:setName("label36");
 
     obj.layout18 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout18:setParent(obj.layout14);
@@ -1396,14 +1396,14 @@ local function constructNew_HarryFicha()
     obj.edit50:setHorzTextAlign("center");
     obj.edit50:setName("edit50");
 
-    obj.label36 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label36:setParent(obj.layout18);
-    obj.label36:setField("INT_Total");
-    obj.label36:setAlign("left");
-    obj.label36:setMargins({left = 5});
-    obj.label36:setWidth(30);
-    obj.label36:setHorzTextAlign("center");
-    obj.label36:setName("label36");
+    obj.label37 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label37:setParent(obj.layout18);
+    obj.label37:setField("INT_Total");
+    obj.label37:setAlign("left");
+    obj.label37:setMargins({left = 5});
+    obj.label37:setWidth(30);
+    obj.label37:setHorzTextAlign("center");
+    obj.label37:setName("label37");
 
     obj.layout19 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout19:setParent(obj.layout14);
@@ -1454,14 +1454,14 @@ local function constructNew_HarryFicha()
     obj.edit53:setHorzTextAlign("center");
     obj.edit53:setName("edit53");
 
-    obj.label37 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label37:setParent(obj.layout19);
-    obj.label37:setField("INTU_Total");
-    obj.label37:setAlign("left");
-    obj.label37:setMargins({left = 5});
-    obj.label37:setWidth(30);
-    obj.label37:setHorzTextAlign("center");
-    obj.label37:setName("label37");
+    obj.label38 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label38:setParent(obj.layout19);
+    obj.label38:setField("INTU_Total");
+    obj.label38:setAlign("left");
+    obj.label38:setMargins({left = 5});
+    obj.label38:setWidth(30);
+    obj.label38:setHorzTextAlign("center");
+    obj.label38:setName("label38");
 
     obj.layout20 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout20:setParent(obj.layout14);
@@ -1512,14 +1512,14 @@ local function constructNew_HarryFicha()
     obj.edit56:setHorzTextAlign("center");
     obj.edit56:setName("edit56");
 
-    obj.label38 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label38:setParent(obj.layout20);
-    obj.label38:setField("INV_Total");
-    obj.label38:setAlign("left");
-    obj.label38:setMargins({left = 5});
-    obj.label38:setWidth(30);
-    obj.label38:setHorzTextAlign("center");
-    obj.label38:setName("label38");
+    obj.label39 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label39:setParent(obj.layout20);
+    obj.label39:setField("INV_Total");
+    obj.label39:setAlign("left");
+    obj.label39:setMargins({left = 5});
+    obj.label39:setWidth(30);
+    obj.label39:setHorzTextAlign("center");
+    obj.label39:setName("label39");
 
     obj.layout21 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout21:setParent(obj.layout14);
@@ -1570,14 +1570,14 @@ local function constructNew_HarryFicha()
     obj.edit59:setHorzTextAlign("center");
     obj.edit59:setName("edit59");
 
-    obj.label39 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label39:setParent(obj.layout21);
-    obj.label39:setField("PERC_Total");
-    obj.label39:setAlign("left");
-    obj.label39:setMargins({left = 5});
-    obj.label39:setWidth(30);
-    obj.label39:setHorzTextAlign("center");
-    obj.label39:setName("label39");
+    obj.label40 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label40:setParent(obj.layout21);
+    obj.label40:setField("PERC_Total");
+    obj.label40:setAlign("left");
+    obj.label40:setMargins({left = 5});
+    obj.label40:setWidth(30);
+    obj.label40:setHorzTextAlign("center");
+    obj.label40:setName("label40");
 
     obj.layout22 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout22:setParent(obj.layout14);
@@ -1628,14 +1628,14 @@ local function constructNew_HarryFicha()
     obj.edit62:setHorzTextAlign("center");
     obj.edit62:setName("edit62");
 
-    obj.label40 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label40:setParent(obj.layout22);
-    obj.label40:setField("PERS_Total");
-    obj.label40:setAlign("left");
-    obj.label40:setMargins({left = 5});
-    obj.label40:setWidth(30);
-    obj.label40:setHorzTextAlign("center");
-    obj.label40:setName("label40");
+    obj.label41 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label41:setParent(obj.layout22);
+    obj.label41:setField("PERS_Total");
+    obj.label41:setAlign("left");
+    obj.label41:setMargins({left = 5});
+    obj.label41:setWidth(30);
+    obj.label41:setHorzTextAlign("center");
+    obj.label41:setName("label41");
 
     obj.layout23 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout23:setParent(obj.layout14);
@@ -1686,14 +1686,14 @@ local function constructNew_HarryFicha()
     obj.edit65:setHorzTextAlign("center");
     obj.edit65:setName("edit65");
 
-    obj.label41 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label41:setParent(obj.layout23);
-    obj.label41:setField("TRA_Total");
-    obj.label41:setAlign("left");
-    obj.label41:setMargins({left = 5});
-    obj.label41:setWidth(30);
-    obj.label41:setHorzTextAlign("center");
-    obj.label41:setName("label41");
+    obj.label42 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label42:setParent(obj.layout23);
+    obj.label42:setField("TRA_Total");
+    obj.label42:setAlign("left");
+    obj.label42:setMargins({left = 5});
+    obj.label42:setWidth(30);
+    obj.label42:setHorzTextAlign("center");
+    obj.label42:setName("label42");
 
     obj.tab4 = GUI.fromHandle(_obj_newObject("tab"));
     obj.tab4:setParent(obj.tabControl2);
@@ -1707,14 +1707,14 @@ local function constructNew_HarryFicha()
     obj.layout24:setAlign("top");
     obj.layout24:setName("layout24");
 
-    obj.label42 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label42:setParent(obj.layout24);
-    obj.label42:setAlign("top");
-    obj.label42:setHeight(50);
-    obj.label42:setText("Conhecimentos");
-    obj.label42:setHorzTextAlign("center");
-    obj.label42:setFontSize(20);
-    obj.label42:setName("label42");
+    obj.label43 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label43:setParent(obj.layout24);
+    obj.label43:setAlign("top");
+    obj.label43:setHeight(50);
+    obj.label43:setText("Conhecimentos");
+    obj.label43:setHorzTextAlign("center");
+    obj.label43:setFontSize(20);
+    obj.label43:setName("label43");
 
     obj.layout25 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout25:setParent(obj.layout24);
@@ -1723,26 +1723,17 @@ local function constructNew_HarryFicha()
     obj.layout25:setMargins({top=3});
     obj.layout25:setName("layout25");
 
-    obj.label43 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label43:setParent(obj.layout25);
-    obj.label43:setText("Pericias");
-    obj.label43:setTop(5);
-    obj.label43:setHorzTextAlign("center");
-    obj.label43:setAlign("left");
-    obj.label43:setName("label43");
-
     obj.label44 = GUI.fromHandle(_obj_newObject("label"));
     obj.label44:setParent(obj.layout25);
-    obj.label44:setText("Atr");
-    obj.label44:setAlign("left");
-    obj.label44:setMargins({left = 5});
-    obj.label44:setWidth(30);
+    obj.label44:setText("Pericias");
+    obj.label44:setTop(5);
     obj.label44:setHorzTextAlign("center");
+    obj.label44:setAlign("left");
     obj.label44:setName("label44");
 
     obj.label45 = GUI.fromHandle(_obj_newObject("label"));
     obj.label45:setParent(obj.layout25);
-    obj.label45:setText("Grad");
+    obj.label45:setText("Atr");
     obj.label45:setAlign("left");
     obj.label45:setMargins({left = 5});
     obj.label45:setWidth(30);
@@ -1751,7 +1742,7 @@ local function constructNew_HarryFicha()
 
     obj.label46 = GUI.fromHandle(_obj_newObject("label"));
     obj.label46:setParent(obj.layout25);
-    obj.label46:setText("Out");
+    obj.label46:setText("Grad");
     obj.label46:setAlign("left");
     obj.label46:setMargins({left = 5});
     obj.label46:setWidth(30);
@@ -1760,12 +1751,21 @@ local function constructNew_HarryFicha()
 
     obj.label47 = GUI.fromHandle(_obj_newObject("label"));
     obj.label47:setParent(obj.layout25);
-    obj.label47:setText("Total");
+    obj.label47:setText("Out");
     obj.label47:setAlign("left");
     obj.label47:setMargins({left = 5});
     obj.label47:setWidth(30);
     obj.label47:setHorzTextAlign("center");
     obj.label47:setName("label47");
+
+    obj.label48 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label48:setParent(obj.layout25);
+    obj.label48:setText("Total");
+    obj.label48:setAlign("left");
+    obj.label48:setMargins({left = 5});
+    obj.label48:setWidth(30);
+    obj.label48:setHorzTextAlign("center");
+    obj.label48:setName("label48");
 
     obj.layout26 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout26:setParent(obj.layout24);
@@ -1816,14 +1816,14 @@ local function constructNew_HarryFicha()
     obj.edit68:setHorzTextAlign("center");
     obj.edit68:setName("edit68");
 
-    obj.label48 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label48:setParent(obj.layout26);
-    obj.label48:setField("ATU_Total");
-    obj.label48:setAlign("left");
-    obj.label48:setMargins({left = 5});
-    obj.label48:setWidth(30);
-    obj.label48:setHorzTextAlign("center");
-    obj.label48:setName("label48");
+    obj.label49 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label49:setParent(obj.layout26);
+    obj.label49:setField("ATU_Total");
+    obj.label49:setAlign("left");
+    obj.label49:setMargins({left = 5});
+    obj.label49:setWidth(30);
+    obj.label49:setHorzTextAlign("center");
+    obj.label49:setName("label49");
 
     obj.layout27 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout27:setParent(obj.layout24);
@@ -1874,14 +1874,14 @@ local function constructNew_HarryFicha()
     obj.edit71:setHorzTextAlign("center");
     obj.edit71:setName("edit71");
 
-    obj.label49 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label49:setParent(obj.layout27);
-    obj.label49:setField("C_ADI_Total");
-    obj.label49:setAlign("left");
-    obj.label49:setMargins({left = 5});
-    obj.label49:setWidth(30);
-    obj.label49:setHorzTextAlign("center");
-    obj.label49:setName("label49");
+    obj.label50 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label50:setParent(obj.layout27);
+    obj.label50:setField("C_ADI_Total");
+    obj.label50:setAlign("left");
+    obj.label50:setMargins({left = 5});
+    obj.label50:setWidth(30);
+    obj.label50:setHorzTextAlign("center");
+    obj.label50:setName("label50");
 
     obj.layout28 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout28:setParent(obj.layout24);
@@ -1932,14 +1932,14 @@ local function constructNew_HarryFicha()
     obj.edit74:setHorzTextAlign("center");
     obj.edit74:setName("edit74");
 
-    obj.label50 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label50:setParent(obj.layout28);
-    obj.label50:setField("C_AZA_Total");
-    obj.label50:setAlign("left");
-    obj.label50:setMargins({left = 5});
-    obj.label50:setWidth(30);
-    obj.label50:setHorzTextAlign("center");
-    obj.label50:setName("label50");
+    obj.label51 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label51:setParent(obj.layout28);
+    obj.label51:setField("C_AZA_Total");
+    obj.label51:setAlign("left");
+    obj.label51:setMargins({left = 5});
+    obj.label51:setWidth(30);
+    obj.label51:setHorzTextAlign("center");
+    obj.label51:setName("label51");
 
     obj.layout29 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout29:setParent(obj.layout24);
@@ -1990,14 +1990,14 @@ local function constructNew_HarryFicha()
     obj.edit77:setHorzTextAlign("center");
     obj.edit77:setName("edit77");
 
-    obj.label51 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label51:setParent(obj.layout29);
-    obj.label51:setField("C_CON_Total");
-    obj.label51:setAlign("left");
-    obj.label51:setMargins({left = 5});
-    obj.label51:setWidth(30);
-    obj.label51:setHorzTextAlign("center");
-    obj.label51:setName("label51");
+    obj.label52 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label52:setParent(obj.layout29);
+    obj.label52:setField("C_CON_Total");
+    obj.label52:setAlign("left");
+    obj.label52:setMargins({left = 5});
+    obj.label52:setWidth(30);
+    obj.label52:setHorzTextAlign("center");
+    obj.label52:setName("label52");
 
     obj.layout30 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout30:setParent(obj.layout24);
@@ -2048,14 +2048,14 @@ local function constructNew_HarryFicha()
     obj.edit80:setHorzTextAlign("center");
     obj.edit80:setName("edit80");
 
-    obj.label52 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label52:setParent(obj.layout30);
-    obj.label52:setField("C_CRI_Total");
-    obj.label52:setAlign("left");
-    obj.label52:setMargins({left = 5});
-    obj.label52:setWidth(30);
-    obj.label52:setHorzTextAlign("center");
-    obj.label52:setName("label52");
+    obj.label53 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label53:setParent(obj.layout30);
+    obj.label53:setField("C_CRI_Total");
+    obj.label53:setAlign("left");
+    obj.label53:setMargins({left = 5});
+    obj.label53:setWidth(30);
+    obj.label53:setHorzTextAlign("center");
+    obj.label53:setName("label53");
 
     obj.layout31 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout31:setParent(obj.layout24);
@@ -2106,14 +2106,14 @@ local function constructNew_HarryFicha()
     obj.edit83:setHorzTextAlign("center");
     obj.edit83:setName("edit83");
 
-    obj.label53 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label53:setParent(obj.layout31);
-    obj.label53:setField("C_ENC_Total");
-    obj.label53:setAlign("left");
-    obj.label53:setMargins({left = 5});
-    obj.label53:setWidth(30);
-    obj.label53:setHorzTextAlign("center");
-    obj.label53:setName("label53");
+    obj.label54 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label54:setParent(obj.layout31);
+    obj.label54:setField("C_ENC_Total");
+    obj.label54:setAlign("left");
+    obj.label54:setMargins({left = 5});
+    obj.label54:setWidth(30);
+    obj.label54:setHorzTextAlign("center");
+    obj.label54:setName("label54");
 
     obj.layout32 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout32:setParent(obj.layout24);
@@ -2164,14 +2164,14 @@ local function constructNew_HarryFicha()
     obj.edit86:setHorzTextAlign("center");
     obj.edit86:setName("edit86");
 
-    obj.label54 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label54:setParent(obj.layout32);
-    obj.label54:setField("C_FEI_Total");
-    obj.label54:setAlign("left");
-    obj.label54:setMargins({left = 5});
-    obj.label54:setWidth(30);
-    obj.label54:setHorzTextAlign("center");
-    obj.label54:setName("label54");
+    obj.label55 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label55:setParent(obj.layout32);
+    obj.label55:setField("C_FEI_Total");
+    obj.label55:setAlign("left");
+    obj.label55:setMargins({left = 5});
+    obj.label55:setWidth(30);
+    obj.label55:setHorzTextAlign("center");
+    obj.label55:setName("label55");
 
     obj.layout33 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout33:setParent(obj.layout24);
@@ -2222,14 +2222,14 @@ local function constructNew_HarryFicha()
     obj.edit89:setHorzTextAlign("center");
     obj.edit89:setName("edit89");
 
-    obj.label55 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label55:setParent(obj.layout33);
-    obj.label55:setField("C_HER_Total");
-    obj.label55:setAlign("left");
-    obj.label55:setMargins({left = 5});
-    obj.label55:setWidth(30);
-    obj.label55:setHorzTextAlign("center");
-    obj.label55:setName("label55");
+    obj.label56 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label56:setParent(obj.layout33);
+    obj.label56:setField("C_HER_Total");
+    obj.label56:setAlign("left");
+    obj.label56:setMargins({left = 5});
+    obj.label56:setWidth(30);
+    obj.label56:setHorzTextAlign("center");
+    obj.label56:setName("label56");
 
     obj.layout34 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout34:setParent(obj.layout24);
@@ -2280,14 +2280,14 @@ local function constructNew_HarryFicha()
     obj.edit92:setHorzTextAlign("center");
     obj.edit92:setName("edit92");
 
-    obj.label56 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label56:setParent(obj.layout34);
-    obj.label56:setField("C_MAL_Total");
-    obj.label56:setAlign("left");
-    obj.label56:setMargins({left = 5});
-    obj.label56:setWidth(30);
-    obj.label56:setHorzTextAlign("center");
-    obj.label56:setName("label56");
+    obj.label57 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label57:setParent(obj.layout34);
+    obj.label57:setField("C_MAL_Total");
+    obj.label57:setAlign("left");
+    obj.label57:setMargins({left = 5});
+    obj.label57:setWidth(30);
+    obj.label57:setHorzTextAlign("center");
+    obj.label57:setName("label57");
 
     obj.layout35 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout35:setParent(obj.layout24);
@@ -2338,14 +2338,14 @@ local function constructNew_HarryFicha()
     obj.edit95:setHorzTextAlign("center");
     obj.edit95:setName("edit95");
 
-    obj.label57 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label57:setParent(obj.layout35);
-    obj.label57:setField("C_POC_Total");
-    obj.label57:setAlign("left");
-    obj.label57:setMargins({left = 5});
-    obj.label57:setWidth(30);
-    obj.label57:setHorzTextAlign("center");
-    obj.label57:setName("label57");
+    obj.label58 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label58:setParent(obj.layout35);
+    obj.label58:setField("C_POC_Total");
+    obj.label58:setAlign("left");
+    obj.label58:setMargins({left = 5});
+    obj.label58:setWidth(30);
+    obj.label58:setHorzTextAlign("center");
+    obj.label58:setName("label58");
 
     obj.layout36 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout36:setParent(obj.layout24);
@@ -2396,14 +2396,14 @@ local function constructNew_HarryFicha()
     obj.edit98:setHorzTextAlign("center");
     obj.edit98:setName("edit98");
 
-    obj.label58 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label58:setParent(obj.layout36);
-    obj.label58:setField("C_RUN_Total");
-    obj.label58:setAlign("left");
-    obj.label58:setMargins({left = 5});
-    obj.label58:setWidth(30);
-    obj.label58:setHorzTextAlign("center");
-    obj.label58:setName("label58");
+    obj.label59 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label59:setParent(obj.layout36);
+    obj.label59:setField("C_RUN_Total");
+    obj.label59:setAlign("left");
+    obj.label59:setMargins({left = 5});
+    obj.label59:setWidth(30);
+    obj.label59:setHorzTextAlign("center");
+    obj.label59:setName("label59");
 
     obj.layout37 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout37:setParent(obj.layout24);
@@ -2454,14 +2454,14 @@ local function constructNew_HarryFicha()
     obj.edit101:setHorzTextAlign("center");
     obj.edit101:setName("edit101");
 
-    obj.label59 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label59:setParent(obj.layout37);
-    obj.label59:setField("C_TRA_Total");
-    obj.label59:setAlign("left");
-    obj.label59:setMargins({left = 5});
-    obj.label59:setWidth(30);
-    obj.label59:setHorzTextAlign("center");
-    obj.label59:setName("label59");
+    obj.label60 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label60:setParent(obj.layout37);
+    obj.label60:setField("C_TRA_Total");
+    obj.label60:setAlign("left");
+    obj.label60:setMargins({left = 5});
+    obj.label60:setWidth(30);
+    obj.label60:setHorzTextAlign("center");
+    obj.label60:setName("label60");
 
     obj.tab5 = GUI.fromHandle(_obj_newObject("tab"));
     obj.tab5:setParent(obj.tabControl2);
@@ -2475,14 +2475,14 @@ local function constructNew_HarryFicha()
     obj.layout38:setPadding({left=10, right=10});
     obj.layout38:setName("layout38");
 
-    obj.label60 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label60:setParent(obj.layout38);
-    obj.label60:setAlign("top");
-    obj.label60:setHeight(50);
-    obj.label60:setText("Outros");
-    obj.label60:setHorzTextAlign("center");
-    obj.label60:setFontSize(20);
-    obj.label60:setName("label60");
+    obj.label61 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label61:setParent(obj.layout38);
+    obj.label61:setAlign("top");
+    obj.label61:setHeight(50);
+    obj.label61:setText("Outros");
+    obj.label61:setHorzTextAlign("center");
+    obj.label61:setFontSize(20);
+    obj.label61:setName("label61");
 
     obj.button1 = GUI.fromHandle(_obj_newObject("button"));
     obj.button1:setParent(obj.layout38);
@@ -2499,26 +2499,17 @@ local function constructNew_HarryFicha()
     obj.layout39:setMargins({top=3, left=35});
     obj.layout39:setName("layout39");
 
-    obj.label61 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label61:setParent(obj.layout39);
-    obj.label61:setText("Pericias");
-    obj.label61:setTop(5);
-    obj.label61:setHorzTextAlign("center");
-    obj.label61:setAlign("left");
-    obj.label61:setName("label61");
-
     obj.label62 = GUI.fromHandle(_obj_newObject("label"));
     obj.label62:setParent(obj.layout39);
-    obj.label62:setText("Atr");
-    obj.label62:setAlign("left");
-    obj.label62:setMargins({left = 5});
-    obj.label62:setWidth(30);
+    obj.label62:setText("Pericias");
+    obj.label62:setTop(5);
     obj.label62:setHorzTextAlign("center");
+    obj.label62:setAlign("left");
     obj.label62:setName("label62");
 
     obj.label63 = GUI.fromHandle(_obj_newObject("label"));
     obj.label63:setParent(obj.layout39);
-    obj.label63:setText("Grad");
+    obj.label63:setText("Atr");
     obj.label63:setAlign("left");
     obj.label63:setMargins({left = 5});
     obj.label63:setWidth(30);
@@ -2527,7 +2518,7 @@ local function constructNew_HarryFicha()
 
     obj.label64 = GUI.fromHandle(_obj_newObject("label"));
     obj.label64:setParent(obj.layout39);
-    obj.label64:setText("Out");
+    obj.label64:setText("Grad");
     obj.label64:setAlign("left");
     obj.label64:setMargins({left = 5});
     obj.label64:setWidth(30);
@@ -2536,12 +2527,21 @@ local function constructNew_HarryFicha()
 
     obj.label65 = GUI.fromHandle(_obj_newObject("label"));
     obj.label65:setParent(obj.layout39);
-    obj.label65:setText("Total");
+    obj.label65:setText("Out");
     obj.label65:setAlign("left");
     obj.label65:setMargins({left = 5});
     obj.label65:setWidth(30);
     obj.label65:setHorzTextAlign("center");
     obj.label65:setName("label65");
+
+    obj.label66 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label66:setParent(obj.layout39);
+    obj.label66:setText("Total");
+    obj.label66:setAlign("left");
+    obj.label66:setMargins({left = 5});
+    obj.label66:setWidth(30);
+    obj.label66:setHorzTextAlign("center");
+    obj.label66:setName("label66");
 
     obj.outrasPericias_record = GUI.fromHandle(_obj_newObject("recordList"));
     obj.outrasPericias_record:setParent(obj.layout38);
@@ -2570,14 +2570,14 @@ local function constructNew_HarryFicha()
     obj.layout40:setAlign("top");
     obj.layout40:setName("layout40");
 
-    obj.label66 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label66:setParent(obj.layout40);
-    obj.label66:setAlign("top");
-    obj.label66:setHeight(50);
-    obj.label66:setText("Defesas");
-    obj.label66:setHorzTextAlign("center");
-    obj.label66:setFontSize(20);
-    obj.label66:setName("label66");
+    obj.label67 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label67:setParent(obj.layout40);
+    obj.label67:setAlign("top");
+    obj.label67:setHeight(50);
+    obj.label67:setText("Defesas");
+    obj.label67:setHorzTextAlign("center");
+    obj.label67:setFontSize(20);
+    obj.label67:setName("label67");
 
     obj.layout41 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout41:setParent(obj.layout40);
@@ -2586,26 +2586,17 @@ local function constructNew_HarryFicha()
     obj.layout41:setMargins({top=3});
     obj.layout41:setName("layout41");
 
-    obj.label67 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label67:setParent(obj.layout41);
-    obj.label67:setText("Pericias");
-    obj.label67:setTop(5);
-    obj.label67:setHorzTextAlign("center");
-    obj.label67:setAlign("left");
-    obj.label67:setName("label67");
-
     obj.label68 = GUI.fromHandle(_obj_newObject("label"));
     obj.label68:setParent(obj.layout41);
-    obj.label68:setText("Atr");
-    obj.label68:setAlign("left");
-    obj.label68:setMargins({left = 5});
-    obj.label68:setWidth(30);
+    obj.label68:setText("Pericias");
+    obj.label68:setTop(5);
     obj.label68:setHorzTextAlign("center");
+    obj.label68:setAlign("left");
     obj.label68:setName("label68");
 
     obj.label69 = GUI.fromHandle(_obj_newObject("label"));
     obj.label69:setParent(obj.layout41);
-    obj.label69:setText("Grad");
+    obj.label69:setText("Atr");
     obj.label69:setAlign("left");
     obj.label69:setMargins({left = 5});
     obj.label69:setWidth(30);
@@ -2614,7 +2605,7 @@ local function constructNew_HarryFicha()
 
     obj.label70 = GUI.fromHandle(_obj_newObject("label"));
     obj.label70:setParent(obj.layout41);
-    obj.label70:setText("Out");
+    obj.label70:setText("Grad");
     obj.label70:setAlign("left");
     obj.label70:setMargins({left = 5});
     obj.label70:setWidth(30);
@@ -2623,12 +2614,21 @@ local function constructNew_HarryFicha()
 
     obj.label71 = GUI.fromHandle(_obj_newObject("label"));
     obj.label71:setParent(obj.layout41);
-    obj.label71:setText("Total");
+    obj.label71:setText("Out");
     obj.label71:setAlign("left");
     obj.label71:setMargins({left = 5});
     obj.label71:setWidth(30);
     obj.label71:setHorzTextAlign("center");
     obj.label71:setName("label71");
+
+    obj.label72 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label72:setParent(obj.layout41);
+    obj.label72:setText("Total");
+    obj.label72:setAlign("left");
+    obj.label72:setMargins({left = 5});
+    obj.label72:setWidth(30);
+    obj.label72:setHorzTextAlign("center");
+    obj.label72:setName("label72");
 
     obj.layout42 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout42:setParent(obj.layout40);
@@ -2679,14 +2679,14 @@ local function constructNew_HarryFicha()
     obj.edit104:setHorzTextAlign("center");
     obj.edit104:setName("edit104");
 
-    obj.label72 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label72:setParent(obj.layout42);
-    obj.label72:setField("INI_Total");
-    obj.label72:setAlign("left");
-    obj.label72:setMargins({left = 5});
-    obj.label72:setWidth(30);
-    obj.label72:setHorzTextAlign("center");
-    obj.label72:setName("label72");
+    obj.label73 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label73:setParent(obj.layout42);
+    obj.label73:setField("INI_Total");
+    obj.label73:setAlign("left");
+    obj.label73:setMargins({left = 5});
+    obj.label73:setWidth(30);
+    obj.label73:setHorzTextAlign("center");
+    obj.label73:setName("label73");
 
     obj.layout43 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout43:setParent(obj.layout40);
@@ -2737,14 +2737,14 @@ local function constructNew_HarryFicha()
     obj.edit107:setHorzTextAlign("center");
     obj.edit107:setName("edit107");
 
-    obj.label73 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label73:setParent(obj.layout43);
-    obj.label73:setField("APA_Total");
-    obj.label73:setAlign("left");
-    obj.label73:setMargins({left = 5});
-    obj.label73:setWidth(30);
-    obj.label73:setHorzTextAlign("center");
-    obj.label73:setName("label73");
+    obj.label74 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label74:setParent(obj.layout43);
+    obj.label74:setField("APA_Total");
+    obj.label74:setAlign("left");
+    obj.label74:setMargins({left = 5});
+    obj.label74:setWidth(30);
+    obj.label74:setHorzTextAlign("center");
+    obj.label74:setName("label74");
 
     obj.layout44 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout44:setParent(obj.layout40);
@@ -2795,14 +2795,14 @@ local function constructNew_HarryFicha()
     obj.edit110:setHorzTextAlign("center");
     obj.edit110:setName("edit110");
 
-    obj.label74 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label74:setParent(obj.layout44);
-    obj.label74:setField("FORT_Total");
-    obj.label74:setAlign("left");
-    obj.label74:setMargins({left = 5});
-    obj.label74:setWidth(30);
-    obj.label74:setHorzTextAlign("center");
-    obj.label74:setName("label74");
+    obj.label75 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label75:setParent(obj.layout44);
+    obj.label75:setField("FORT_Total");
+    obj.label75:setAlign("left");
+    obj.label75:setMargins({left = 5});
+    obj.label75:setWidth(30);
+    obj.label75:setHorzTextAlign("center");
+    obj.label75:setName("label75");
 
     obj.layout45 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout45:setParent(obj.layout40);
@@ -2853,14 +2853,14 @@ local function constructNew_HarryFicha()
     obj.edit113:setHorzTextAlign("center");
     obj.edit113:setName("edit113");
 
-    obj.label75 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label75:setParent(obj.layout45);
-    obj.label75:setField("REF_Total");
-    obj.label75:setAlign("left");
-    obj.label75:setMargins({left = 5});
-    obj.label75:setWidth(30);
-    obj.label75:setHorzTextAlign("center");
-    obj.label75:setName("label75");
+    obj.label76 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label76:setParent(obj.layout45);
+    obj.label76:setField("REF_Total");
+    obj.label76:setAlign("left");
+    obj.label76:setMargins({left = 5});
+    obj.label76:setWidth(30);
+    obj.label76:setHorzTextAlign("center");
+    obj.label76:setName("label76");
 
     obj.layout46 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout46:setParent(obj.layout40);
@@ -2911,14 +2911,14 @@ local function constructNew_HarryFicha()
     obj.edit116:setHorzTextAlign("center");
     obj.edit116:setName("edit116");
 
-    obj.label76 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label76:setParent(obj.layout46);
-    obj.label76:setField("RES_Total");
-    obj.label76:setAlign("left");
-    obj.label76:setMargins({left = 5});
-    obj.label76:setWidth(30);
-    obj.label76:setHorzTextAlign("center");
-    obj.label76:setName("label76");
+    obj.label77 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label77:setParent(obj.layout46);
+    obj.label77:setField("RES_Total");
+    obj.label77:setAlign("left");
+    obj.label77:setMargins({left = 5});
+    obj.label77:setWidth(30);
+    obj.label77:setHorzTextAlign("center");
+    obj.label77:setName("label77");
 
     obj.layout47 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout47:setParent(obj.layout40);
@@ -2969,14 +2969,14 @@ local function constructNew_HarryFicha()
     obj.edit119:setHorzTextAlign("center");
     obj.edit119:setName("edit119");
 
-    obj.label77 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label77:setParent(obj.layout47);
-    obj.label77:setField("VON_Total");
-    obj.label77:setAlign("left");
-    obj.label77:setMargins({left = 5});
-    obj.label77:setWidth(30);
-    obj.label77:setHorzTextAlign("center");
-    obj.label77:setName("label77");
+    obj.label78 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label78:setParent(obj.layout47);
+    obj.label78:setField("VON_Total");
+    obj.label78:setAlign("left");
+    obj.label78:setMargins({left = 5});
+    obj.label78:setWidth(30);
+    obj.label78:setHorzTextAlign("center");
+    obj.label78:setName("label78");
 
     obj.tab7 = GUI.fromHandle(_obj_newObject("tab"));
     obj.tab7:setParent(obj.tabControl3);
@@ -3101,13 +3101,13 @@ local function constructNew_HarryFicha()
     obj.layout49:setPadding({left = 5, top = 15, right = 5});
     obj.layout49:setName("layout49");
 
-    obj.label78 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label78:setParent(obj.layout49);
-    obj.label78:setText("Dificuldade");
-    obj.label78:setAlign("left");
-    obj.label78:setMargins({left = 5, top = 5, right = 5});
-    obj.label78:setHorzTextAlign("center");
-    obj.label78:setName("label78");
+    obj.label79 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label79:setParent(obj.layout49);
+    obj.label79:setText("Dificuldade");
+    obj.label79:setAlign("left");
+    obj.label79:setMargins({left = 5, top = 5, right = 5});
+    obj.label79:setHorzTextAlign("center");
+    obj.label79:setName("label79");
 
     obj.edit120 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit120:setParent(obj.layout49);
@@ -3118,15 +3118,15 @@ local function constructNew_HarryFicha()
     obj.edit120:setHorzTextAlign("center");
     obj.edit120:setName("edit120");
 
-    obj.label79 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label79:setParent(obj.layout48);
-    obj.label79:setText("TREINAR:");
-    obj.label79:setAlign("top");
-    obj.label79:setHeight(40);
-    obj.label79:setFontSize(18);
-    obj.label79:setMargins({left = 5, top=5, right = 5});
-    obj.label79:setHorzTextAlign("center");
-    obj.label79:setName("label79");
+    obj.label80 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label80:setParent(obj.layout48);
+    obj.label80:setText("TREINAR:");
+    obj.label80:setAlign("top");
+    obj.label80:setHeight(40);
+    obj.label80:setFontSize(18);
+    obj.label80:setMargins({left = 5, top=5, right = 5});
+    obj.label80:setHorzTextAlign("center");
+    obj.label80:setName("label80");
 
     obj.button4 = GUI.fromHandle(_obj_newObject("button"));
     obj.button4:setParent(obj.layout48);
@@ -3159,13 +3159,13 @@ local function constructNew_HarryFicha()
     obj.layout50:setAlign("top");
     obj.layout50:setName("layout50");
 
-    obj.label80 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label80:setParent(obj.layout50);
-    obj.label80:setAlign("top");
-    obj.label80:setHeight(50);
-    obj.label80:setText("QUADRIBOL");
-    obj.label80:setHorzTextAlign("center");
-    obj.label80:setName("label80");
+    obj.label81 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label81:setParent(obj.layout50);
+    obj.label81:setAlign("top");
+    obj.label81:setHeight(50);
+    obj.label81:setText("QUADRIBOL");
+    obj.label81:setHorzTextAlign("center");
+    obj.label81:setName("label81");
 
     obj.layout51 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout51:setParent(obj.layout50);
@@ -3180,13 +3180,13 @@ local function constructNew_HarryFicha()
     obj.rectangle50:setWidth(90);
     obj.rectangle50:setName("rectangle50");
 
-    obj.label81 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label81:setParent(obj.rectangle50);
-    obj.label81:setText("Golear");
-    obj.label81:setWidth(90);
-    obj.label81:setTop(5);
-    obj.label81:setHorzTextAlign("center");
-    obj.label81:setName("label81");
+    obj.label82 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label82:setParent(obj.rectangle50);
+    obj.label82:setText("Golear");
+    obj.label82:setWidth(90);
+    obj.label82:setTop(5);
+    obj.label82:setHorzTextAlign("center");
+    obj.label82:setName("label82");
 
     obj.edit121 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit121:setParent(obj.layout51);
@@ -3206,13 +3206,13 @@ local function constructNew_HarryFicha()
     obj.rectangle51:setMargins({left = 10});
     obj.rectangle51:setName("rectangle51");
 
-    obj.label82 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label82:setParent(obj.rectangle51);
-    obj.label82:setText("Passe");
-    obj.label82:setWidth(90);
-    obj.label82:setTop(5);
-    obj.label82:setHorzTextAlign("center");
-    obj.label82:setName("label82");
+    obj.label83 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label83:setParent(obj.rectangle51);
+    obj.label83:setText("Passe");
+    obj.label83:setWidth(90);
+    obj.label83:setTop(5);
+    obj.label83:setHorzTextAlign("center");
+    obj.label83:setName("label83");
 
     obj.edit122 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit122:setParent(obj.layout51);
@@ -3238,13 +3238,13 @@ local function constructNew_HarryFicha()
     obj.rectangle52:setWidth(90);
     obj.rectangle52:setName("rectangle52");
 
-    obj.label83 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label83:setParent(obj.rectangle52);
-    obj.label83:setText("Rebater");
-    obj.label83:setWidth(90);
-    obj.label83:setTop(5);
-    obj.label83:setHorzTextAlign("center");
-    obj.label83:setName("label83");
+    obj.label84 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label84:setParent(obj.rectangle52);
+    obj.label84:setText("Rebater");
+    obj.label84:setWidth(90);
+    obj.label84:setTop(5);
+    obj.label84:setHorzTextAlign("center");
+    obj.label84:setName("label84");
 
     obj.edit123 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit123:setParent(obj.layout52);
@@ -3264,13 +3264,13 @@ local function constructNew_HarryFicha()
     obj.rectangle53:setMargins({left = 10});
     obj.rectangle53:setName("rectangle53");
 
-    obj.label84 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label84:setParent(obj.rectangle53);
-    obj.label84:setText("Velocidade");
-    obj.label84:setWidth(90);
-    obj.label84:setTop(5);
-    obj.label84:setHorzTextAlign("center");
-    obj.label84:setName("label84");
+    obj.label85 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label85:setParent(obj.rectangle53);
+    obj.label85:setText("Velocidade");
+    obj.label85:setWidth(90);
+    obj.label85:setTop(5);
+    obj.label85:setHorzTextAlign("center");
+    obj.label85:setName("label85");
 
     obj.edit124 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit124:setParent(obj.layout52);
@@ -3289,26 +3289,17 @@ local function constructNew_HarryFicha()
     obj.layout53:setMargins({top=3});
     obj.layout53:setName("layout53");
 
-    obj.label85 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label85:setParent(obj.layout53);
-    obj.label85:setText("Pericias");
-    obj.label85:setTop(5);
-    obj.label85:setHorzTextAlign("center");
-    obj.label85:setAlign("left");
-    obj.label85:setName("label85");
-
     obj.label86 = GUI.fromHandle(_obj_newObject("label"));
     obj.label86:setParent(obj.layout53);
-    obj.label86:setText("Atr");
-    obj.label86:setAlign("left");
-    obj.label86:setMargins({left = 5});
-    obj.label86:setWidth(30);
+    obj.label86:setText("Pericias");
+    obj.label86:setTop(5);
     obj.label86:setHorzTextAlign("center");
+    obj.label86:setAlign("left");
     obj.label86:setName("label86");
 
     obj.label87 = GUI.fromHandle(_obj_newObject("label"));
     obj.label87:setParent(obj.layout53);
-    obj.label87:setText("Grad");
+    obj.label87:setText("Atr");
     obj.label87:setAlign("left");
     obj.label87:setMargins({left = 5});
     obj.label87:setWidth(30);
@@ -3317,7 +3308,7 @@ local function constructNew_HarryFicha()
 
     obj.label88 = GUI.fromHandle(_obj_newObject("label"));
     obj.label88:setParent(obj.layout53);
-    obj.label88:setText("Out");
+    obj.label88:setText("Grad");
     obj.label88:setAlign("left");
     obj.label88:setMargins({left = 5});
     obj.label88:setWidth(30);
@@ -3326,12 +3317,21 @@ local function constructNew_HarryFicha()
 
     obj.label89 = GUI.fromHandle(_obj_newObject("label"));
     obj.label89:setParent(obj.layout53);
-    obj.label89:setText("Total");
+    obj.label89:setText("Out");
     obj.label89:setAlign("left");
     obj.label89:setMargins({left = 5});
     obj.label89:setWidth(30);
     obj.label89:setHorzTextAlign("center");
     obj.label89:setName("label89");
+
+    obj.label90 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label90:setParent(obj.layout53);
+    obj.label90:setText("Total");
+    obj.label90:setAlign("left");
+    obj.label90:setMargins({left = 5});
+    obj.label90:setWidth(30);
+    obj.label90:setHorzTextAlign("center");
+    obj.label90:setName("label90");
 
     obj.layout54 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout54:setParent(obj.layout50);
@@ -3383,14 +3383,14 @@ local function constructNew_HarryFicha()
     obj.edit127:setHorzTextAlign("center");
     obj.edit127:setName("edit127");
 
-    obj.label90 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label90:setParent(obj.layout54);
-    obj.label90:setField("ANTE_QUAD_TOTAL");
-    obj.label90:setAlign("left");
-    obj.label90:setMargins({left = 5});
-    obj.label90:setWidth(30);
-    obj.label90:setHorzTextAlign("center");
-    obj.label90:setName("label90");
+    obj.label91 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label91:setParent(obj.layout54);
+    obj.label91:setField("ANTE_QUAD_TOTAL");
+    obj.label91:setAlign("left");
+    obj.label91:setMargins({left = 5});
+    obj.label91:setWidth(30);
+    obj.label91:setHorzTextAlign("center");
+    obj.label91:setName("label91");
 
     obj.layout55 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout55:setParent(obj.layout50);
@@ -3442,14 +3442,14 @@ local function constructNew_HarryFicha()
     obj.edit130:setHorzTextAlign("center");
     obj.edit130:setName("edit130");
 
-    obj.label91 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label91:setParent(obj.layout55);
-    obj.label91:setField("APAN_QUAD_TOTAL");
-    obj.label91:setAlign("left");
-    obj.label91:setMargins({left = 5});
-    obj.label91:setWidth(30);
-    obj.label91:setHorzTextAlign("center");
-    obj.label91:setName("label91");
+    obj.label92 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label92:setParent(obj.layout55);
+    obj.label92:setField("APAN_QUAD_TOTAL");
+    obj.label92:setAlign("left");
+    obj.label92:setMargins({left = 5});
+    obj.label92:setWidth(30);
+    obj.label92:setHorzTextAlign("center");
+    obj.label92:setName("label92");
 
     obj.layout56 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout56:setParent(obj.layout50);
@@ -3501,14 +3501,14 @@ local function constructNew_HarryFicha()
     obj.edit133:setHorzTextAlign("center");
     obj.edit133:setName("edit133");
 
-    obj.label92 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label92:setParent(obj.layout56);
-    obj.label92:setField("ATRA_QUAD_TOTAL");
-    obj.label92:setAlign("left");
-    obj.label92:setMargins({left = 5});
-    obj.label92:setWidth(30);
-    obj.label92:setHorzTextAlign("center");
-    obj.label92:setName("label92");
+    obj.label93 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label93:setParent(obj.layout56);
+    obj.label93:setField("ATRA_QUAD_TOTAL");
+    obj.label93:setAlign("left");
+    obj.label93:setMargins({left = 5});
+    obj.label93:setWidth(30);
+    obj.label93:setHorzTextAlign("center");
+    obj.label93:setName("label93");
 
     obj.layout57 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout57:setParent(obj.layout50);
@@ -3560,14 +3560,14 @@ local function constructNew_HarryFicha()
     obj.edit136:setHorzTextAlign("center");
     obj.edit136:setName("edit136");
 
-    obj.label93 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label93:setParent(obj.layout57);
-    obj.label93:setField("DEFE_QUAD_TOTAL");
-    obj.label93:setAlign("left");
-    obj.label93:setMargins({left = 5});
-    obj.label93:setWidth(30);
-    obj.label93:setHorzTextAlign("center");
-    obj.label93:setName("label93");
+    obj.label94 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label94:setParent(obj.layout57);
+    obj.label94:setField("DEFE_QUAD_TOTAL");
+    obj.label94:setAlign("left");
+    obj.label94:setMargins({left = 5});
+    obj.label94:setWidth(30);
+    obj.label94:setHorzTextAlign("center");
+    obj.label94:setName("label94");
 
     obj.layout58 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout58:setParent(obj.layout50);
@@ -3619,14 +3619,14 @@ local function constructNew_HarryFicha()
     obj.edit139:setHorzTextAlign("center");
     obj.edit139:setName("edit139");
 
-    obj.label94 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label94:setParent(obj.layout58);
-    obj.label94:setField("DRI_QUAD_TOTAL");
-    obj.label94:setAlign("left");
-    obj.label94:setMargins({left = 5});
-    obj.label94:setWidth(30);
-    obj.label94:setHorzTextAlign("center");
-    obj.label94:setName("label94");
+    obj.label95 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label95:setParent(obj.layout58);
+    obj.label95:setField("DRI_QUAD_TOTAL");
+    obj.label95:setAlign("left");
+    obj.label95:setMargins({left = 5});
+    obj.label95:setWidth(30);
+    obj.label95:setHorzTextAlign("center");
+    obj.label95:setName("label95");
 
     obj.layout59 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout59:setParent(obj.layout50);
@@ -3678,14 +3678,14 @@ local function constructNew_HarryFicha()
     obj.edit142:setHorzTextAlign("center");
     obj.edit142:setName("edit142");
 
-    obj.label95 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label95:setParent(obj.layout59);
-    obj.label95:setField("GOL_QUAD_TOTAL");
-    obj.label95:setAlign("left");
-    obj.label95:setMargins({left = 5});
-    obj.label95:setWidth(30);
-    obj.label95:setHorzTextAlign("center");
-    obj.label95:setName("label95");
+    obj.label96 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label96:setParent(obj.layout59);
+    obj.label96:setField("GOL_QUAD_TOTAL");
+    obj.label96:setAlign("left");
+    obj.label96:setMargins({left = 5});
+    obj.label96:setWidth(30);
+    obj.label96:setHorzTextAlign("center");
+    obj.label96:setName("label96");
 
     obj.layout60 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout60:setParent(obj.layout50);
@@ -3737,14 +3737,14 @@ local function constructNew_HarryFicha()
     obj.edit145:setHorzTextAlign("center");
     obj.edit145:setName("edit145");
 
-    obj.label96 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label96:setParent(obj.layout60);
-    obj.label96:setField("FALTA_QUAD_TOTAL");
-    obj.label96:setAlign("left");
-    obj.label96:setMargins({left = 5});
-    obj.label96:setWidth(30);
-    obj.label96:setHorzTextAlign("center");
-    obj.label96:setName("label96");
+    obj.label97 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label97:setParent(obj.layout60);
+    obj.label97:setField("FALTA_QUAD_TOTAL");
+    obj.label97:setAlign("left");
+    obj.label97:setMargins({left = 5});
+    obj.label97:setWidth(30);
+    obj.label97:setHorzTextAlign("center");
+    obj.label97:setName("label97");
 
     obj.layout61 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout61:setParent(obj.layout50);
@@ -3796,14 +3796,14 @@ local function constructNew_HarryFicha()
     obj.edit148:setHorzTextAlign("center");
     obj.edit148:setName("edit148");
 
-    obj.label97 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label97:setParent(obj.layout61);
-    obj.label97:setField("PASS_QUAD_TOTAL");
-    obj.label97:setAlign("left");
-    obj.label97:setMargins({left = 5});
-    obj.label97:setWidth(30);
-    obj.label97:setHorzTextAlign("center");
-    obj.label97:setName("label97");
+    obj.label98 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label98:setParent(obj.layout61);
+    obj.label98:setField("PASS_QUAD_TOTAL");
+    obj.label98:setAlign("left");
+    obj.label98:setMargins({left = 5});
+    obj.label98:setWidth(30);
+    obj.label98:setHorzTextAlign("center");
+    obj.label98:setName("label98");
 
     obj.layout62 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout62:setParent(obj.layout50);
@@ -3855,14 +3855,14 @@ local function constructNew_HarryFicha()
     obj.edit151:setHorzTextAlign("center");
     obj.edit151:setName("edit151");
 
-    obj.label98 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label98:setParent(obj.layout62);
-    obj.label98:setField("REBA_QUAD_TOTAL");
-    obj.label98:setAlign("left");
-    obj.label98:setMargins({left = 5});
-    obj.label98:setWidth(30);
-    obj.label98:setHorzTextAlign("center");
-    obj.label98:setName("label98");
+    obj.label99 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label99:setParent(obj.layout62);
+    obj.label99:setField("REBA_QUAD_TOTAL");
+    obj.label99:setAlign("left");
+    obj.label99:setMargins({left = 5});
+    obj.label99:setWidth(30);
+    obj.label99:setHorzTextAlign("center");
+    obj.label99:setName("label99");
 
     obj.layout63 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout63:setParent(obj.layout50);
@@ -3914,14 +3914,14 @@ local function constructNew_HarryFicha()
     obj.edit154:setHorzTextAlign("center");
     obj.edit154:setName("edit154");
 
-    obj.label99 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label99:setParent(obj.layout63);
-    obj.label99:setField("ROU_QUAD_TOTAL");
-    obj.label99:setAlign("left");
-    obj.label99:setMargins({left = 5});
-    obj.label99:setWidth(30);
-    obj.label99:setHorzTextAlign("center");
-    obj.label99:setName("label99");
+    obj.label100 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label100:setParent(obj.layout63);
+    obj.label100:setField("ROU_QUAD_TOTAL");
+    obj.label100:setAlign("left");
+    obj.label100:setMargins({left = 5});
+    obj.label100:setWidth(30);
+    obj.label100:setHorzTextAlign("center");
+    obj.label100:setName("label100");
 
     obj.layout64 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout64:setParent(obj.layout50);
@@ -3973,14 +3973,14 @@ local function constructNew_HarryFicha()
     obj.edit157:setHorzTextAlign("center");
     obj.edit157:setName("edit157");
 
-    obj.label100 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label100:setParent(obj.layout64);
-    obj.label100:setField("VEL_QUAD_TOTAL");
-    obj.label100:setAlign("left");
-    obj.label100:setMargins({left = 5});
-    obj.label100:setWidth(30);
-    obj.label100:setHorzTextAlign("center");
-    obj.label100:setName("label100");
+    obj.label101 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label101:setParent(obj.layout64);
+    obj.label101:setField("VEL_QUAD_TOTAL");
+    obj.label101:setAlign("left");
+    obj.label101:setMargins({left = 5});
+    obj.label101:setWidth(30);
+    obj.label101:setHorzTextAlign("center");
+    obj.label101:setName("label101");
 
     obj.tab10 = GUI.fromHandle(_obj_newObject("tab"));
     obj.tab10:setParent(obj.tabControl1);
@@ -4039,6 +4039,51 @@ local function constructNew_HarryFicha()
             node.soundControl = "ligado"
             end
 
+            end
+
+            local function adicionarFeitico()
+
+            local node = self.rclMagias:append();
+
+            node.nome = "Importar"
+            node.escola = "-"
+            node.tipo = "-"
+            node.Efeito = "-"
+
+            node.Grad = 0
+            node.Grad_name = "Grad"
+            node.Grad_grad = 1
+            node.Grad_array = {0}
+
+            node.CD = "-"
+            node.CD_name = "CD"
+            node.CD_grad = 1
+            node.CD_array = {0}
+
+            node.Dano = "-"
+            node.Dano_name = "Dano"
+            node.Dano_grad = 1
+            node.Dano_array = {"-"}
+
+            node.Poder = "-"
+            node.Poder_name = "Poder"
+            node.Poder_grad = 1
+            node.Poder_array = {"-"}
+
+            node.Range = "-"
+            node.Range_name = "Range"
+            node.Range_grad = 1
+            node.Range_array = {"-"}
+
+            node.Area = "-"
+            node.Area_name = "Area"
+            node.Area_grad = 1
+            node.Area_array = {"-"}
+
+            node.Duracao = "-"
+            node.Duracao_name = "Duracao"
+            node.Duracao_grad = 1
+            node.Duracao_array = {"-"}
 
             end
          
@@ -4068,12 +4113,12 @@ local function constructNew_HarryFicha()
     obj.rectangle65:setHeight(25);
     obj.rectangle65:setName("rectangle65");
 
-    obj.label101 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label101:setParent(obj.rectangle65);
-    obj.label101:setAlign("client");
-    obj.label101:setText("Destreza");
-    obj.label101:setHorzTextAlign("center");
-    obj.label101:setName("label101");
+    obj.label102 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label102:setParent(obj.rectangle65);
+    obj.label102:setAlign("client");
+    obj.label102:setText("Destreza");
+    obj.label102:setHorzTextAlign("center");
+    obj.label102:setName("label102");
 
     obj.edit158 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit158:setParent(obj.layout67);
@@ -4103,12 +4148,12 @@ local function constructNew_HarryFicha()
     obj.rectangle66:setHeight(25);
     obj.rectangle66:setName("rectangle66");
 
-    obj.label102 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label102:setParent(obj.rectangle66);
-    obj.label102:setAlign("client");
-    obj.label102:setText("Adivinhação");
-    obj.label102:setHorzTextAlign("center");
-    obj.label102:setName("label102");
+    obj.label103 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label103:setParent(obj.rectangle66);
+    obj.label103:setAlign("client");
+    obj.label103:setText("Adivinhação");
+    obj.label103:setHorzTextAlign("center");
+    obj.label103:setName("label103");
 
     obj.edit159 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit159:setParent(obj.layout68);
@@ -4138,12 +4183,12 @@ local function constructNew_HarryFicha()
     obj.rectangle67:setHeight(25);
     obj.rectangle67:setName("rectangle67");
 
-    obj.label103 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label103:setParent(obj.rectangle67);
-    obj.label103:setAlign("client");
-    obj.label103:setText("Azaração");
-    obj.label103:setHorzTextAlign("center");
-    obj.label103:setName("label103");
+    obj.label104 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label104:setParent(obj.rectangle67);
+    obj.label104:setAlign("client");
+    obj.label104:setText("Azaração");
+    obj.label104:setHorzTextAlign("center");
+    obj.label104:setName("label104");
 
     obj.edit160 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit160:setParent(obj.layout69);
@@ -4173,12 +4218,12 @@ local function constructNew_HarryFicha()
     obj.rectangle68:setHeight(25);
     obj.rectangle68:setName("rectangle68");
 
-    obj.label104 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label104:setParent(obj.rectangle68);
-    obj.label104:setAlign("client");
-    obj.label104:setText("Contra-Feitiço");
-    obj.label104:setHorzTextAlign("center");
-    obj.label104:setName("label104");
+    obj.label105 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label105:setParent(obj.rectangle68);
+    obj.label105:setAlign("client");
+    obj.label105:setText("Contra-Feitiço");
+    obj.label105:setHorzTextAlign("center");
+    obj.label105:setName("label105");
 
     obj.edit161 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit161:setParent(obj.layout70);
@@ -4208,12 +4253,12 @@ local function constructNew_HarryFicha()
     obj.rectangle69:setHeight(25);
     obj.rectangle69:setName("rectangle69");
 
-    obj.label105 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label105:setParent(obj.rectangle69);
-    obj.label105:setAlign("client");
-    obj.label105:setText("Encantamento");
-    obj.label105:setHorzTextAlign("center");
-    obj.label105:setName("label105");
+    obj.label106 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label106:setParent(obj.rectangle69);
+    obj.label106:setAlign("client");
+    obj.label106:setText("Encantamento");
+    obj.label106:setHorzTextAlign("center");
+    obj.label106:setName("label106");
 
     obj.edit162 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit162:setParent(obj.layout71);
@@ -4243,12 +4288,12 @@ local function constructNew_HarryFicha()
     obj.rectangle70:setHeight(25);
     obj.rectangle70:setName("rectangle70");
 
-    obj.label106 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label106:setParent(obj.rectangle70);
-    obj.label106:setAlign("client");
-    obj.label106:setText("Feitiço");
-    obj.label106:setHorzTextAlign("center");
-    obj.label106:setName("label106");
+    obj.label107 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label107:setParent(obj.rectangle70);
+    obj.label107:setAlign("client");
+    obj.label107:setText("Feitiço");
+    obj.label107:setHorzTextAlign("center");
+    obj.label107:setName("label107");
 
     obj.edit163 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit163:setParent(obj.layout72);
@@ -4278,12 +4323,12 @@ local function constructNew_HarryFicha()
     obj.rectangle71:setHeight(25);
     obj.rectangle71:setName("rectangle71");
 
-    obj.label107 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label107:setParent(obj.rectangle71);
-    obj.label107:setAlign("client");
-    obj.label107:setText("Transmutação");
-    obj.label107:setHorzTextAlign("center");
-    obj.label107:setName("label107");
+    obj.label108 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label108:setParent(obj.rectangle71);
+    obj.label108:setAlign("client");
+    obj.label108:setText("Transmutação");
+    obj.label108:setHorzTextAlign("center");
+    obj.label108:setName("label108");
 
     obj.edit164 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit164:setParent(obj.layout73);
@@ -4313,12 +4358,12 @@ local function constructNew_HarryFicha()
     obj.rectangle72:setHeight(25);
     obj.rectangle72:setName("rectangle72");
 
-    obj.label108 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label108:setParent(obj.rectangle72);
-    obj.label108:setAlign("client");
-    obj.label108:setText("Arte das Trevas");
-    obj.label108:setHorzTextAlign("center");
-    obj.label108:setName("label108");
+    obj.label109 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label109:setParent(obj.rectangle72);
+    obj.label109:setAlign("client");
+    obj.label109:setText("Arte das Trevas");
+    obj.label109:setHorzTextAlign("center");
+    obj.label109:setName("label109");
 
     obj.edit165 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit165:setParent(obj.layout74);
@@ -4355,12 +4400,12 @@ local function constructNew_HarryFicha()
     obj.rectangle73:setHeight(25);
     obj.rectangle73:setName("rectangle73");
 
-    obj.label109 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label109:setParent(obj.rectangle73);
-    obj.label109:setAlign("client");
-    obj.label109:setText("Fisico");
-    obj.label109:setHorzTextAlign("center");
-    obj.label109:setName("label109");
+    obj.label110 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label110:setParent(obj.rectangle73);
+    obj.label110:setAlign("client");
+    obj.label110:setText("Fisico");
+    obj.label110:setHorzTextAlign("center");
+    obj.label110:setName("label110");
 
     obj.edit166 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit166:setParent(obj.layout76);
@@ -4392,12 +4437,12 @@ local function constructNew_HarryFicha()
     obj.rectangle74:setHeight(25);
     obj.rectangle74:setName("rectangle74");
 
-    obj.label110 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label110:setParent(obj.rectangle74);
-    obj.label110:setAlign("client");
-    obj.label110:setText("Mental");
-    obj.label110:setHorzTextAlign("center");
-    obj.label110:setName("label110");
+    obj.label111 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label111:setParent(obj.rectangle74);
+    obj.label111:setAlign("client");
+    obj.label111:setText("Mental");
+    obj.label111:setHorzTextAlign("center");
+    obj.label111:setName("label111");
 
     obj.edit167 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit167:setParent(obj.layout77);
@@ -4429,12 +4474,12 @@ local function constructNew_HarryFicha()
     obj.rectangle75:setHeight(25);
     obj.rectangle75:setName("rectangle75");
 
-    obj.label111 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label111:setParent(obj.rectangle75);
-    obj.label111:setAlign("client");
-    obj.label111:setText("Concentração");
-    obj.label111:setHorzTextAlign("center");
-    obj.label111:setName("label111");
+    obj.label112 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label112:setParent(obj.rectangle75);
+    obj.label112:setAlign("client");
+    obj.label112:setText("Concentração");
+    obj.label112:setHorzTextAlign("center");
+    obj.label112:setName("label112");
 
     obj.edit168 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit168:setParent(obj.layout78);
@@ -4464,12 +4509,12 @@ local function constructNew_HarryFicha()
     obj.rectangle76:setHeight(25);
     obj.rectangle76:setName("rectangle76");
 
-    obj.label112 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label112:setParent(obj.rectangle76);
-    obj.label112:setAlign("client");
-    obj.label112:setText("Acerto");
-    obj.label112:setHorzTextAlign("center");
-    obj.label112:setName("label112");
+    obj.label113 = GUI.fromHandle(_obj_newObject("label"));
+    obj.label113:setParent(obj.rectangle76);
+    obj.label113:setAlign("client");
+    obj.label113:setText("Acerto");
+    obj.label113:setHorzTextAlign("center");
+    obj.label113:setName("label113");
 
     obj.edit169 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit169:setParent(obj.layout79);
@@ -7520,7 +7565,7 @@ local function constructNew_HarryFicha()
 
     obj._e_event75 = obj.button6:addEventListener("onClick",
         function (event)
-            self.rclMagias:append();
+            adicionarFeitico()
         end);
 
     obj._e_event76 = obj.button7:addEventListener("onClick",
@@ -7865,8 +7910,9 @@ local function constructNew_HarryFicha()
         if self.Vontade ~= nil then self.Vontade:destroy(); self.Vontade = nil; end;
         if self.edit116 ~= nil then self.edit116:destroy(); self.edit116 = nil; end;
         if self.edit155 ~= nil then self.edit155:destroy(); self.edit155 = nil; end;
-        if self.edit169 ~= nil then self.edit169:destroy(); self.edit169 = nil; end;
+        if self.label113 ~= nil then self.label113:destroy(); self.label113 = nil; end;
         if self.label90 ~= nil then self.label90:destroy(); self.label90 = nil; end;
+        if self.edit169 ~= nil then self.edit169:destroy(); self.edit169 = nil; end;
         if self.edit94 ~= nil then self.edit94:destroy(); self.edit94 = nil; end;
         if self.edit73 ~= nil then self.edit73:destroy(); self.edit73 = nil; end;
         if self.edit43 ~= nil then self.edit43:destroy(); self.edit43 = nil; end;
@@ -7975,9 +8021,9 @@ local function constructNew_HarryFicha()
         if self.edit46 ~= nil then self.edit46:destroy(); self.edit46 = nil; end;
         if self.edit118 ~= nil then self.edit118:destroy(); self.edit118 = nil; end;
         if self.edit157 ~= nil then self.edit157:destroy(); self.edit157 = nil; end;
-        if self.edit167 ~= nil then self.edit167:destroy(); self.edit167 = nil; end;
-        if self.label96 ~= nil then self.label96:destroy(); self.label96 = nil; end;
         if self.label111 ~= nil then self.label111:destroy(); self.label111 = nil; end;
+        if self.label96 ~= nil then self.label96:destroy(); self.label96 = nil; end;
+        if self.edit167 ~= nil then self.edit167:destroy(); self.edit167 = nil; end;
         if self.edit96 ~= nil then self.edit96:destroy(); self.edit96 = nil; end;
         if self.edit71 ~= nil then self.edit71:destroy(); self.edit71 = nil; end;
         if self.rectangle70 ~= nil then self.rectangle70:destroy(); self.rectangle70 = nil; end;
@@ -8025,7 +8071,6 @@ local function constructNew_HarryFicha()
         if self.button5 ~= nil then self.button5:destroy(); self.button5 = nil; end;
         if self.layout6 ~= nil then self.layout6:destroy(); self.layout6 = nil; end;
         if self.rectangle65 ~= nil then self.rectangle65:destroy(); self.rectangle65 = nil; end;
-        if self.label3 ~= nil then self.label3:destroy(); self.label3 = nil; end;
         if self.Intimidacao ~= nil then self.Intimidacao:destroy(); self.Intimidacao = nil; end;
         if self.edit36 ~= nil then self.edit36:destroy(); self.edit36 = nil; end;
         if self.layout1 ~= nil then self.layout1:destroy(); self.layout1 = nil; end;

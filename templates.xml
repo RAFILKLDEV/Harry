@@ -1,4 +1,118 @@
 <layout>
+    <template name="label3">
+        <layout align="left" margins="{left=10}" width="80">
+            <rectangle top="7" left="7" color="DarkSlateBlue" width="65" height="20">
+                <label align="client" text="$(text)" horzTextAlign="center" />
+            </rectangle>
+            <edit top="27" width="80" height="25" field="$(field)" horzTextAlign="center" />
+        </layout>
+    </template>
+
+    <template name="levelLabel">
+        <script>
+        </script>
+        <layout align="left" margins="{left=10}" width="120">
+            <rectangle top="7" left="7" color="DarkSlateBlue" width="105"
+                height="20">
+                <label align="client" text="$(text)" horzTextAlign="center" />
+            </rectangle>
+            <layout top="27" width="120" height="25">
+                <edit top="0" width="120" height="25" field="$(field) .. _name"
+                    horzTextAlign="center" />
+                <edit top="0" width="120" height="25" field="$(field) .. _array"
+                    horzTextAlign="center" />
+                <edit top="0" width="120" height="25" field="$(field) .. _grad"
+                    horzTextAlign="center">
+                    <event name="onChange">
+                    </event>
+                </edit>
+                <edit top="0" width="120" height="25" field="$(field)" horzTextAlign="center">
+                    <event name="onChange">
+                    </event>
+                </edit>
+                <button text="-" align="left" width="20">
+                    <event name="onClick">
+                   <![CDATA[
+
+                        local array = totable(sheet.$(field .. "_array"))
+                        local grad = tonumber(sheet.$(field .. "_grad"))
+                        local result = grad
+                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
+                        (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+
+                            if grad > 1 then
+
+                                result = result - 1
+                                sheet.$(field .. "_grad") = result
+                                sheet.$(field) = array[result]
+                            
+                            end
+
+                        
+
+                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
+                                (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+
+                        if sheet.Grad == tonumber(graduacoes) then
+                            self.rectangle.color = "gray"
+                        elseif sheet.Grad > tonumber(graduacoes) then
+                            self.rectangle.color = "green"
+                        end
+                    ]]>
+                </event>
+                </button>
+                <button text="+" align="right" width="20">
+                    <event name="onClick">
+                    <![CDATA[
+
+                        local array = totable(sheet.$(field .. "_array"))
+                        local grad = tonumber(sheet.$(field .. "_grad"))
+                        local result = grad
+                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
+                        (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+
+                        if sheet.Grad > graduacoes then
+
+                            if grad < #array then
+
+                                result = result + 1
+                                sheet.$(field .. "_grad") = result
+                                sheet.$(field) = array[result]
+                            
+                            end
+
+                        else 
+                        
+                        if sheet.$(field .. "_name") == "Grad" then
+
+                            result = result + 1
+                            sheet.$(field .. "_grad") = result
+                            sheet.$(field) = array[result]
+
+                        end
+                        
+
+                        end
+
+                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
+                                (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+
+                        if sheet.Grad == tonumber(graduacoes) then
+                            self.rectangle.color = "gray"
+                        elseif sheet.Grad > tonumber(graduacoes) then
+                            self.rectangle.color = "green"
+                        elseif sheet.Grad < tonumber(graduacoes) then
+                            self.rectangle.color = "red"
+                        end
+
+                    ]]>
+                    </event>
+                </button>
+            </layout>
+        </layout>
+    </template>
+
+
     <template name="labelFeitico">
         <layout align="left" margins="{left=10}" width="80">
             <rectangle top="7" left="7" color="DarkSlateBlue" width="65" height="20">
@@ -253,5 +367,4 @@
             </event>
         </rectangle>
     </template>
-
 </layout>

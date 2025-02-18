@@ -35,6 +35,51 @@
             node.soundControl = "ligado"
             end
 
+            end
+
+            local function adicionarFeitico()
+
+            local node = self.rclMagias:append();
+
+            node.nome = "Importar"
+            node.escola = "-"
+            node.tipo = "-"
+            node.Efeito = "-"
+
+            node.Grad = 0
+            node.Grad_name = "Grad"
+            node.Grad_grad = 1
+            node.Grad_array = {0}
+
+            node.CD = "-"
+            node.CD_name = "CD"
+            node.CD_grad = 1
+            node.CD_array = {0}
+
+            node.Dano = "-"
+            node.Dano_name = "Dano"
+            node.Dano_grad = 1
+            node.Dano_array = {"-"}
+
+            node.Poder = "-"
+            node.Poder_name = "Poder"
+            node.Poder_grad = 1
+            node.Poder_array = {"-"}
+
+            node.Range = "-"
+            node.Range_name = "Range"
+            node.Range_grad = 1
+            node.Range_array = {"-"}
+
+            node.Area = "-"
+            node.Area_name = "Area"
+            node.Area_grad = 1
+            node.Area_array = {"-"}
+
+            node.Duracao = "-"
+            node.Duracao_name = "Duracao"
+            node.Duracao_grad = 1
+            node.Duracao_array = {"-"}
 
             end
          </script>
@@ -141,7 +186,7 @@
             <button align="left" name="botao" margins="{left=20}" height="25" text="Lista Completa"
                width="150" onClick="alternarFeiticos();" />
             <button align="left" margins="{left=20}" height="25" text="Novo Feitiço" width="100"
-               onClick="self.rclMagias:append();" />
+               onClick="adicionarFeitico()" />
             <button align="left" height="25" text="Ordenar" width="100" margins="{left=20}"
                onClick="self.rclMagias:sort();" />
             <button name="sound" align="left" height="25" text="🔇" width="35" margins="{left=20}"
@@ -150,7 +195,8 @@
          <recordList name="rclMagias" field="magias" itemHeight="200" templateForm="feiticos"
             left="20"
             top="60" width="760" height="450" visible="false" autoHeight="false">
-            <event name="onCompare"><![CDATA[     
+            <event name="onCompare">
+            <![CDATA[     
                    if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
                         return -1;
                    elseif (tonumber(nodeA.Order) or 0) > (tonumber(nodeB.Order) or 0) then
@@ -158,9 +204,8 @@
                    else   
                         return Utils.compareStringPtBr(nodeA.nome, nodeB.nome);
                    end;               
-
-                   ]]>
-         </event>
+            ]]>
+            </event>
          </recordList>
 
          <recordList name="testezim" field="magias" templateForm="feiticosFacil" left="20" top="60"
