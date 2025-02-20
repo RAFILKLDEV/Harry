@@ -1,6 +1,4 @@
 <layout left="20" top="20" width="1300" height="1000">
-
-
      <rectangle left="220" top="0" width="700" height="155" color="black">
 
           <label left="5" top="5" text="Nome Jogador" width="90" height="25" />
@@ -57,7 +55,6 @@
           <Atributo name="PRESENCA" text1="PRESENÇA" field1="PRE" field2="PRES_OUT" />
           <Atributo name="SABEDORIA" text1="SABEDORIA" field1="SAB" field2="SAB_OUT" />
 
-          <label align="top" height="35" margins="{top=50}" text="Ficha na Versão 2.2" />
+          <label align="top" height="35" margins="{top=50}" text="Ficha na Versão 3.1" />
      </layout>
-
 </layout>

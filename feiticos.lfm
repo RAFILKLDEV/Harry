@@ -8,6 +8,61 @@
         require("utils.lua");
         local node = NDB.getRoot(sheet)
 
+        local function abrirPopUp()
+        require("gui.lua");
+
+        local node = NDB.getRoot(sheet)
+        
+        local controle = self:findControlByName("popUp");
+        controle.visible = true
+
+        local Raiz = NDB.load("listfetico.xml");
+        local Filho = NDB.getChildNodes(Raiz);
+        local node = NDB.getRoot(sheet)
+
+        ListaFeiticos = {} 
+        ListaNomesFeitico = {} 
+
+        for i = 1, #Filho, 1 do
+        ListaFeiticos[i] = Raiz["f" .. i]
+        ListaNomesFeitico[i] = Raiz["f" .. i].nome
+        table.sort(ListaNomesFeitico)
+        end
+
+        for k = 1, #Filho, 1 do
+
+        if sheet.nome == ListaFeiticos[k].nome then
+
+        node.escola2 = ListaFeiticos[k].escola
+        node.tipo2 = ListaFeiticos[k].cast
+        node.Efeito2 = ListaFeiticos[k].efeito
+        node.Grad2 = totable(ListaFeiticos[k].gradArray)[1]
+        node.CD2 = totable(ListaFeiticos[k].cdfArray)[1]
+        node.Dano2 = totable(ListaFeiticos[k].danoArray)[1]
+        node.Poder2 = totable(ListaFeiticos[k].poderArray)[1]
+        node.Range2 = totable(ListaFeiticos[k].rangeArray)[1]
+        node.Area2 = totable(ListaFeiticos[k].areaArray)[1]
+        node.Duracao2 = totable(ListaFeiticos[k].duracaoArray)[1]
+
+        node.escola = sheet.escola
+        node.tipo = sheet.tipo
+        node.Grad = sheet.Grad
+        node.CD = sheet.CD
+        node.Dano = sheet.Dano
+        node.Poder = sheet.Poder
+        node.Range = sheet.Range
+        node.Area = sheet.Area
+        node.Duracao = sheet.escola
+
+        node.Desc = ListaFeiticos[k].desc
+        node.Efeito = ListaFeiticos[k].efeito
+        node.Bonus = ListaFeiticos[k].bonus
+
+        end
+        end
+
+        end
+
         local function condition(tipo)
 
         if tipo == "fisico" then
@@ -202,6 +257,8 @@
         require("utils.lua");
         local Raiz = NDB.load("listfetico.xml");
         local Filho = NDB.getChildNodes(Raiz);
+        local node = NDB.getRoot(sheet)
+
         ListaFeiticos = {} -- new array
         ListaNomesFeitico = {} -- new array
         for i = 1, #Filho, 1 do
@@ -256,7 +313,6 @@
         sheet.Duracao_grad = 1
         sheet.Duracao_array = ListaFeiticos[k].duracaoArray
 
-
         end
         end
         else
@@ -271,7 +327,11 @@
     <rectangle name="rectangle" color="grey" opacity="0.35" width="1020" height="170" />
     <layout align="left" margins="{left=10}" width="180">
         <label align="top" margins="{left=75,top=5}" text="Nome" />
-        <edit fontStyle="bold italic" fontSize="15" horzTextAlign="center" align="top" field="nome" />
+        <edit name="nomeFeitico" fontStyle="bold italic" fontSize="15" horzTextAlign="center" align="top" field="nome" hitTest="true">
+            <event name="onMouseEnter">
+            self.nomeFeitico.hint = sheet.Desc or 0
+            </event>
+        </edit>
         <label align="top" margins="{left=75,top=5}" text="Escola" />
         <edit name="escola" horzTextAlign="center" fontStyle="bold italic" align="top" readOnly="true"
             field="escola">
@@ -320,7 +380,7 @@
         <layout align="top" height="55">
             <levelLabel name="Range" field="Range" text="Range" />
             <levelLabel name="Area" field="Area" text="Area" />
-            <levelLabel name="Duracao" field="Duracao" text="Duração" />
+            <levelLabel name="Duracao" field="Duracao" text="Duração" hitTest="true" hint="Duracao" />
         </layout>
     </layout>
 
@@ -340,70 +400,7 @@
         <button align="bottom" text="Comparar" height="35" onClick="abrirPopUp()" />
     </layout>
 
-    <popup name="popUp" width="306" height="360" backOpacity="0.5">
-
-        <layout align="left" width="200">
-            <layout align="top" height="30">
-                <label align="left" width="100" text="" horzTextAlign="center" />
-                <label align="left" width="100" text="Original" horzTextAlign="center" />
-            </layout>
-
-            <layout align="top" height="400">
-                <rectangle align="left" width="100" color="black">
-                    <edit transparent="true" margins="{top=5,bottom=5}" align="top" text="GRAD"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="CD"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="EFEITO"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="PODER"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="DANO"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="BONUS"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="RANGE"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="AREA"
-                        horzTextAlign="center" />
-                    <edit transparent="true" margins="{bottom=5}" align="top" text="DURAÇÃO"
-                        horzTextAlign="center" />
-                </rectangle>
-
-                <rectangle align="left" width="100" color="black">
-                    <edit margins="{top=5,bottom=5}" align="top" field="Grad2"
-                        horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="CD2" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Efeito2" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Poder2" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Dano2" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Bonus2" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Range2" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Area2" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Duracao2" horzTextAlign="center" />
-                </rectangle>
-            </layout>
-        </layout>
-
-
-        <layout align="left" width="100">
-            <label align="top" height="30" text="Atual" horzTextAlign="center" />
-            <layout align="top" height="360">
-                <rectangle align="left" width="100" color="black">
-                    <edit margins="{top=5,bottom=5}" align="top" field="Grad" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="CD" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Efeito" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Poder" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Dano" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Bonus" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Range" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Area" horzTextAlign="center" />
-                    <edit margins="{bottom=5}" align="top" field="Duracao" horzTextAlign="center" />
-                </rectangle>
-            </layout>
-        </layout>
-
-    </popup>
+    
 
     <event name="onNodeReady">
 

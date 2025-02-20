@@ -38,6 +38,61 @@ local function constructNew_feiticos()
         require("utils.lua");
         local node = NDB.getRoot(sheet)
 
+        local function abrirPopUp()
+        require("gui.lua");
+
+        local node = NDB.getRoot(sheet)
+        
+        local controle = self:findControlByName("popUp");
+        controle.visible = true
+
+        local Raiz = NDB.load("listfetico.xml");
+        local Filho = NDB.getChildNodes(Raiz);
+        local node = NDB.getRoot(sheet)
+
+        ListaFeiticos = {} 
+        ListaNomesFeitico = {} 
+
+        for i = 1, #Filho, 1 do
+        ListaFeiticos[i] = Raiz["f" .. i]
+        ListaNomesFeitico[i] = Raiz["f" .. i].nome
+        table.sort(ListaNomesFeitico)
+        end
+
+        for k = 1, #Filho, 1 do
+
+        if sheet.nome == ListaFeiticos[k].nome then
+
+        node.escola2 = ListaFeiticos[k].escola
+        node.tipo2 = ListaFeiticos[k].cast
+        node.Efeito2 = ListaFeiticos[k].efeito
+        node.Grad2 = totable(ListaFeiticos[k].gradArray)[1]
+        node.CD2 = totable(ListaFeiticos[k].cdfArray)[1]
+        node.Dano2 = totable(ListaFeiticos[k].danoArray)[1]
+        node.Poder2 = totable(ListaFeiticos[k].poderArray)[1]
+        node.Range2 = totable(ListaFeiticos[k].rangeArray)[1]
+        node.Area2 = totable(ListaFeiticos[k].areaArray)[1]
+        node.Duracao2 = totable(ListaFeiticos[k].duracaoArray)[1]
+
+        node.escola = sheet.escola
+        node.tipo = sheet.tipo
+        node.Grad = sheet.Grad
+        node.CD = sheet.CD
+        node.Dano = sheet.Dano
+        node.Poder = sheet.Poder
+        node.Range = sheet.Range
+        node.Area = sheet.Area
+        node.Duracao = sheet.escola
+
+        node.Desc = ListaFeiticos[k].desc
+        node.Efeito = ListaFeiticos[k].efeito
+        node.Bonus = ListaFeiticos[k].bonus
+
+        end
+        end
+
+        end
+
         local function condition(tipo)
 
         if tipo == "fisico" then
@@ -232,6 +287,8 @@ local function constructNew_feiticos()
         require("utils.lua");
         local Raiz = NDB.load("listfetico.xml");
         local Filho = NDB.getChildNodes(Raiz);
+        local node = NDB.getRoot(sheet)
+
         ListaFeiticos = {} -- new array
         ListaNomesFeitico = {} -- new array
         for i = 1, #Filho, 1 do
@@ -286,7 +343,6 @@ local function constructNew_feiticos()
         sheet.Duracao_grad = 1
         sheet.Duracao_array = ListaFeiticos[k].duracaoArray
 
-
         end
         end
         else
@@ -323,14 +379,15 @@ local function constructNew_feiticos()
     obj.label1:setText("Nome");
     obj.label1:setName("label1");
 
-    obj.edit1 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit1:setParent(obj.layout2);
-    lfm_setPropAsString(obj.edit1, "fontStyle", "bold italic");
-    obj.edit1:setFontSize(15);
-    obj.edit1:setHorzTextAlign("center");
-    obj.edit1:setAlign("top");
-    obj.edit1:setField("nome");
-    obj.edit1:setName("edit1");
+    obj.nomeFeitico = GUI.fromHandle(_obj_newObject("edit"));
+    obj.nomeFeitico:setParent(obj.layout2);
+    obj.nomeFeitico:setName("nomeFeitico");
+    lfm_setPropAsString(obj.nomeFeitico, "fontStyle", "bold italic");
+    obj.nomeFeitico:setFontSize(15);
+    obj.nomeFeitico:setHorzTextAlign("center");
+    obj.nomeFeitico:setAlign("top");
+    obj.nomeFeitico:setField("nome");
+    obj.nomeFeitico:setHitTest(true);
 
     obj.label2 = GUI.fromHandle(_obj_newObject("label"));
     obj.label2:setParent(obj.layout2);
@@ -406,12 +463,21 @@ local function constructNew_feiticos()
     obj.layout6:setHeight(25);
     obj.layout6:setName("layout6");
 
+    obj.edit1 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit1:setParent(obj.layout6);
+    obj.edit1:setTop(0);
+    obj.edit1:setWidth(120);
+    obj.edit1:setHeight(25);
+    obj.edit1:setField("Grad .. _name");
+    obj.edit1:setHorzTextAlign("center");
+    obj.edit1:setName("edit1");
+
     obj.edit2 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit2:setParent(obj.layout6);
     obj.edit2:setTop(0);
     obj.edit2:setWidth(120);
     obj.edit2:setHeight(25);
-    obj.edit2:setField("Grad .. _name");
+    obj.edit2:setField("Grad .. _array");
     obj.edit2:setHorzTextAlign("center");
     obj.edit2:setName("edit2");
 
@@ -420,27 +486,20 @@ local function constructNew_feiticos()
     obj.edit3:setTop(0);
     obj.edit3:setWidth(120);
     obj.edit3:setHeight(25);
-    obj.edit3:setField("Grad .. _array");
+    obj.edit3:setField("Grad .. _grad");
     obj.edit3:setHorzTextAlign("center");
     obj.edit3:setName("edit3");
 
-    obj.edit4 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit4:setParent(obj.layout6);
-    obj.edit4:setTop(0);
-    obj.edit4:setWidth(120);
-    obj.edit4:setHeight(25);
-    obj.edit4:setField("Grad .. _grad");
-    obj.edit4:setHorzTextAlign("center");
-    obj.edit4:setName("edit4");
-
-    obj.edit5 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit5:setParent(obj.layout6);
-    obj.edit5:setTop(0);
-    obj.edit5:setWidth(120);
-    obj.edit5:setHeight(25);
-    obj.edit5:setField("Grad");
-    obj.edit5:setHorzTextAlign("center");
-    obj.edit5:setName("edit5");
+    obj.Grad = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Grad:setParent(obj.layout6);
+    obj.Grad:setName("Grad");
+    obj.Grad:setTop(0);
+    obj.Grad:setWidth(120);
+    obj.Grad:setHeight(25);
+    obj.Grad:setField("Grad");
+    obj.Grad:setHorzTextAlign("center");
+    obj.Grad:setHitTest(true);
+    obj.Grad:setHint("");
 
     obj.button1 = GUI.fromHandle(_obj_newObject("button"));
     obj.button1:setParent(obj.layout6);
@@ -486,41 +545,43 @@ local function constructNew_feiticos()
     obj.layout8:setHeight(25);
     obj.layout8:setName("layout8");
 
+    obj.edit4 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit4:setParent(obj.layout8);
+    obj.edit4:setTop(0);
+    obj.edit4:setWidth(120);
+    obj.edit4:setHeight(25);
+    obj.edit4:setField("CD .. _name");
+    obj.edit4:setHorzTextAlign("center");
+    obj.edit4:setName("edit4");
+
+    obj.edit5 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit5:setParent(obj.layout8);
+    obj.edit5:setTop(0);
+    obj.edit5:setWidth(120);
+    obj.edit5:setHeight(25);
+    obj.edit5:setField("CD .. _array");
+    obj.edit5:setHorzTextAlign("center");
+    obj.edit5:setName("edit5");
+
     obj.edit6 = GUI.fromHandle(_obj_newObject("edit"));
     obj.edit6:setParent(obj.layout8);
     obj.edit6:setTop(0);
     obj.edit6:setWidth(120);
     obj.edit6:setHeight(25);
-    obj.edit6:setField("CD .. _name");
+    obj.edit6:setField("CD .. _grad");
     obj.edit6:setHorzTextAlign("center");
     obj.edit6:setName("edit6");
 
-    obj.edit7 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit7:setParent(obj.layout8);
-    obj.edit7:setTop(0);
-    obj.edit7:setWidth(120);
-    obj.edit7:setHeight(25);
-    obj.edit7:setField("CD .. _array");
-    obj.edit7:setHorzTextAlign("center");
-    obj.edit7:setName("edit7");
-
-    obj.edit8 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit8:setParent(obj.layout8);
-    obj.edit8:setTop(0);
-    obj.edit8:setWidth(120);
-    obj.edit8:setHeight(25);
-    obj.edit8:setField("CD .. _grad");
-    obj.edit8:setHorzTextAlign("center");
-    obj.edit8:setName("edit8");
-
-    obj.edit9 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit9:setParent(obj.layout8);
-    obj.edit9:setTop(0);
-    obj.edit9:setWidth(120);
-    obj.edit9:setHeight(25);
-    obj.edit9:setField("CD");
-    obj.edit9:setHorzTextAlign("center");
-    obj.edit9:setName("edit9");
+    obj.CD = GUI.fromHandle(_obj_newObject("edit"));
+    obj.CD:setParent(obj.layout8);
+    obj.CD:setName("CD");
+    obj.CD:setTop(0);
+    obj.CD:setWidth(120);
+    obj.CD:setHeight(25);
+    obj.CD:setField("CD");
+    obj.CD:setHorzTextAlign("center");
+    obj.CD:setHitTest(true);
+    obj.CD:setHint("");
 
     obj.button3 = GUI.fromHandle(_obj_newObject("button"));
     obj.button3:setParent(obj.layout8);
@@ -566,41 +627,43 @@ local function constructNew_feiticos()
     obj.layout10:setHeight(25);
     obj.layout10:setName("layout10");
 
-    obj.edit10 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit10:setParent(obj.layout10);
-    obj.edit10:setTop(0);
-    obj.edit10:setWidth(120);
-    obj.edit10:setHeight(25);
-    obj.edit10:setField("Efeito .. _name");
-    obj.edit10:setHorzTextAlign("center");
-    obj.edit10:setName("edit10");
+    obj.edit7 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit7:setParent(obj.layout10);
+    obj.edit7:setTop(0);
+    obj.edit7:setWidth(120);
+    obj.edit7:setHeight(25);
+    obj.edit7:setField("Efeito .. _name");
+    obj.edit7:setHorzTextAlign("center");
+    obj.edit7:setName("edit7");
 
-    obj.edit11 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit11:setParent(obj.layout10);
-    obj.edit11:setTop(0);
-    obj.edit11:setWidth(120);
-    obj.edit11:setHeight(25);
-    obj.edit11:setField("Efeito .. _array");
-    obj.edit11:setHorzTextAlign("center");
-    obj.edit11:setName("edit11");
+    obj.edit8 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit8:setParent(obj.layout10);
+    obj.edit8:setTop(0);
+    obj.edit8:setWidth(120);
+    obj.edit8:setHeight(25);
+    obj.edit8:setField("Efeito .. _array");
+    obj.edit8:setHorzTextAlign("center");
+    obj.edit8:setName("edit8");
 
-    obj.edit12 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit12:setParent(obj.layout10);
-    obj.edit12:setTop(0);
-    obj.edit12:setWidth(120);
-    obj.edit12:setHeight(25);
-    obj.edit12:setField("Efeito .. _grad");
-    obj.edit12:setHorzTextAlign("center");
-    obj.edit12:setName("edit12");
+    obj.edit9 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit9:setParent(obj.layout10);
+    obj.edit9:setTop(0);
+    obj.edit9:setWidth(120);
+    obj.edit9:setHeight(25);
+    obj.edit9:setField("Efeito .. _grad");
+    obj.edit9:setHorzTextAlign("center");
+    obj.edit9:setName("edit9");
 
-    obj.edit13 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit13:setParent(obj.layout10);
-    obj.edit13:setTop(0);
-    obj.edit13:setWidth(120);
-    obj.edit13:setHeight(25);
-    obj.edit13:setField("Efeito");
-    obj.edit13:setHorzTextAlign("center");
-    obj.edit13:setName("edit13");
+    obj.Efeito = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Efeito:setParent(obj.layout10);
+    obj.Efeito:setName("Efeito");
+    obj.Efeito:setTop(0);
+    obj.Efeito:setWidth(120);
+    obj.Efeito:setHeight(25);
+    obj.Efeito:setField("Efeito");
+    obj.Efeito:setHorzTextAlign("center");
+    obj.Efeito:setHitTest(true);
+    obj.Efeito:setHint("");
 
     obj.button5 = GUI.fromHandle(_obj_newObject("button"));
     obj.button5:setParent(obj.layout10);
@@ -652,41 +715,43 @@ local function constructNew_feiticos()
     obj.layout13:setHeight(25);
     obj.layout13:setName("layout13");
 
-    obj.edit14 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit14:setParent(obj.layout13);
-    obj.edit14:setTop(0);
-    obj.edit14:setWidth(120);
-    obj.edit14:setHeight(25);
-    obj.edit14:setField("Poder .. _name");
-    obj.edit14:setHorzTextAlign("center");
-    obj.edit14:setName("edit14");
+    obj.edit10 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit10:setParent(obj.layout13);
+    obj.edit10:setTop(0);
+    obj.edit10:setWidth(120);
+    obj.edit10:setHeight(25);
+    obj.edit10:setField("Poder .. _name");
+    obj.edit10:setHorzTextAlign("center");
+    obj.edit10:setName("edit10");
 
-    obj.edit15 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit15:setParent(obj.layout13);
-    obj.edit15:setTop(0);
-    obj.edit15:setWidth(120);
-    obj.edit15:setHeight(25);
-    obj.edit15:setField("Poder .. _array");
-    obj.edit15:setHorzTextAlign("center");
-    obj.edit15:setName("edit15");
+    obj.edit11 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit11:setParent(obj.layout13);
+    obj.edit11:setTop(0);
+    obj.edit11:setWidth(120);
+    obj.edit11:setHeight(25);
+    obj.edit11:setField("Poder .. _array");
+    obj.edit11:setHorzTextAlign("center");
+    obj.edit11:setName("edit11");
 
-    obj.edit16 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit16:setParent(obj.layout13);
-    obj.edit16:setTop(0);
-    obj.edit16:setWidth(120);
-    obj.edit16:setHeight(25);
-    obj.edit16:setField("Poder .. _grad");
-    obj.edit16:setHorzTextAlign("center");
-    obj.edit16:setName("edit16");
+    obj.edit12 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit12:setParent(obj.layout13);
+    obj.edit12:setTop(0);
+    obj.edit12:setWidth(120);
+    obj.edit12:setHeight(25);
+    obj.edit12:setField("Poder .. _grad");
+    obj.edit12:setHorzTextAlign("center");
+    obj.edit12:setName("edit12");
 
-    obj.edit17 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit17:setParent(obj.layout13);
-    obj.edit17:setTop(0);
-    obj.edit17:setWidth(120);
-    obj.edit17:setHeight(25);
-    obj.edit17:setField("Poder");
-    obj.edit17:setHorzTextAlign("center");
-    obj.edit17:setName("edit17");
+    obj.Poder = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Poder:setParent(obj.layout13);
+    obj.Poder:setName("Poder");
+    obj.Poder:setTop(0);
+    obj.Poder:setWidth(120);
+    obj.Poder:setHeight(25);
+    obj.Poder:setField("Poder");
+    obj.Poder:setHorzTextAlign("center");
+    obj.Poder:setHitTest(true);
+    obj.Poder:setHint("");
 
     obj.button7 = GUI.fromHandle(_obj_newObject("button"));
     obj.button7:setParent(obj.layout13);
@@ -732,41 +797,43 @@ local function constructNew_feiticos()
     obj.layout15:setHeight(25);
     obj.layout15:setName("layout15");
 
-    obj.edit18 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit18:setParent(obj.layout15);
-    obj.edit18:setTop(0);
-    obj.edit18:setWidth(120);
-    obj.edit18:setHeight(25);
-    obj.edit18:setField("Dano .. _name");
-    obj.edit18:setHorzTextAlign("center");
-    obj.edit18:setName("edit18");
+    obj.edit13 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit13:setParent(obj.layout15);
+    obj.edit13:setTop(0);
+    obj.edit13:setWidth(120);
+    obj.edit13:setHeight(25);
+    obj.edit13:setField("Dano .. _name");
+    obj.edit13:setHorzTextAlign("center");
+    obj.edit13:setName("edit13");
 
-    obj.edit19 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit19:setParent(obj.layout15);
-    obj.edit19:setTop(0);
-    obj.edit19:setWidth(120);
-    obj.edit19:setHeight(25);
-    obj.edit19:setField("Dano .. _array");
-    obj.edit19:setHorzTextAlign("center");
-    obj.edit19:setName("edit19");
+    obj.edit14 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit14:setParent(obj.layout15);
+    obj.edit14:setTop(0);
+    obj.edit14:setWidth(120);
+    obj.edit14:setHeight(25);
+    obj.edit14:setField("Dano .. _array");
+    obj.edit14:setHorzTextAlign("center");
+    obj.edit14:setName("edit14");
 
-    obj.edit20 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit20:setParent(obj.layout15);
-    obj.edit20:setTop(0);
-    obj.edit20:setWidth(120);
-    obj.edit20:setHeight(25);
-    obj.edit20:setField("Dano .. _grad");
-    obj.edit20:setHorzTextAlign("center");
-    obj.edit20:setName("edit20");
+    obj.edit15 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit15:setParent(obj.layout15);
+    obj.edit15:setTop(0);
+    obj.edit15:setWidth(120);
+    obj.edit15:setHeight(25);
+    obj.edit15:setField("Dano .. _grad");
+    obj.edit15:setHorzTextAlign("center");
+    obj.edit15:setName("edit15");
 
-    obj.edit21 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit21:setParent(obj.layout15);
-    obj.edit21:setTop(0);
-    obj.edit21:setWidth(120);
-    obj.edit21:setHeight(25);
-    obj.edit21:setField("Dano");
-    obj.edit21:setHorzTextAlign("center");
-    obj.edit21:setName("edit21");
+    obj.Dano = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Dano:setParent(obj.layout15);
+    obj.Dano:setName("Dano");
+    obj.Dano:setTop(0);
+    obj.Dano:setWidth(120);
+    obj.Dano:setHeight(25);
+    obj.Dano:setField("Dano");
+    obj.Dano:setHorzTextAlign("center");
+    obj.Dano:setHitTest(true);
+    obj.Dano:setHint("");
 
     obj.button9 = GUI.fromHandle(_obj_newObject("button"));
     obj.button9:setParent(obj.layout15);
@@ -812,41 +879,43 @@ local function constructNew_feiticos()
     obj.layout17:setHeight(25);
     obj.layout17:setName("layout17");
 
-    obj.edit22 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit22:setParent(obj.layout17);
-    obj.edit22:setTop(0);
-    obj.edit22:setWidth(120);
-    obj.edit22:setHeight(25);
-    obj.edit22:setField("Bonus .. _name");
-    obj.edit22:setHorzTextAlign("center");
-    obj.edit22:setName("edit22");
+    obj.edit16 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit16:setParent(obj.layout17);
+    obj.edit16:setTop(0);
+    obj.edit16:setWidth(120);
+    obj.edit16:setHeight(25);
+    obj.edit16:setField("Bonus .. _name");
+    obj.edit16:setHorzTextAlign("center");
+    obj.edit16:setName("edit16");
 
-    obj.edit23 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit23:setParent(obj.layout17);
-    obj.edit23:setTop(0);
-    obj.edit23:setWidth(120);
-    obj.edit23:setHeight(25);
-    obj.edit23:setField("Bonus .. _array");
-    obj.edit23:setHorzTextAlign("center");
-    obj.edit23:setName("edit23");
+    obj.edit17 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit17:setParent(obj.layout17);
+    obj.edit17:setTop(0);
+    obj.edit17:setWidth(120);
+    obj.edit17:setHeight(25);
+    obj.edit17:setField("Bonus .. _array");
+    obj.edit17:setHorzTextAlign("center");
+    obj.edit17:setName("edit17");
 
-    obj.edit24 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit24:setParent(obj.layout17);
-    obj.edit24:setTop(0);
-    obj.edit24:setWidth(120);
-    obj.edit24:setHeight(25);
-    obj.edit24:setField("Bonus .. _grad");
-    obj.edit24:setHorzTextAlign("center");
-    obj.edit24:setName("edit24");
+    obj.edit18 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit18:setParent(obj.layout17);
+    obj.edit18:setTop(0);
+    obj.edit18:setWidth(120);
+    obj.edit18:setHeight(25);
+    obj.edit18:setField("Bonus .. _grad");
+    obj.edit18:setHorzTextAlign("center");
+    obj.edit18:setName("edit18");
 
-    obj.edit25 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit25:setParent(obj.layout17);
-    obj.edit25:setTop(0);
-    obj.edit25:setWidth(120);
-    obj.edit25:setHeight(25);
-    obj.edit25:setField("Bonus");
-    obj.edit25:setHorzTextAlign("center");
-    obj.edit25:setName("edit25");
+    obj.Bonus = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Bonus:setParent(obj.layout17);
+    obj.Bonus:setName("Bonus");
+    obj.Bonus:setTop(0);
+    obj.Bonus:setWidth(120);
+    obj.Bonus:setHeight(25);
+    obj.Bonus:setField("Bonus");
+    obj.Bonus:setHorzTextAlign("center");
+    obj.Bonus:setHitTest(true);
+    obj.Bonus:setHint("");
 
     obj.button11 = GUI.fromHandle(_obj_newObject("button"));
     obj.button11:setParent(obj.layout17);
@@ -898,41 +967,43 @@ local function constructNew_feiticos()
     obj.layout20:setHeight(25);
     obj.layout20:setName("layout20");
 
-    obj.edit26 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit26:setParent(obj.layout20);
-    obj.edit26:setTop(0);
-    obj.edit26:setWidth(120);
-    obj.edit26:setHeight(25);
-    obj.edit26:setField("Range .. _name");
-    obj.edit26:setHorzTextAlign("center");
-    obj.edit26:setName("edit26");
+    obj.edit19 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit19:setParent(obj.layout20);
+    obj.edit19:setTop(0);
+    obj.edit19:setWidth(120);
+    obj.edit19:setHeight(25);
+    obj.edit19:setField("Range .. _name");
+    obj.edit19:setHorzTextAlign("center");
+    obj.edit19:setName("edit19");
 
-    obj.edit27 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit27:setParent(obj.layout20);
-    obj.edit27:setTop(0);
-    obj.edit27:setWidth(120);
-    obj.edit27:setHeight(25);
-    obj.edit27:setField("Range .. _array");
-    obj.edit27:setHorzTextAlign("center");
-    obj.edit27:setName("edit27");
+    obj.edit20 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit20:setParent(obj.layout20);
+    obj.edit20:setTop(0);
+    obj.edit20:setWidth(120);
+    obj.edit20:setHeight(25);
+    obj.edit20:setField("Range .. _array");
+    obj.edit20:setHorzTextAlign("center");
+    obj.edit20:setName("edit20");
 
-    obj.edit28 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit28:setParent(obj.layout20);
-    obj.edit28:setTop(0);
-    obj.edit28:setWidth(120);
-    obj.edit28:setHeight(25);
-    obj.edit28:setField("Range .. _grad");
-    obj.edit28:setHorzTextAlign("center");
-    obj.edit28:setName("edit28");
+    obj.edit21 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit21:setParent(obj.layout20);
+    obj.edit21:setTop(0);
+    obj.edit21:setWidth(120);
+    obj.edit21:setHeight(25);
+    obj.edit21:setField("Range .. _grad");
+    obj.edit21:setHorzTextAlign("center");
+    obj.edit21:setName("edit21");
 
-    obj.edit29 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit29:setParent(obj.layout20);
-    obj.edit29:setTop(0);
-    obj.edit29:setWidth(120);
-    obj.edit29:setHeight(25);
-    obj.edit29:setField("Range");
-    obj.edit29:setHorzTextAlign("center");
-    obj.edit29:setName("edit29");
+    obj.Range = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Range:setParent(obj.layout20);
+    obj.Range:setName("Range");
+    obj.Range:setTop(0);
+    obj.Range:setWidth(120);
+    obj.Range:setHeight(25);
+    obj.Range:setField("Range");
+    obj.Range:setHorzTextAlign("center");
+    obj.Range:setHitTest(true);
+    obj.Range:setHint("");
 
     obj.button13 = GUI.fromHandle(_obj_newObject("button"));
     obj.button13:setParent(obj.layout20);
@@ -978,41 +1049,43 @@ local function constructNew_feiticos()
     obj.layout22:setHeight(25);
     obj.layout22:setName("layout22");
 
-    obj.edit30 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit30:setParent(obj.layout22);
-    obj.edit30:setTop(0);
-    obj.edit30:setWidth(120);
-    obj.edit30:setHeight(25);
-    obj.edit30:setField("Area .. _name");
-    obj.edit30:setHorzTextAlign("center");
-    obj.edit30:setName("edit30");
+    obj.edit22 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit22:setParent(obj.layout22);
+    obj.edit22:setTop(0);
+    obj.edit22:setWidth(120);
+    obj.edit22:setHeight(25);
+    obj.edit22:setField("Area .. _name");
+    obj.edit22:setHorzTextAlign("center");
+    obj.edit22:setName("edit22");
 
-    obj.edit31 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit31:setParent(obj.layout22);
-    obj.edit31:setTop(0);
-    obj.edit31:setWidth(120);
-    obj.edit31:setHeight(25);
-    obj.edit31:setField("Area .. _array");
-    obj.edit31:setHorzTextAlign("center");
-    obj.edit31:setName("edit31");
+    obj.edit23 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit23:setParent(obj.layout22);
+    obj.edit23:setTop(0);
+    obj.edit23:setWidth(120);
+    obj.edit23:setHeight(25);
+    obj.edit23:setField("Area .. _array");
+    obj.edit23:setHorzTextAlign("center");
+    obj.edit23:setName("edit23");
 
-    obj.edit32 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit32:setParent(obj.layout22);
-    obj.edit32:setTop(0);
-    obj.edit32:setWidth(120);
-    obj.edit32:setHeight(25);
-    obj.edit32:setField("Area .. _grad");
-    obj.edit32:setHorzTextAlign("center");
-    obj.edit32:setName("edit32");
+    obj.edit24 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit24:setParent(obj.layout22);
+    obj.edit24:setTop(0);
+    obj.edit24:setWidth(120);
+    obj.edit24:setHeight(25);
+    obj.edit24:setField("Area .. _grad");
+    obj.edit24:setHorzTextAlign("center");
+    obj.edit24:setName("edit24");
 
-    obj.edit33 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit33:setParent(obj.layout22);
-    obj.edit33:setTop(0);
-    obj.edit33:setWidth(120);
-    obj.edit33:setHeight(25);
-    obj.edit33:setField("Area");
-    obj.edit33:setHorzTextAlign("center");
-    obj.edit33:setName("edit33");
+    obj.Area = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Area:setParent(obj.layout22);
+    obj.Area:setName("Area");
+    obj.Area:setTop(0);
+    obj.Area:setWidth(120);
+    obj.Area:setHeight(25);
+    obj.Area:setField("Area");
+    obj.Area:setHorzTextAlign("center");
+    obj.Area:setHitTest(true);
+    obj.Area:setHint("");
 
     obj.button15 = GUI.fromHandle(_obj_newObject("button"));
     obj.button15:setParent(obj.layout22);
@@ -1058,41 +1131,43 @@ local function constructNew_feiticos()
     obj.layout24:setHeight(25);
     obj.layout24:setName("layout24");
 
-    obj.edit34 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit34:setParent(obj.layout24);
-    obj.edit34:setTop(0);
-    obj.edit34:setWidth(120);
-    obj.edit34:setHeight(25);
-    obj.edit34:setField("Duracao .. _name");
-    obj.edit34:setHorzTextAlign("center");
-    obj.edit34:setName("edit34");
+    obj.edit25 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit25:setParent(obj.layout24);
+    obj.edit25:setTop(0);
+    obj.edit25:setWidth(120);
+    obj.edit25:setHeight(25);
+    obj.edit25:setField("Duracao .. _name");
+    obj.edit25:setHorzTextAlign("center");
+    obj.edit25:setName("edit25");
 
-    obj.edit35 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit35:setParent(obj.layout24);
-    obj.edit35:setTop(0);
-    obj.edit35:setWidth(120);
-    obj.edit35:setHeight(25);
-    obj.edit35:setField("Duracao .. _array");
-    obj.edit35:setHorzTextAlign("center");
-    obj.edit35:setName("edit35");
+    obj.edit26 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit26:setParent(obj.layout24);
+    obj.edit26:setTop(0);
+    obj.edit26:setWidth(120);
+    obj.edit26:setHeight(25);
+    obj.edit26:setField("Duracao .. _array");
+    obj.edit26:setHorzTextAlign("center");
+    obj.edit26:setName("edit26");
 
-    obj.edit36 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit36:setParent(obj.layout24);
-    obj.edit36:setTop(0);
-    obj.edit36:setWidth(120);
-    obj.edit36:setHeight(25);
-    obj.edit36:setField("Duracao .. _grad");
-    obj.edit36:setHorzTextAlign("center");
-    obj.edit36:setName("edit36");
+    obj.edit27 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit27:setParent(obj.layout24);
+    obj.edit27:setTop(0);
+    obj.edit27:setWidth(120);
+    obj.edit27:setHeight(25);
+    obj.edit27:setField("Duracao .. _grad");
+    obj.edit27:setHorzTextAlign("center");
+    obj.edit27:setName("edit27");
 
-    obj.edit37 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit37:setParent(obj.layout24);
-    obj.edit37:setTop(0);
-    obj.edit37:setWidth(120);
-    obj.edit37:setHeight(25);
-    obj.edit37:setField("Duracao");
-    obj.edit37:setHorzTextAlign("center");
-    obj.edit37:setName("edit37");
+    obj.Duracao = GUI.fromHandle(_obj_newObject("edit"));
+    obj.Duracao:setParent(obj.layout24);
+    obj.Duracao:setName("Duracao");
+    obj.Duracao:setTop(0);
+    obj.Duracao:setWidth(120);
+    obj.Duracao:setHeight(25);
+    obj.Duracao:setField("Duracao");
+    obj.Duracao:setHorzTextAlign("center");
+    obj.Duracao:setHitTest(true);
+    obj.Duracao:setHint("");
 
     obj.button17 = GUI.fromHandle(_obj_newObject("button"));
     obj.button17:setParent(obj.layout24);
@@ -1130,16 +1205,16 @@ local function constructNew_feiticos()
     obj.label14:setHorzTextAlign("center");
     obj.label14:setName("label14");
 
-    obj.edit38 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit38:setParent(obj.layout25);
-    obj.edit38:setTop(75);
-    obj.edit38:setLeft(5);
-    obj.edit38:setWidth(40);
-    obj.edit38:setHeight(25);
-    obj.edit38:setField("Order");
-    obj.edit38:setHorzTextAlign("center");
-    obj.edit38:setHint("Quanto menor mais acima na lista!");
-    obj.edit38:setName("edit38");
+    obj.edit28 = GUI.fromHandle(_obj_newObject("edit"));
+    obj.edit28:setParent(obj.layout25);
+    obj.edit28:setTop(75);
+    obj.edit28:setLeft(5);
+    obj.edit28:setWidth(40);
+    obj.edit28:setHeight(25);
+    obj.edit28:setField("Order");
+    obj.edit28:setHorzTextAlign("center");
+    obj.edit28:setHint("Quanto menor mais acima na lista!");
+    obj.edit28:setName("edit28");
 
     obj.layout26 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout26:setParent(obj);
@@ -1177,313 +1252,6 @@ local function constructNew_feiticos()
     obj.button22:setText("Comparar");
     obj.button22:setHeight(35);
     obj.button22:setName("button22");
-
-    obj.popUp = GUI.fromHandle(_obj_newObject("popup"));
-    obj.popUp:setParent(obj);
-    obj.popUp:setName("popUp");
-    obj.popUp:setWidth(306);
-    obj.popUp:setHeight(360);
-    obj.popUp:setBackOpacity(0.5);
-
-    obj.layout27 = GUI.fromHandle(_obj_newObject("layout"));
-    obj.layout27:setParent(obj.popUp);
-    obj.layout27:setAlign("left");
-    obj.layout27:setWidth(200);
-    obj.layout27:setName("layout27");
-
-    obj.layout28 = GUI.fromHandle(_obj_newObject("layout"));
-    obj.layout28:setParent(obj.layout27);
-    obj.layout28:setAlign("top");
-    obj.layout28:setHeight(30);
-    obj.layout28:setName("layout28");
-
-    obj.label15 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label15:setParent(obj.layout28);
-    obj.label15:setAlign("left");
-    obj.label15:setWidth(100);
-    obj.label15:setText("");
-    obj.label15:setHorzTextAlign("center");
-    obj.label15:setName("label15");
-
-    obj.label16 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label16:setParent(obj.layout28);
-    obj.label16:setAlign("left");
-    obj.label16:setWidth(100);
-    obj.label16:setText("Original");
-    obj.label16:setHorzTextAlign("center");
-    obj.label16:setName("label16");
-
-    obj.layout29 = GUI.fromHandle(_obj_newObject("layout"));
-    obj.layout29:setParent(obj.layout27);
-    obj.layout29:setAlign("top");
-    obj.layout29:setHeight(400);
-    obj.layout29:setName("layout29");
-
-    obj.rectangle11 = GUI.fromHandle(_obj_newObject("rectangle"));
-    obj.rectangle11:setParent(obj.layout29);
-    obj.rectangle11:setAlign("left");
-    obj.rectangle11:setWidth(100);
-    obj.rectangle11:setColor("black");
-    obj.rectangle11:setName("rectangle11");
-
-    obj.edit39 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit39:setParent(obj.rectangle11);
-    obj.edit39:setTransparent(true);
-    obj.edit39:setMargins({top=5,bottom=5});
-    obj.edit39:setAlign("top");
-    obj.edit39:setText("GRAD");
-    obj.edit39:setHorzTextAlign("center");
-    obj.edit39:setName("edit39");
-
-    obj.edit40 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit40:setParent(obj.rectangle11);
-    obj.edit40:setTransparent(true);
-    obj.edit40:setMargins({bottom=5});
-    obj.edit40:setAlign("top");
-    obj.edit40:setText("CD");
-    obj.edit40:setHorzTextAlign("center");
-    obj.edit40:setName("edit40");
-
-    obj.edit41 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit41:setParent(obj.rectangle11);
-    obj.edit41:setTransparent(true);
-    obj.edit41:setMargins({bottom=5});
-    obj.edit41:setAlign("top");
-    obj.edit41:setText("EFEITO");
-    obj.edit41:setHorzTextAlign("center");
-    obj.edit41:setName("edit41");
-
-    obj.edit42 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit42:setParent(obj.rectangle11);
-    obj.edit42:setTransparent(true);
-    obj.edit42:setMargins({bottom=5});
-    obj.edit42:setAlign("top");
-    obj.edit42:setText("PODER");
-    obj.edit42:setHorzTextAlign("center");
-    obj.edit42:setName("edit42");
-
-    obj.edit43 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit43:setParent(obj.rectangle11);
-    obj.edit43:setTransparent(true);
-    obj.edit43:setMargins({bottom=5});
-    obj.edit43:setAlign("top");
-    obj.edit43:setText("DANO");
-    obj.edit43:setHorzTextAlign("center");
-    obj.edit43:setName("edit43");
-
-    obj.edit44 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit44:setParent(obj.rectangle11);
-    obj.edit44:setTransparent(true);
-    obj.edit44:setMargins({bottom=5});
-    obj.edit44:setAlign("top");
-    obj.edit44:setText("BONUS");
-    obj.edit44:setHorzTextAlign("center");
-    obj.edit44:setName("edit44");
-
-    obj.edit45 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit45:setParent(obj.rectangle11);
-    obj.edit45:setTransparent(true);
-    obj.edit45:setMargins({bottom=5});
-    obj.edit45:setAlign("top");
-    obj.edit45:setText("RANGE");
-    obj.edit45:setHorzTextAlign("center");
-    obj.edit45:setName("edit45");
-
-    obj.edit46 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit46:setParent(obj.rectangle11);
-    obj.edit46:setTransparent(true);
-    obj.edit46:setMargins({bottom=5});
-    obj.edit46:setAlign("top");
-    obj.edit46:setText("AREA");
-    obj.edit46:setHorzTextAlign("center");
-    obj.edit46:setName("edit46");
-
-    obj.edit47 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit47:setParent(obj.rectangle11);
-    obj.edit47:setTransparent(true);
-    obj.edit47:setMargins({bottom=5});
-    obj.edit47:setAlign("top");
-    obj.edit47:setText("DURAÇÃO");
-    obj.edit47:setHorzTextAlign("center");
-    obj.edit47:setName("edit47");
-
-    obj.rectangle12 = GUI.fromHandle(_obj_newObject("rectangle"));
-    obj.rectangle12:setParent(obj.layout29);
-    obj.rectangle12:setAlign("left");
-    obj.rectangle12:setWidth(100);
-    obj.rectangle12:setColor("black");
-    obj.rectangle12:setName("rectangle12");
-
-    obj.edit48 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit48:setParent(obj.rectangle12);
-    obj.edit48:setMargins({top=5,bottom=5});
-    obj.edit48:setAlign("top");
-    obj.edit48:setField("Grad2");
-    obj.edit48:setHorzTextAlign("center");
-    obj.edit48:setName("edit48");
-
-    obj.edit49 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit49:setParent(obj.rectangle12);
-    obj.edit49:setMargins({bottom=5});
-    obj.edit49:setAlign("top");
-    obj.edit49:setField("CD2");
-    obj.edit49:setHorzTextAlign("center");
-    obj.edit49:setName("edit49");
-
-    obj.edit50 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit50:setParent(obj.rectangle12);
-    obj.edit50:setMargins({bottom=5});
-    obj.edit50:setAlign("top");
-    obj.edit50:setField("Efeito2");
-    obj.edit50:setHorzTextAlign("center");
-    obj.edit50:setName("edit50");
-
-    obj.edit51 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit51:setParent(obj.rectangle12);
-    obj.edit51:setMargins({bottom=5});
-    obj.edit51:setAlign("top");
-    obj.edit51:setField("Poder2");
-    obj.edit51:setHorzTextAlign("center");
-    obj.edit51:setName("edit51");
-
-    obj.edit52 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit52:setParent(obj.rectangle12);
-    obj.edit52:setMargins({bottom=5});
-    obj.edit52:setAlign("top");
-    obj.edit52:setField("Dano2");
-    obj.edit52:setHorzTextAlign("center");
-    obj.edit52:setName("edit52");
-
-    obj.edit53 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit53:setParent(obj.rectangle12);
-    obj.edit53:setMargins({bottom=5});
-    obj.edit53:setAlign("top");
-    obj.edit53:setField("Bonus2");
-    obj.edit53:setHorzTextAlign("center");
-    obj.edit53:setName("edit53");
-
-    obj.edit54 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit54:setParent(obj.rectangle12);
-    obj.edit54:setMargins({bottom=5});
-    obj.edit54:setAlign("top");
-    obj.edit54:setField("Range2");
-    obj.edit54:setHorzTextAlign("center");
-    obj.edit54:setName("edit54");
-
-    obj.edit55 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit55:setParent(obj.rectangle12);
-    obj.edit55:setMargins({bottom=5});
-    obj.edit55:setAlign("top");
-    obj.edit55:setField("Area2");
-    obj.edit55:setHorzTextAlign("center");
-    obj.edit55:setName("edit55");
-
-    obj.edit56 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit56:setParent(obj.rectangle12);
-    obj.edit56:setMargins({bottom=5});
-    obj.edit56:setAlign("top");
-    obj.edit56:setField("Duracao2");
-    obj.edit56:setHorzTextAlign("center");
-    obj.edit56:setName("edit56");
-
-    obj.layout30 = GUI.fromHandle(_obj_newObject("layout"));
-    obj.layout30:setParent(obj.popUp);
-    obj.layout30:setAlign("left");
-    obj.layout30:setWidth(100);
-    obj.layout30:setName("layout30");
-
-    obj.label17 = GUI.fromHandle(_obj_newObject("label"));
-    obj.label17:setParent(obj.layout30);
-    obj.label17:setAlign("top");
-    obj.label17:setHeight(30);
-    obj.label17:setText("Atual");
-    obj.label17:setHorzTextAlign("center");
-    obj.label17:setName("label17");
-
-    obj.layout31 = GUI.fromHandle(_obj_newObject("layout"));
-    obj.layout31:setParent(obj.layout30);
-    obj.layout31:setAlign("top");
-    obj.layout31:setHeight(360);
-    obj.layout31:setName("layout31");
-
-    obj.rectangle13 = GUI.fromHandle(_obj_newObject("rectangle"));
-    obj.rectangle13:setParent(obj.layout31);
-    obj.rectangle13:setAlign("left");
-    obj.rectangle13:setWidth(100);
-    obj.rectangle13:setColor("black");
-    obj.rectangle13:setName("rectangle13");
-
-    obj.edit57 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit57:setParent(obj.rectangle13);
-    obj.edit57:setMargins({top=5,bottom=5});
-    obj.edit57:setAlign("top");
-    obj.edit57:setField("Grad");
-    obj.edit57:setHorzTextAlign("center");
-    obj.edit57:setName("edit57");
-
-    obj.edit58 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit58:setParent(obj.rectangle13);
-    obj.edit58:setMargins({bottom=5});
-    obj.edit58:setAlign("top");
-    obj.edit58:setField("CD");
-    obj.edit58:setHorzTextAlign("center");
-    obj.edit58:setName("edit58");
-
-    obj.edit59 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit59:setParent(obj.rectangle13);
-    obj.edit59:setMargins({bottom=5});
-    obj.edit59:setAlign("top");
-    obj.edit59:setField("Efeito");
-    obj.edit59:setHorzTextAlign("center");
-    obj.edit59:setName("edit59");
-
-    obj.edit60 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit60:setParent(obj.rectangle13);
-    obj.edit60:setMargins({bottom=5});
-    obj.edit60:setAlign("top");
-    obj.edit60:setField("Poder");
-    obj.edit60:setHorzTextAlign("center");
-    obj.edit60:setName("edit60");
-
-    obj.edit61 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit61:setParent(obj.rectangle13);
-    obj.edit61:setMargins({bottom=5});
-    obj.edit61:setAlign("top");
-    obj.edit61:setField("Dano");
-    obj.edit61:setHorzTextAlign("center");
-    obj.edit61:setName("edit61");
-
-    obj.edit62 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit62:setParent(obj.rectangle13);
-    obj.edit62:setMargins({bottom=5});
-    obj.edit62:setAlign("top");
-    obj.edit62:setField("Bonus");
-    obj.edit62:setHorzTextAlign("center");
-    obj.edit62:setName("edit62");
-
-    obj.edit63 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit63:setParent(obj.rectangle13);
-    obj.edit63:setMargins({bottom=5});
-    obj.edit63:setAlign("top");
-    obj.edit63:setField("Range");
-    obj.edit63:setHorzTextAlign("center");
-    obj.edit63:setName("edit63");
-
-    obj.edit64 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit64:setParent(obj.rectangle13);
-    obj.edit64:setMargins({bottom=5});
-    obj.edit64:setAlign("top");
-    obj.edit64:setField("Area");
-    obj.edit64:setHorzTextAlign("center");
-    obj.edit64:setName("edit64");
-
-    obj.edit65 = GUI.fromHandle(_obj_newObject("edit"));
-    obj.edit65:setParent(obj.rectangle13);
-    obj.edit65:setMargins({bottom=5});
-    obj.edit65:setAlign("top");
-    obj.edit65:setField("Duracao");
-    obj.edit65:setHorzTextAlign("center");
-    obj.edit65:setName("edit65");
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
         function ()
@@ -1553,7 +1321,12 @@ local function constructNew_feiticos()
                     layoutFeitico()
         end);
 
-    obj._e_event1 = obj.escola:addEventListener("onChange",
+    obj._e_event1 = obj.nomeFeitico:addEventListener("onMouseEnter",
+        function ()
+            self.nomeFeitico.hint = sheet.Desc or 0
+        end);
+
+    obj._e_event2 = obj.escola:addEventListener("onChange",
         function ()
             if sheet.escola == "Contra-Feitiço" then
                                 self.escola.fontColor = "#EABFCB"
@@ -1570,7 +1343,7 @@ local function constructNew_feiticos()
                             end
         end);
 
-    obj._e_event2 = obj.tipo:addEventListener("onChange",
+    obj._e_event3 = obj.tipo:addEventListener("onChange",
         function ()
             if sheet.tipo == "Ataque" then
                             self.tipo.fontColor = "#FF0022"
@@ -1581,15 +1354,16 @@ local function constructNew_feiticos()
                             end
         end);
 
-    obj._e_event3 = obj.edit4:addEventListener("onChange",
+    obj._e_event4 = obj.edit3:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event4 = obj.edit5:addEventListener("onChange",
+    obj._e_event5 = obj.Grad:addEventListener("onMouseEnter",
         function ()
+            self.Grad.hint = sheet.Grad
         end);
 
-    obj._e_event5 = obj.button1:addEventListener("onClick",
+    obj._e_event6 = obj.button1:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Grad_array)
                                     local grad = tonumber(sheet.Grad_grad)
@@ -1617,7 +1391,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event6 = obj.button2:addEventListener("onClick",
+    obj._e_event7 = obj.button2:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Grad_array)
                                     local grad = tonumber(sheet.Grad_grad)
@@ -1660,15 +1434,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event7 = obj.edit8:addEventListener("onChange",
+    obj._e_event8 = obj.edit6:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event8 = obj.edit9:addEventListener("onChange",
+    obj._e_event9 = obj.CD:addEventListener("onMouseEnter",
         function ()
+            self.CD.hint = sheet.CD
         end);
 
-    obj._e_event9 = obj.button3:addEventListener("onClick",
+    obj._e_event10 = obj.button3:addEventListener("onClick",
         function (event)
             local array = totable(sheet.CD_array)
                                     local grad = tonumber(sheet.CD_grad)
@@ -1696,7 +1471,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event10 = obj.button4:addEventListener("onClick",
+    obj._e_event11 = obj.button4:addEventListener("onClick",
         function (event)
             local array = totable(sheet.CD_array)
                                     local grad = tonumber(sheet.CD_grad)
@@ -1739,15 +1514,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event11 = obj.edit12:addEventListener("onChange",
+    obj._e_event12 = obj.edit9:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event12 = obj.edit13:addEventListener("onChange",
+    obj._e_event13 = obj.Efeito:addEventListener("onMouseEnter",
         function ()
+            self.Efeito.hint = sheet.Efeito
         end);
 
-    obj._e_event13 = obj.button5:addEventListener("onClick",
+    obj._e_event14 = obj.button5:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Efeito_array)
                                     local grad = tonumber(sheet.Efeito_grad)
@@ -1775,7 +1551,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event14 = obj.button6:addEventListener("onClick",
+    obj._e_event15 = obj.button6:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Efeito_array)
                                     local grad = tonumber(sheet.Efeito_grad)
@@ -1818,15 +1594,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event15 = obj.edit16:addEventListener("onChange",
+    obj._e_event16 = obj.edit12:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event16 = obj.edit17:addEventListener("onChange",
+    obj._e_event17 = obj.Poder:addEventListener("onMouseEnter",
         function ()
+            self.Poder.hint = sheet.Poder
         end);
 
-    obj._e_event17 = obj.button7:addEventListener("onClick",
+    obj._e_event18 = obj.button7:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Poder_array)
                                     local grad = tonumber(sheet.Poder_grad)
@@ -1854,7 +1631,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event18 = obj.button8:addEventListener("onClick",
+    obj._e_event19 = obj.button8:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Poder_array)
                                     local grad = tonumber(sheet.Poder_grad)
@@ -1897,15 +1674,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event19 = obj.edit20:addEventListener("onChange",
+    obj._e_event20 = obj.edit15:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event20 = obj.edit21:addEventListener("onChange",
+    obj._e_event21 = obj.Dano:addEventListener("onMouseEnter",
         function ()
+            self.Dano.hint = sheet.Dano
         end);
 
-    obj._e_event21 = obj.button9:addEventListener("onClick",
+    obj._e_event22 = obj.button9:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Dano_array)
                                     local grad = tonumber(sheet.Dano_grad)
@@ -1933,7 +1711,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event22 = obj.button10:addEventListener("onClick",
+    obj._e_event23 = obj.button10:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Dano_array)
                                     local grad = tonumber(sheet.Dano_grad)
@@ -1976,15 +1754,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event23 = obj.edit24:addEventListener("onChange",
+    obj._e_event24 = obj.edit18:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event24 = obj.edit25:addEventListener("onChange",
+    obj._e_event25 = obj.Bonus:addEventListener("onMouseEnter",
         function ()
+            self.Bonus.hint = sheet.Bonus
         end);
 
-    obj._e_event25 = obj.button11:addEventListener("onClick",
+    obj._e_event26 = obj.button11:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Bonus_array)
                                     local grad = tonumber(sheet.Bonus_grad)
@@ -2012,7 +1791,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event26 = obj.button12:addEventListener("onClick",
+    obj._e_event27 = obj.button12:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Bonus_array)
                                     local grad = tonumber(sheet.Bonus_grad)
@@ -2055,15 +1834,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event27 = obj.edit28:addEventListener("onChange",
+    obj._e_event28 = obj.edit21:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event28 = obj.edit29:addEventListener("onChange",
+    obj._e_event29 = obj.Range:addEventListener("onMouseEnter",
         function ()
+            self.Range.hint = sheet.Range
         end);
 
-    obj._e_event29 = obj.button13:addEventListener("onClick",
+    obj._e_event30 = obj.button13:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Range_array)
                                     local grad = tonumber(sheet.Range_grad)
@@ -2091,7 +1871,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event30 = obj.button14:addEventListener("onClick",
+    obj._e_event31 = obj.button14:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Range_array)
                                     local grad = tonumber(sheet.Range_grad)
@@ -2134,15 +1914,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event31 = obj.edit32:addEventListener("onChange",
+    obj._e_event32 = obj.edit24:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event32 = obj.edit33:addEventListener("onChange",
+    obj._e_event33 = obj.Area:addEventListener("onMouseEnter",
         function ()
+            self.Area.hint = sheet.Area
         end);
 
-    obj._e_event33 = obj.button15:addEventListener("onClick",
+    obj._e_event34 = obj.button15:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Area_array)
                                     local grad = tonumber(sheet.Area_grad)
@@ -2170,7 +1951,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event34 = obj.button16:addEventListener("onClick",
+    obj._e_event35 = obj.button16:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Area_array)
                                     local grad = tonumber(sheet.Area_grad)
@@ -2213,15 +1994,16 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event35 = obj.edit36:addEventListener("onChange",
+    obj._e_event36 = obj.edit27:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event36 = obj.edit37:addEventListener("onChange",
+    obj._e_event37 = obj.Duracao:addEventListener("onMouseEnter",
         function ()
+            self.Duracao.hint = sheet.Duracao
         end);
 
-    obj._e_event37 = obj.button17:addEventListener("onClick",
+    obj._e_event38 = obj.button17:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Duracao_array)
                                     local grad = tonumber(sheet.Duracao_grad)
@@ -2249,7 +2031,7 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event38 = obj.button18:addEventListener("onClick",
+    obj._e_event39 = obj.button18:addEventListener("onClick",
         function (event)
             local array = totable(sheet.Duracao_array)
                                     local grad = tonumber(sheet.Duracao_grad)
@@ -2292,27 +2074,28 @@ local function constructNew_feiticos()
                                     end
         end);
 
-    obj._e_event39 = obj.button19:addEventListener("onClick",
+    obj._e_event40 = obj.button19:addEventListener("onClick",
         function (event)
             enviarNaMesa()
         end);
 
-    obj._e_event40 = obj.button20:addEventListener("onClick",
+    obj._e_event41 = obj.button20:addEventListener("onClick",
         function (event)
             ListaDeFeitico()
         end);
 
-    obj._e_event41 = obj.button21:addEventListener("onClick",
+    obj._e_event42 = obj.button21:addEventListener("onClick",
         function (event)
             Aceitar()
         end);
 
-    obj._e_event42 = obj.button22:addEventListener("onClick",
+    obj._e_event43 = obj.button22:addEventListener("onClick",
         function (event)
             abrirPopUp()
         end);
 
     function obj:_releaseEvents()
+        __o_rrpgObjs.removeEventListenerById(self._e_event43);
         __o_rrpgObjs.removeEventListenerById(self._e_event42);
         __o_rrpgObjs.removeEventListenerById(self._e_event41);
         __o_rrpgObjs.removeEventListenerById(self._e_event40);
@@ -2368,52 +2151,34 @@ local function constructNew_feiticos()
         end;
 
         if self.layout8 ~= nil then self.layout8:destroy(); self.layout8 = nil; end;
+        if self.Bonus ~= nil then self.Bonus:destroy(); self.Bonus = nil; end;
         if self.rectangle10 ~= nil then self.rectangle10:destroy(); self.rectangle10 = nil; end;
-        if self.label16 ~= nil then self.label16:destroy(); self.label16 = nil; end;
-        if self.edit47 ~= nil then self.edit47:destroy(); self.edit47 = nil; end;
+        if self.CD ~= nil then self.CD:destroy(); self.CD = nil; end;
         if self.edit28 ~= nil then self.edit28:destroy(); self.edit28 = nil; end;
-        if self.edit63 ~= nil then self.edit63:destroy(); self.edit63 = nil; end;
-        if self.layout31 ~= nil then self.layout31:destroy(); self.layout31 = nil; end;
         if self.layout11 ~= nil then self.layout11:destroy(); self.layout11 = nil; end;
         if self.rectangle6 ~= nil then self.rectangle6:destroy(); self.rectangle6 = nil; end;
-        if self.edit30 ~= nil then self.edit30:destroy(); self.edit30 = nil; end;
         if self.layout3 ~= nil then self.layout3:destroy(); self.layout3 = nil; end;
-        if self.edit50 ~= nil then self.edit50:destroy(); self.edit50 = nil; end;
-        if self.edit42 ~= nil then self.edit42:destroy(); self.edit42 = nil; end;
-        if self.layout27 ~= nil then self.layout27:destroy(); self.layout27 = nil; end;
         if self.button11 ~= nil then self.button11:destroy(); self.button11 = nil; end;
+        if self.Grad ~= nil then self.Grad:destroy(); self.Grad = nil; end;
         if self.rectangle3 ~= nil then self.rectangle3:destroy(); self.rectangle3 = nil; end;
-        if self.edit35 ~= nil then self.edit35:destroy(); self.edit35 = nil; end;
         if self.edit5 ~= nil then self.edit5:destroy(); self.edit5 = nil; end;
-        if self.edit49 ~= nil then self.edit49:destroy(); self.edit49 = nil; end;
         if self.layout22 ~= nil then self.layout22:destroy(); self.layout22 = nil; end;
+        if self.Efeito ~= nil then self.Efeito:destroy(); self.Efeito = nil; end;
         if self.edit27 ~= nil then self.edit27:destroy(); self.edit27 = nil; end;
         if self.layout16 ~= nil then self.layout16:destroy(); self.layout16 = nil; end;
         if self.button1 ~= nil then self.button1:destroy(); self.button1 = nil; end;
         if self.label10 ~= nil then self.label10:destroy(); self.label10 = nil; end;
         if self.edit14 ~= nil then self.edit14:destroy(); self.edit14 = nil; end;
-        if self.layout29 ~= nil then self.layout29:destroy(); self.layout29 = nil; end;
-        if self.edit39 ~= nil then self.edit39:destroy(); self.edit39 = nil; end;
-        if self.edit59 ~= nil then self.edit59:destroy(); self.edit59 = nil; end;
         if self.edit9 ~= nil then self.edit9:destroy(); self.edit9 = nil; end;
-        if self.edit45 ~= nil then self.edit45:destroy(); self.edit45 = nil; end;
-        if self.edit65 ~= nil then self.edit65:destroy(); self.edit65 = nil; end;
         if self.layout13 ~= nil then self.layout13:destroy(); self.layout13 = nil; end;
         if self.button4 ~= nil then self.button4:destroy(); self.button4 = nil; end;
         if self.rectangle4 ~= nil then self.rectangle4:destroy(); self.rectangle4 = nil; end;
-        if self.edit32 ~= nil then self.edit32:destroy(); self.edit32 = nil; end;
         if self.layout5 ~= nil then self.layout5:destroy(); self.layout5 = nil; end;
-        if self.label15 ~= nil then self.label15:destroy(); self.label15 = nil; end;
-        if self.edit56 ~= nil then self.edit56:destroy(); self.edit56 = nil; end;
-        if self.edit40 ~= nil then self.edit40:destroy(); self.edit40 = nil; end;
-        if self.edit60 ~= nil then self.edit60:destroy(); self.edit60 = nil; end;
         if self.edit18 ~= nil then self.edit18:destroy(); self.edit18 = nil; end;
         if self.label2 ~= nil then self.label2:destroy(); self.label2 = nil; end;
         if self.button13 ~= nil then self.button13:destroy(); self.button13 = nil; end;
         if self.layout25 ~= nil then self.layout25:destroy(); self.layout25 = nil; end;
         if self.rectangle1 ~= nil then self.rectangle1:destroy(); self.rectangle1 = nil; end;
-        if self.edit37 ~= nil then self.edit37:destroy(); self.edit37 = nil; end;
-        if self.edit53 ~= nil then self.edit53:destroy(); self.edit53 = nil; end;
         if self.edit3 ~= nil then self.edit3:destroy(); self.edit3 = nil; end;
         if self.button8 ~= nil then self.button8:destroy(); self.button8 = nil; end;
         if self.rectangle ~= nil then self.rectangle:destroy(); self.rectangle = nil; end;
@@ -2427,31 +2192,25 @@ local function constructNew_feiticos()
         if self.label12 ~= nil then self.label12:destroy(); self.label12 = nil; end;
         if self.escola ~= nil then self.escola:destroy(); self.escola = nil; end;
         if self.edit12 ~= nil then self.edit12:destroy(); self.edit12 = nil; end;
-        if self.popUp ~= nil then self.popUp:destroy(); self.popUp = nil; end;
         if self.edit24 ~= nil then self.edit24:destroy(); self.edit24 = nil; end;
         if self.label9 ~= nil then self.label9:destroy(); self.label9 = nil; end;
         if self.layout15 ~= nil then self.layout15:destroy(); self.layout15 = nil; end;
         if self.button18 ~= nil then self.button18:destroy(); self.button18 = nil; end;
         if self.button6 ~= nil then self.button6:destroy(); self.button6 = nil; end;
-        if self.label17 ~= nil then self.label17:destroy(); self.label17 = nil; end;
         if self.edit17 ~= nil then self.edit17:destroy(); self.edit17 = nil; end;
         if self.layout7 ~= nil then self.layout7:destroy(); self.layout7 = nil; end;
-        if self.edit54 ~= nil then self.edit54:destroy(); self.edit54 = nil; end;
-        if self.rectangle13 ~= nil then self.rectangle13:destroy(); self.rectangle13 = nil; end;
-        if self.edit46 ~= nil then self.edit46:destroy(); self.edit46 = nil; end;
-        if self.edit62 ~= nil then self.edit62:destroy(); self.edit62 = nil; end;
         if self.button21 ~= nil then self.button21:destroy(); self.button21 = nil; end;
         if self.rectangle7 ~= nil then self.rectangle7:destroy(); self.rectangle7 = nil; end;
-        if self.edit31 ~= nil then self.edit31:destroy(); self.edit31 = nil; end;
         if self.layout2 ~= nil then self.layout2:destroy(); self.layout2 = nil; end;
-        if self.edit51 ~= nil then self.edit51:destroy(); self.edit51 = nil; end;
         if self.edit1 ~= nil then self.edit1:destroy(); self.edit1 = nil; end;
+        if self.Range ~= nil then self.Range:destroy(); self.Range = nil; end;
         if self.layout26 ~= nil then self.layout26:destroy(); self.layout26 = nil; end;
         if self.button16 ~= nil then self.button16:destroy(); self.button16 = nil; end;
         if self.label7 ~= nil then self.label7:destroy(); self.label7 = nil; end;
         if self.edit23 ~= nil then self.edit23:destroy(); self.edit23 = nil; end;
+        if self.Poder ~= nil then self.Poder:destroy(); self.Poder = nil; end;
+        if self.Duracao ~= nil then self.Duracao:destroy(); self.Duracao = nil; end;
         if self.edit4 ~= nil then self.edit4:destroy(); self.edit4 = nil; end;
-        if self.edit48 ~= nil then self.edit48:destroy(); self.edit48 = nil; end;
         if self.tipo ~= nil then self.tipo:destroy(); self.tipo = nil; end;
         if self.edit10 ~= nil then self.edit10:destroy(); self.edit10 = nil; end;
         if self.edit26 ~= nil then self.edit26:destroy(); self.edit26 = nil; end;
@@ -2460,26 +2219,18 @@ local function constructNew_feiticos()
         if self.rectangle8 ~= nil then self.rectangle8:destroy(); self.rectangle8 = nil; end;
         if self.edit15 ~= nil then self.edit15:destroy(); self.edit15 = nil; end;
         if self.layout9 ~= nil then self.layout9:destroy(); self.layout9 = nil; end;
-        if self.layout28 ~= nil then self.layout28:destroy(); self.layout28 = nil; end;
-        if self.rectangle11 ~= nil then self.rectangle11:destroy(); self.rectangle11 = nil; end;
         if self.edit8 ~= nil then self.edit8:destroy(); self.edit8 = nil; end;
-        if self.edit29 ~= nil then self.edit29:destroy(); self.edit29 = nil; end;
-        if self.edit44 ~= nil then self.edit44:destroy(); self.edit44 = nil; end;
-        if self.layout30 ~= nil then self.layout30:destroy(); self.layout30 = nil; end;
-        if self.edit64 ~= nil then self.edit64:destroy(); self.edit64 = nil; end;
         if self.layout10 ~= nil then self.layout10:destroy(); self.layout10 = nil; end;
         if self.rectangle5 ~= nil then self.rectangle5:destroy(); self.rectangle5 = nil; end;
-        if self.edit33 ~= nil then self.edit33:destroy(); self.edit33 = nil; end;
+        if self.Dano ~= nil then self.Dano:destroy(); self.Dano = nil; end;
         if self.layout4 ~= nil then self.layout4:destroy(); self.layout4 = nil; end;
-        if self.edit57 ~= nil then self.edit57:destroy(); self.edit57 = nil; end;
-        if self.edit43 ~= nil then self.edit43:destroy(); self.edit43 = nil; end;
         if self.edit19 ~= nil then self.edit19:destroy(); self.edit19 = nil; end;
         if self.label1 ~= nil then self.label1:destroy(); self.label1 = nil; end;
         if self.button10 ~= nil then self.button10:destroy(); self.button10 = nil; end;
         if self.layout24 ~= nil then self.layout24:destroy(); self.layout24 = nil; end;
         if self.button22 ~= nil then self.button22:destroy(); self.button22 = nil; end;
         if self.rectangle2 ~= nil then self.rectangle2:destroy(); self.rectangle2 = nil; end;
-        if self.edit34 ~= nil then self.edit34:destroy(); self.edit34 = nil; end;
+        if self.nomeFeitico ~= nil then self.nomeFeitico:destroy(); self.nomeFeitico = nil; end;
         if self.edit2 ~= nil then self.edit2:destroy(); self.edit2 = nil; end;
         if self.layout23 ~= nil then self.layout23:destroy(); self.layout23 = nil; end;
         if self.label4 ~= nil then self.label4:destroy(); self.label4 = nil; end;
@@ -2489,23 +2240,16 @@ local function constructNew_feiticos()
         if self.button2 ~= nil then self.button2:destroy(); self.button2 = nil; end;
         if self.label13 ~= nil then self.label13:destroy(); self.label13 = nil; end;
         if self.edit13 ~= nil then self.edit13:destroy(); self.edit13 = nil; end;
-        if self.edit38 ~= nil then self.edit38:destroy(); self.edit38 = nil; end;
-        if self.edit58 ~= nil then self.edit58:destroy(); self.edit58 = nil; end;
+        if self.Area ~= nil then self.Area:destroy(); self.Area = nil; end;
         if self.label8 ~= nil then self.label8:destroy(); self.label8 = nil; end;
         if self.layout12 ~= nil then self.layout12:destroy(); self.layout12 = nil; end;
         if self.button19 ~= nil then self.button19:destroy(); self.button19 = nil; end;
         if self.button5 ~= nil then self.button5:destroy(); self.button5 = nil; end;
         if self.label14 ~= nil then self.label14:destroy(); self.label14 = nil; end;
-        if self.rectangle12 ~= nil then self.rectangle12:destroy(); self.rectangle12 = nil; end;
         if self.layout6 ~= nil then self.layout6:destroy(); self.layout6 = nil; end;
-        if self.edit55 ~= nil then self.edit55:destroy(); self.edit55 = nil; end;
-        if self.edit41 ~= nil then self.edit41:destroy(); self.edit41 = nil; end;
-        if self.edit61 ~= nil then self.edit61:destroy(); self.edit61 = nil; end;
         if self.button12 ~= nil then self.button12:destroy(); self.button12 = nil; end;
         if self.button20 ~= nil then self.button20:destroy(); self.button20 = nil; end;
-        if self.edit36 ~= nil then self.edit36:destroy(); self.edit36 = nil; end;
         if self.layout1 ~= nil then self.layout1:destroy(); self.layout1 = nil; end;
-        if self.edit52 ~= nil then self.edit52:destroy(); self.edit52 = nil; end;
         if self.button9 ~= nil then self.button9:destroy(); self.button9 = nil; end;
         if self.layout21 ~= nil then self.layout21:destroy(); self.layout21 = nil; end;
         if self.label6 ~= nil then self.label6:destroy(); self.label6 = nil; end;

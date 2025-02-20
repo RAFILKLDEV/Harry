@@ -26,8 +26,9 @@
                     <event name="onChange">
                     </event>
                 </edit>
-                <edit top="0" width="120" height="25" field="$(field)" horzTextAlign="center">
-                    <event name="onChange">
+                <edit name="$(field)" top="0" width="120" height="25" field="$(field)" horzTextAlign="center" hitTest="true" hint="">
+                    <event name="onMouseEnter">
+                        self.$(field).hint = sheet.$(field)
                     </event>
                 </edit>
                 <button text="-" align="left" width="20">
