@@ -11,22 +11,22 @@
     <template name="levelLabel">
         <script>
         </script>
-        <layout align="left" margins="{left=10}" width="120">
-            <rectangle top="7" left="7" color="DarkSlateBlue" width="105"
+        <layout align="left" margins="{left=10}" width="160">
+            <rectangle top="7" left="27" color="DarkSlateBlue" width="105"
                 height="20">
                 <label align="client" text="$(text)" horzTextAlign="center" />
             </rectangle>
-            <layout top="27" width="120" height="25">
-                <edit top="0" width="120" height="25" field="$(field) .. _name"
+            <layout top="27" width="160" height="25">
+                <edit top="0" width="160" height="25" field="$(field) .. _name"
                     horzTextAlign="center" />
-                <edit top="0" width="120" height="25" field="$(field) .. _array"
+                <edit top="0" width="160" height="25" field="$(field) .. _array"
                     horzTextAlign="center" />
-                <edit top="0" width="120" height="25" field="$(field) .. _grad"
+                <edit top="0" width="160" height="25" field="$(field) .. _grad"
                     horzTextAlign="center">
                     <event name="onChange">
                     </event>
                 </edit>
-                <edit name="$(field)" top="0" width="120" height="25" field="$(field)" horzTextAlign="center" hitTest="true" hint="">
+                <edit name="$(field)" top="0" width="160" height="25" field="$(field)" horzTextAlign="center" hitTest="true" hint="">
                     <event name="onMouseEnter">
                         self.$(field).hint = sheet.$(field)
                     </event>

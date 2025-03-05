@@ -22,7 +22,7 @@
         (node.mental or 0))
         end
 
-        local function ListaDeFeitico()
+        local function ListaDeFeiticoParaTreino()
         require("utils.lua");
 
         local Raiz = NDB.load("listfetico.xml");
@@ -36,6 +36,8 @@
         ListaNomesFeitico[i] = Raiz["f" .. i].nome
         end
 
+        table.sort(ListaNomesFeitico)
+
         Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
         function(selected, selectedIndex, selectedText)
 
@@ -45,7 +47,7 @@
 
         if tostring(selectedText) == ListaFeiticos[k].nome then
 
-        sheet.treinoCD = math.floor(ListaFeiticos[k].cdf / 2 + 5)
+        sheet.treinoCD = math.floor(totable(ListaFeiticos[k].cdfArray)[1] / 2 + 5)
 
         end
 
@@ -66,7 +68,7 @@
         align="top">
 
         <button text="Feitiços..." align="top"
-            onClick="ListaDeFeitico()"
+            onClick="ListaDeFeiticoParaTreino()"
             height="30"
             margins="{left = 5, top = 10, right = 5}"
             horzTextAlign="center" />

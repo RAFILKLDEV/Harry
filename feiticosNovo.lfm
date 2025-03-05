@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form name="feiticos" width="200" height="40" theme="dark"> 
+    <label align="client" fontStyle="bold italic" fontSize="15" horzTextAlign="center" field="nome" margins="{left=4}"/>
+</form>

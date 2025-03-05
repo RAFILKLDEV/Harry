@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<form formType="sheetTemplate" dataType="HarryPlugin" height="700" width="1080"
+<form formType="sheetTemplate" dataType="HarryPlugin" height="550" width="1080"
      title="Ficha Harry Potter Nova!" name="HarryFicha">
 
      <script>
@@ -231,8 +231,8 @@
      </dataLink>
 
      <tabControl align="client">
-          <import file="jogador.xml" />
           <import file="feitico.xml" />
+          <import file="jogador.xml" />
           <import file="anotacoes.xml" />
      </tabControl>
 
