@@ -426,7 +426,7 @@ local function constructNew_HarryFicha()
     obj.version:setAlign("top");
     obj.version:setHeight(35);
     obj.version:setMargins({top=5});
-    obj.version:setText("Harry 3.5");
+    obj.version:setText("Harry 3.6");
 
     obj.layout3 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout3:setParent(obj.layout1);
@@ -2630,9 +2630,197 @@ local function constructNew_HarryFicha()
     obj.tab6:setWidth(220);
     obj.tab6:setName("tab6");
 
+
+        function testeResistenciaDanoDialog()
+            local resistencia = tonumber(sheet and sheet.RES_Total)
+            if not resistencia then
+                showMessage("RES_Total ausente na ficha.")
+                return
+            end
+
+            Dialogs.inputQuery("Dano", "Informe o DANO:", "",
+                function(txt)
+                local danoBase = tonumber(txt)
+                if not danoBase then
+                    showMessage("Valor inválido. Digite um número.")
+                    return
+                end
+
+                local cd = 15 + danoBase
+                local mesa = rrpg.getMesaDe(sheet)
+                if not mesa or not mesa.chat then
+                    showMessage("Chat indisponível.")
+                    return
+                end
+                local chat = mesa.chat
+
+                local titulo = (sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") .. string.format( "Teste de Resistência ([§K1]CD [§K4] %d[§K14] | [§K1]SAVE [§K9] %d)", cd, resistencia)
+                local rolagem = rrpg.interpretarRolagem("1d20+" .. resistencia)
+
+                chat:rolarDados(rolagem, titulo, function(rolado)
+                    -- extrair total com tolerância
+                    local total = nil
+                    if rolado and rolado.resultado then
+                    total = tonumber(rolado.resultado)
+                    end
+                    if not total and rolado and rolado.somatoria then
+                    total = tonumber(rolado.somatoria)
+                    end
+                    if not total and rolado and rolado.total then
+                    total = tonumber(rolado.total)
+                    end
+                    if not total then total = 0 end
+
+                    local margem = total - cd
+
+                    local function estagiosDe5(m)
+                    if m >= 0 then
+                        return math.min(4, math.floor(m / 5) + 1), "sucesso"
+                    else
+                        return math.min(4, math.floor((-m) / 5) + 1), "falha"
+                    end
+                    end
+
+                    local estagios, tipo = estagiosDe5(margem)
+                    local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
+                                                total,
+                                                margem >= 0 and ("+" .. margem) or tostring(margem),
+                                                estagios, tipo)
+
+                    if tipo == "sucesso" then
+                    chat:enviarMensagem("[§K1]O personagem Ignorou o Dano.")
+                    chat:enviarMensagem(detalhe)
+                    return
+                    end
+
+                    if estagios == 1 then
+                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento.")
+                    elseif estagios == 2 then
+                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento e foi Atordoado.")
+                    elseif estagios == 3 then
+                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento, foi Atordoado e está Abatido.")
+                    else -- 4
+                    chat:enviarMensagem("[§K1]O personagem caiu Inconsciente.")
+                    end
+
+                    chat:enviarMensagem(detalhe)
+                end)
+                end,
+                function()
+                showMessage("Operação cancelada.")
+                end
+            )
+        end
+
+
+        function testeResistenciaEfeitoDialog()
+        
+        local function getSaveValor(tipo)
+        if not tipo then return nil end
+        local t = tostring(tipo):gsub("^%s+",""):gsub("%s+$","")
+
+        if t == "Fortitude" then
+            return tonumber(sheet and sheet.FORT_Total)
+        elseif t == "Reflexos" then
+            return tonumber(sheet and sheet.REF_Total)
+        elseif t == "Vontade" then
+            return tonumber(sheet and sheet.VON_Total)
+        end
+
+        return nil
+        end
+
+
+        Dialogs.choose("Tipo de Efeito", {"Fortitude", "Reflexos", "Vontade"}, function(selected, selectedIndex, tipo)
+            if not tipo then
+            showMessage("Operação cancelada.")
+            return
+            end
+
+            local save = getSaveValor(tipo)
+            if not save then
+            showMessage("Valor de " .. tipo .. " ausente na ficha.")
+            return
+            end
+
+            Dialogs.inputQuery("Efeito", "Informe o MOD do efeito:", "0",
+            function(txt)
+                local mod = tonumber(txt)
+                if not mod then
+                showMessage("Valor inválido. Digite um número.")
+                return
+                end
+
+                local cd = 10 + mod
+                local mesa = rrpg.getMesaDe(sheet)
+                if not mesa or not mesa.chat then
+                showMessage("Chat indisponível.")
+                return
+                end
+                local chat = mesa.chat
+
+                local titulo = string.format((sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") ..  "Teste de Efeito (%s)  [§K2]CD %d[§K7] | SAVE %d", tipo, cd, save)
+                local rolagem = rrpg.interpretarRolagem("1d20+" .. save)
+
+                chat:rolarDados(rolagem, titulo, function(rolado)
+                -- extrai total compatível com diferentes versões
+                local total = nil
+                if rolado and rolado.resultado then total = tonumber(rolado.resultado) end
+                if not total and rolado and rolado.somatoria then total = tonumber(rolado.somatoria) end
+                if not total and rolado and rolado.total then total = tonumber(rolado.total) end
+                total = total or 0
+
+                local margem = total - cd
+                local function estagiosDe5(m)
+                    if m >= 0 then
+                    return math.min(4, math.floor(m / 5) + 1), "sucesso"
+                    else
+                    return math.min(4, math.floor((-m) / 5) + 1), "falha"
+                    end
+                end
+
+                local estagios, tipoRes = estagiosDe5(margem)
+                local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
+                                                total,
+                                                margem >= 0 and ("+" .. margem) or tostring(margem),
+                                                estagios, tipoRes)
+
+                if tipoRes == "sucesso" then
+                    if estagios >= 4 then
+                    chat:enviarMensagem("[§K1]O personagem Ignorou o Efeito.")
+                    else
+                    chat:enviarMensagem(string.format("[§K1]Sucesso em %d Estágio(s). Efeito reduzido.", estagios))
+                    end
+                    chat:enviarMensagem(detalhe)
+                    return
+                end
+
+                -- falhas graduais
+                if estagios == 1 then
+                    chat:enviarMensagem("[§K1]Falha em 1 Estágio. Efeito parcial.")
+                elseif estagios == 2 then
+                    chat:enviarMensagem("[§K1]Falha em 2 Estágios. Efeito agravado.")
+                elseif estagios == 3 then
+                    chat:enviarMensagem("[§K1]Falha em 3 Estágios. Efeito severo.")
+                else -- 4
+                    chat:enviarMensagem("[§K1]Falha em 4 Estágios. Efeito extremo.")
+                end
+
+                chat:enviarMensagem(detalhe)
+                end)
+            end,
+            function() showMessage("Operação cancelada.") end
+            )
+        end)
+        end
+
+
+    
+
+
     obj.layout40 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout40:setParent(obj.tab6);
-    obj.layout40:setHeight(320);
+    obj.layout40:setHeight(300);
     obj.layout40:setMargins({left=20});
     obj.layout40:setAlign("top");
     obj.layout40:setName("layout40");
@@ -3045,6 +3233,22 @@ local function constructNew_HarryFicha()
     obj.label82:setHorzTextAlign("center");
     obj.label82:setName("label82");
 
+    obj.button2 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button2:setParent(obj.tab6);
+    obj.button2:setAlign("top");
+    obj.button2:setHeight(30);
+    obj.button2:setText("Teste de Resistência");
+    obj.button2:setMargins({left=20, right=20});
+    obj.button2:setName("button2");
+
+    obj.button3 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button3:setParent(obj.tab6);
+    obj.button3:setAlign("top");
+    obj.button3:setHeight(30);
+    obj.button3:setText("Teste de Efeito");
+    obj.button3:setMargins({left=20, right=20, top=5});
+    obj.button3:setName("button3");
+
     obj.tab7 = GUI.fromHandle(_obj_newObject("tab"));
     obj.tab7:setParent(obj.tabControl3);
     obj.tab7:setTitle("Treinos e Tarefas");
@@ -3229,14 +3433,14 @@ local function constructNew_HarryFicha()
     obj.layout48:setAlign("top");
     obj.layout48:setName("layout48");
 
-    obj.button2 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button2:setParent(obj.layout48);
-    obj.button2:setText("Treinar");
-    obj.button2:setAlign("top");
-    obj.button2:setHeight(30);
-    obj.button2:setMargins({left = 5, top = 15, right = 5});
-    obj.button2:setHorzTextAlign("center");
-    obj.button2:setName("button2");
+    obj.button4 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button4:setParent(obj.layout48);
+    obj.button4:setText("Treinar");
+    obj.button4:setAlign("top");
+    obj.button4:setHeight(30);
+    obj.button4:setMargins({left = 5, top = 15, right = 5});
+    obj.button4:setHorzTextAlign("center");
+    obj.button4:setName("button4");
 
     obj.scrollBox2 = GUI.fromHandle(_obj_newObject("scrollBox"));
     obj.scrollBox2:setParent(obj.tab7);
@@ -3244,14 +3448,14 @@ local function constructNew_HarryFicha()
     obj.scrollBox2:setAlign("top");
     obj.scrollBox2:setName("scrollBox2");
 
-    obj.button3 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button3:setParent(obj.scrollBox2);
-    obj.button3:setLeft(20);
-    obj.button3:setTop(20);
-    obj.button3:setHeight(25);
-    obj.button3:setText("Nova Tarefa");
-    obj.button3:setWidth(80);
-    obj.button3:setName("button3");
+    obj.button5 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button5:setParent(obj.scrollBox2);
+    obj.button5:setLeft(20);
+    obj.button5:setTop(20);
+    obj.button5:setHeight(25);
+    obj.button5:setText("Nova Tarefa");
+    obj.button5:setWidth(80);
+    obj.button5:setName("button5");
 
     obj.kekzin = GUI.fromHandle(_obj_newObject("recordList"));
     obj.kekzin:setParent(obj.scrollBox2);
@@ -5046,31 +5250,31 @@ local function constructNew_HarryFicha()
     obj.layout79:setHeight(35);
     obj.layout79:setName("layout79");
 
-    obj.button4 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button4:setParent(obj.layout79);
-    obj.button4:setAlign("left");
-    obj.button4:setMargins({left=20});
-    obj.button4:setHeight(25);
-    obj.button4:setText("Novo Feitiço");
-    obj.button4:setWidth(100);
-    obj.button4:setName("button4");
-
-    obj.button5 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button5:setParent(obj.layout79);
-    obj.button5:setAlign("left");
-    obj.button5:setHeight(25);
-    obj.button5:setText("Ordenar");
-    obj.button5:setWidth(100);
-    obj.button5:setMargins({left=20});
-    obj.button5:setName("button5");
-
     obj.button6 = GUI.fromHandle(_obj_newObject("button"));
     obj.button6:setParent(obj.layout79);
     obj.button6:setAlign("left");
-    obj.button6:setText("Atualizar Feitiços");
-    obj.button6:setWidth(120);
     obj.button6:setMargins({left=20});
+    obj.button6:setHeight(25);
+    obj.button6:setText("Novo Feitiço");
+    obj.button6:setWidth(100);
     obj.button6:setName("button6");
+
+    obj.button7 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button7:setParent(obj.layout79);
+    obj.button7:setAlign("left");
+    obj.button7:setHeight(25);
+    obj.button7:setText("Ordenar");
+    obj.button7:setWidth(100);
+    obj.button7:setMargins({left=20});
+    obj.button7:setName("button7");
+
+    obj.button8 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button8:setParent(obj.layout79);
+    obj.button8:setAlign("left");
+    obj.button8:setText("Atualizar Feitiços");
+    obj.button8:setWidth(120);
+    obj.button8:setMargins({left=20});
+    obj.button8:setName("button8");
 
     obj.layout80 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout80:setParent(obj.aqui);
@@ -5286,19 +5490,19 @@ local function constructNew_HarryFicha()
     obj.Grad:setHitTest(true);
     obj.Grad:setHint("");
 
-    obj.button7 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button7:setParent(obj.layout86);
-    obj.button7:setText("-");
-    obj.button7:setAlign("left");
-    obj.button7:setWidth(20);
-    obj.button7:setName("button7");
+    obj.button9 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button9:setParent(obj.layout86);
+    obj.button9:setText("-");
+    obj.button9:setAlign("left");
+    obj.button9:setWidth(20);
+    obj.button9:setName("button9");
 
-    obj.button8 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button8:setParent(obj.layout86);
-    obj.button8:setText("+");
-    obj.button8:setAlign("right");
-    obj.button8:setWidth(20);
-    obj.button8:setName("button8");
+    obj.button10 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button10:setParent(obj.layout86);
+    obj.button10:setText("+");
+    obj.button10:setAlign("right");
+    obj.button10:setWidth(20);
+    obj.button10:setName("button10");
 
     obj.layout87 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout87:setParent(obj.layout84);
@@ -5368,19 +5572,19 @@ local function constructNew_HarryFicha()
     obj.CD:setHitTest(true);
     obj.CD:setHint("");
 
-    obj.button9 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button9:setParent(obj.layout88);
-    obj.button9:setText("-");
-    obj.button9:setAlign("left");
-    obj.button9:setWidth(20);
-    obj.button9:setName("button9");
+    obj.button11 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button11:setParent(obj.layout88);
+    obj.button11:setText("-");
+    obj.button11:setAlign("left");
+    obj.button11:setWidth(20);
+    obj.button11:setName("button11");
 
-    obj.button10 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button10:setParent(obj.layout88);
-    obj.button10:setText("+");
-    obj.button10:setAlign("right");
-    obj.button10:setWidth(20);
-    obj.button10:setName("button10");
+    obj.button12 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button12:setParent(obj.layout88);
+    obj.button12:setText("+");
+    obj.button12:setAlign("right");
+    obj.button12:setWidth(20);
+    obj.button12:setName("button12");
 
     obj.layout89 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout89:setParent(obj.layout84);
@@ -5450,19 +5654,19 @@ local function constructNew_HarryFicha()
     obj.Efeito:setHitTest(true);
     obj.Efeito:setHint("");
 
-    obj.button11 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button11:setParent(obj.layout90);
-    obj.button11:setText("-");
-    obj.button11:setAlign("left");
-    obj.button11:setWidth(20);
-    obj.button11:setName("button11");
+    obj.button13 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button13:setParent(obj.layout90);
+    obj.button13:setText("-");
+    obj.button13:setAlign("left");
+    obj.button13:setWidth(20);
+    obj.button13:setName("button13");
 
-    obj.button12 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button12:setParent(obj.layout90);
-    obj.button12:setText("+");
-    obj.button12:setAlign("right");
-    obj.button12:setWidth(20);
-    obj.button12:setName("button12");
+    obj.button14 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button14:setParent(obj.layout90);
+    obj.button14:setText("+");
+    obj.button14:setAlign("right");
+    obj.button14:setWidth(20);
+    obj.button14:setName("button14");
 
     obj.layout91 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout91:setParent(obj.layout83);
@@ -5538,19 +5742,19 @@ local function constructNew_HarryFicha()
     obj.Poder:setHitTest(true);
     obj.Poder:setHint("");
 
-    obj.button13 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button13:setParent(obj.layout93);
-    obj.button13:setText("-");
-    obj.button13:setAlign("left");
-    obj.button13:setWidth(20);
-    obj.button13:setName("button13");
+    obj.button15 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button15:setParent(obj.layout93);
+    obj.button15:setText("-");
+    obj.button15:setAlign("left");
+    obj.button15:setWidth(20);
+    obj.button15:setName("button15");
 
-    obj.button14 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button14:setParent(obj.layout93);
-    obj.button14:setText("+");
-    obj.button14:setAlign("right");
-    obj.button14:setWidth(20);
-    obj.button14:setName("button14");
+    obj.button16 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button16:setParent(obj.layout93);
+    obj.button16:setText("+");
+    obj.button16:setAlign("right");
+    obj.button16:setWidth(20);
+    obj.button16:setName("button16");
 
     obj.layout94 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout94:setParent(obj.layout91);
@@ -5620,19 +5824,19 @@ local function constructNew_HarryFicha()
     obj.Dano:setHitTest(true);
     obj.Dano:setHint("");
 
-    obj.button15 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button15:setParent(obj.layout95);
-    obj.button15:setText("-");
-    obj.button15:setAlign("left");
-    obj.button15:setWidth(20);
-    obj.button15:setName("button15");
+    obj.button17 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button17:setParent(obj.layout95);
+    obj.button17:setText("-");
+    obj.button17:setAlign("left");
+    obj.button17:setWidth(20);
+    obj.button17:setName("button17");
 
-    obj.button16 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button16:setParent(obj.layout95);
-    obj.button16:setText("+");
-    obj.button16:setAlign("right");
-    obj.button16:setWidth(20);
-    obj.button16:setName("button16");
+    obj.button18 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button18:setParent(obj.layout95);
+    obj.button18:setText("+");
+    obj.button18:setAlign("right");
+    obj.button18:setWidth(20);
+    obj.button18:setName("button18");
 
     obj.layout96 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout96:setParent(obj.layout91);
@@ -5702,19 +5906,19 @@ local function constructNew_HarryFicha()
     obj.Bonus:setHitTest(true);
     obj.Bonus:setHint("");
 
-    obj.button17 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button17:setParent(obj.layout97);
-    obj.button17:setText("-");
-    obj.button17:setAlign("left");
-    obj.button17:setWidth(20);
-    obj.button17:setName("button17");
+    obj.button19 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button19:setParent(obj.layout97);
+    obj.button19:setText("-");
+    obj.button19:setAlign("left");
+    obj.button19:setWidth(20);
+    obj.button19:setName("button19");
 
-    obj.button18 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button18:setParent(obj.layout97);
-    obj.button18:setText("+");
-    obj.button18:setAlign("right");
-    obj.button18:setWidth(20);
-    obj.button18:setName("button18");
+    obj.button20 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button20:setParent(obj.layout97);
+    obj.button20:setText("+");
+    obj.button20:setAlign("right");
+    obj.button20:setWidth(20);
+    obj.button20:setName("button20");
 
     obj.layout98 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout98:setParent(obj.layout83);
@@ -5790,19 +5994,19 @@ local function constructNew_HarryFicha()
     obj.Range:setHitTest(true);
     obj.Range:setHint("");
 
-    obj.button19 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button19:setParent(obj.layout100);
-    obj.button19:setText("-");
-    obj.button19:setAlign("left");
-    obj.button19:setWidth(20);
-    obj.button19:setName("button19");
+    obj.button21 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button21:setParent(obj.layout100);
+    obj.button21:setText("-");
+    obj.button21:setAlign("left");
+    obj.button21:setWidth(20);
+    obj.button21:setName("button21");
 
-    obj.button20 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button20:setParent(obj.layout100);
-    obj.button20:setText("+");
-    obj.button20:setAlign("right");
-    obj.button20:setWidth(20);
-    obj.button20:setName("button20");
+    obj.button22 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button22:setParent(obj.layout100);
+    obj.button22:setText("+");
+    obj.button22:setAlign("right");
+    obj.button22:setWidth(20);
+    obj.button22:setName("button22");
 
     obj.layout101 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout101:setParent(obj.layout98);
@@ -5872,19 +6076,19 @@ local function constructNew_HarryFicha()
     obj.Area:setHitTest(true);
     obj.Area:setHint("");
 
-    obj.button21 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button21:setParent(obj.layout102);
-    obj.button21:setText("-");
-    obj.button21:setAlign("left");
-    obj.button21:setWidth(20);
-    obj.button21:setName("button21");
+    obj.button23 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button23:setParent(obj.layout102);
+    obj.button23:setText("-");
+    obj.button23:setAlign("left");
+    obj.button23:setWidth(20);
+    obj.button23:setName("button23");
 
-    obj.button22 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button22:setParent(obj.layout102);
-    obj.button22:setText("+");
-    obj.button22:setAlign("right");
-    obj.button22:setWidth(20);
-    obj.button22:setName("button22");
+    obj.button24 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button24:setParent(obj.layout102);
+    obj.button24:setText("+");
+    obj.button24:setAlign("right");
+    obj.button24:setWidth(20);
+    obj.button24:setName("button24");
 
     obj.layout103 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout103:setParent(obj.layout98);
@@ -5954,19 +6158,19 @@ local function constructNew_HarryFicha()
     obj.Duracao:setHitTest(true);
     obj.Duracao:setHint("");
 
-    obj.button23 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button23:setParent(obj.layout104);
-    obj.button23:setText("-");
-    obj.button23:setAlign("left");
-    obj.button23:setWidth(20);
-    obj.button23:setName("button23");
+    obj.button25 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button25:setParent(obj.layout104);
+    obj.button25:setText("-");
+    obj.button25:setAlign("left");
+    obj.button25:setWidth(20);
+    obj.button25:setName("button25");
 
-    obj.button24 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button24:setParent(obj.layout104);
-    obj.button24:setText("+");
-    obj.button24:setAlign("right");
-    obj.button24:setWidth(20);
-    obj.button24:setName("button24");
+    obj.button26 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button26:setParent(obj.layout104);
+    obj.button26:setText("+");
+    obj.button26:setAlign("right");
+    obj.button26:setWidth(20);
+    obj.button26:setName("button26");
 
     obj.layout105 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout105:setParent(obj.layout81);
@@ -6007,26 +6211,10 @@ local function constructNew_HarryFicha()
     obj.layout106:setAlign("left");
     obj.layout106:setName("layout106");
 
-    obj.button25 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button25:setParent(obj.layout106);
-    obj.button25:setAlign("top");
-    obj.button25:setText("Rolar");
-    obj.button25:setHeight(35);
-    obj.button25:setMargins({bottom=5});
-    obj.button25:setName("button25");
-
-    obj.button26 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button26:setParent(obj.layout106);
-    obj.button26:setAlign("top");
-    obj.button26:setText("Importar");
-    obj.button26:setHeight(35);
-    obj.button26:setMargins({bottom=5});
-    obj.button26:setName("button26");
-
     obj.button27 = GUI.fromHandle(_obj_newObject("button"));
     obj.button27:setParent(obj.layout106);
     obj.button27:setAlign("top");
-    obj.button27:setText("Apagar");
+    obj.button27:setText("Rolar");
     obj.button27:setHeight(35);
     obj.button27:setMargins({bottom=5});
     obj.button27:setName("button27");
@@ -6034,9 +6222,25 @@ local function constructNew_HarryFicha()
     obj.button28 = GUI.fromHandle(_obj_newObject("button"));
     obj.button28:setParent(obj.layout106);
     obj.button28:setAlign("top");
-    obj.button28:setText("Comparar");
+    obj.button28:setText("Importar");
     obj.button28:setHeight(35);
+    obj.button28:setMargins({bottom=5});
     obj.button28:setName("button28");
+
+    obj.button29 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button29:setParent(obj.layout106);
+    obj.button29:setAlign("top");
+    obj.button29:setText("Apagar");
+    obj.button29:setHeight(35);
+    obj.button29:setMargins({bottom=5});
+    obj.button29:setName("button29");
+
+    obj.button30 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button30:setParent(obj.layout106);
+    obj.button30:setAlign("top");
+    obj.button30:setText("Comparar");
+    obj.button30:setHeight(35);
+    obj.button30:setName("button30");
 
     obj.layout107 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout107:setParent(obj.boxDetalhesDoItem);
@@ -6531,17 +6735,17 @@ local function constructNew_HarryFicha()
     obj.layout119:setMargins({top=10});
     obj.layout119:setName("layout119");
 
-    obj.button29 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button29:setParent(obj.layout119);
-    obj.button29:setAlign("top");
-    obj.button29:setText("Fechar");
-    obj.button29:setName("button29");
+    obj.button31 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button31:setParent(obj.layout119);
+    obj.button31:setAlign("top");
+    obj.button31:setText("Fechar");
+    obj.button31:setName("button31");
 
-    obj.button30 = GUI.fromHandle(_obj_newObject("button"));
-    obj.button30:setParent(obj.layout119);
-    obj.button30:setAlign("top");
-    obj.button30:setText("Enviar na Mesa");
-    obj.button30:setName("button30");
+    obj.button32 = GUI.fromHandle(_obj_newObject("button"));
+    obj.button32:setParent(obj.layout119);
+    obj.button32:setAlign("top");
+    obj.button32:setText("Enviar na Mesa");
+    obj.button32:setName("button32");
 
     obj.tab10 = GUI.fromHandle(_obj_newObject("tab"));
     obj.tab10:setParent(obj.tabControl1);
@@ -9094,15 +9298,25 @@ local function constructNew_HarryFicha()
 
     obj._e_event47 = obj.button2:addEventListener("onClick",
         function (event)
-            treinar()
+            testeResistenciaDanoDialog()
         end);
 
     obj._e_event48 = obj.button3:addEventListener("onClick",
         function (event)
+            testeResistenciaEfeitoDialog()
+        end);
+
+    obj._e_event49 = obj.button4:addEventListener("onClick",
+        function (event)
+            treinar()
+        end);
+
+    obj._e_event50 = obj.button5:addEventListener("onClick",
+        function (event)
             self.kekzin:append();
         end);
 
-    obj._e_event49 = obj.rectangle56:addEventListener("onClick",
+    obj._e_event51 = obj.rectangle56:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9145,7 +9359,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event50 = obj.rectangle57:addEventListener("onClick",
+    obj._e_event52 = obj.rectangle57:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9188,7 +9402,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event51 = obj.rectangle58:addEventListener("onClick",
+    obj._e_event53 = obj.rectangle58:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9231,7 +9445,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event52 = obj.rectangle59:addEventListener("onClick",
+    obj._e_event54 = obj.rectangle59:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9274,7 +9488,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event53 = obj.rectangle60:addEventListener("onClick",
+    obj._e_event55 = obj.rectangle60:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9317,7 +9531,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event54 = obj.rectangle61:addEventListener("onClick",
+    obj._e_event56 = obj.rectangle61:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9360,7 +9574,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event55 = obj.rectangle62:addEventListener("onClick",
+    obj._e_event57 = obj.rectangle62:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9403,7 +9617,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event56 = obj.rectangle63:addEventListener("onClick",
+    obj._e_event58 = obj.rectangle63:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9446,7 +9660,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event57 = obj.rectangle64:addEventListener("onClick",
+    obj._e_event59 = obj.rectangle64:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9489,7 +9703,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event58 = obj.rectangle65:addEventListener("onClick",
+    obj._e_event60 = obj.rectangle65:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9532,7 +9746,7 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event59 = obj.rectangle66:addEventListener("onClick",
+    obj._e_event61 = obj.rectangle66:addEventListener("onClick",
         function (event)
             local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                                 local chat = mesaDoPersonagem.chat
@@ -9575,39 +9789,39 @@ local function constructNew_HarryFicha()
                                 end);
         end);
 
-    obj._e_event60 = obj.edit157:addEventListener("onUserChange",
+    obj._e_event62 = obj.edit157:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event61 = obj.edit158:addEventListener("onUserChange",
+    obj._e_event63 = obj.edit158:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event62 = obj.edit159:addEventListener("onUserChange",
+    obj._e_event64 = obj.edit159:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event63 = obj.edit160:addEventListener("onUserChange",
+    obj._e_event65 = obj.edit160:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event64 = obj.edit161:addEventListener("onUserChange",
+    obj._e_event66 = obj.edit161:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event65 = obj.edit162:addEventListener("onUserChange",
+    obj._e_event67 = obj.edit162:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event66 = obj.edit163:addEventListener("onUserChange",
+    obj._e_event68 = obj.edit163:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event67 = obj.edit164:addEventListener("onUserChange",
+    obj._e_event69 = obj.edit164:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event68 = obj.dataLink2:addEventListener("onChange",
+    obj._e_event70 = obj.dataLink2:addEventListener("onChange",
         function (field, oldValue, newValue)
             -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
             
@@ -9627,7 +9841,7 @@ local function constructNew_HarryFicha()
                         sheet.fisico = novoValor
         end);
 
-    obj._e_event69 = obj.dataLink3:addEventListener("onChange",
+    obj._e_event71 = obj.dataLink3:addEventListener("onChange",
         function (field, oldValue, newValue)
             -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
             
@@ -9647,25 +9861,25 @@ local function constructNew_HarryFicha()
                         sheet.mental = novoValor
         end);
 
-    obj._e_event70 = obj.edit167:addEventListener("onUserChange",
+    obj._e_event72 = obj.edit167:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event71 = obj.edit168:addEventListener("onUserChange",
+    obj._e_event73 = obj.edit168:addEventListener("onUserChange",
         function ()
         end);
 
-    obj._e_event72 = obj.button4:addEventListener("onClick",
+    obj._e_event74 = obj.button6:addEventListener("onClick",
         function (event)
             adicionarFeitico()
         end);
 
-    obj._e_event73 = obj.button5:addEventListener("onClick",
+    obj._e_event75 = obj.button7:addEventListener("onClick",
         function (event)
             self.rclMagias:sort();
         end);
 
-    obj._e_event74 = obj.button6:addEventListener("onClick",
+    obj._e_event76 = obj.button8:addEventListener("onClick",
         function (event)
             Dialogs.showMessageDlg("Deseja Atualizar sua Lista de Feitiços ?",
                         dialogs.DT_INFORMATION,
@@ -9771,7 +9985,7 @@ local function constructNew_HarryFicha()
                         end);
         end);
 
-    obj._e_event75 = obj.rclMagias:addEventListener("onSelect",
+    obj._e_event77 = obj.rclMagias:addEventListener("onSelect",
         function ()
             local node = self.rclMagias.selectedNode;
             
@@ -9799,7 +10013,7 @@ local function constructNew_HarryFicha()
                           end
         end);
 
-    obj._e_event76 = obj.rclMagias:addEventListener("onCompare",
+    obj._e_event78 = obj.rclMagias:addEventListener("onCompare",
         function (nodeA, nodeB)
             if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
                                              return -1;
@@ -9810,7 +10024,7 @@ local function constructNew_HarryFicha()
                                        end;
         end);
 
-    obj._e_event77 = obj.rclMagias:addEventListener("onEndEnumeration",
+    obj._e_event79 = obj.rclMagias:addEventListener("onEndEnumeration",
         function ()
             if self.rclMagias.selectedNode == nil and sheet ~= nil then
                           local nodes = ndb.getChildNodes(sheet.magias);
@@ -9821,7 +10035,7 @@ local function constructNew_HarryFicha()
                           end;
         end);
 
-    obj._e_event78 = obj.escola:addEventListener("onChange",
+    obj._e_event80 = obj.escola:addEventListener("onChange",
         function ()
             local dataScope = self.boxDetalhesDoItem.node
             
@@ -9844,7 +10058,7 @@ local function constructNew_HarryFicha()
                               end
         end);
 
-    obj._e_event79 = obj.tipo:addEventListener("onChange",
+    obj._e_event81 = obj.tipo:addEventListener("onChange",
         function ()
             local dataScope = self.boxDetalhesDoItem.node
             
@@ -9861,16 +10075,16 @@ local function constructNew_HarryFicha()
                               end
         end);
 
-    obj._e_event80 = obj.edit171:addEventListener("onChange",
+    obj._e_event82 = obj.edit171:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event81 = obj.Grad:addEventListener("onMouseEnter",
+    obj._e_event83 = obj.Grad:addEventListener("onMouseEnter",
         function ()
             self.Grad.hint = sheet.Grad
         end);
 
-    obj._e_event82 = obj.button7:addEventListener("onClick",
+    obj._e_event84 = obj.button9:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Grad_array)
@@ -9905,7 +10119,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event83 = obj.button8:addEventListener("onClick",
+    obj._e_event85 = obj.button10:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Grad_array)
@@ -9954,16 +10168,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event84 = obj.edit174:addEventListener("onChange",
+    obj._e_event86 = obj.edit174:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event85 = obj.CD:addEventListener("onMouseEnter",
+    obj._e_event87 = obj.CD:addEventListener("onMouseEnter",
         function ()
             self.CD.hint = sheet.CD
         end);
 
-    obj._e_event86 = obj.button9:addEventListener("onClick",
+    obj._e_event88 = obj.button11:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.CD_array)
@@ -9998,7 +10212,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event87 = obj.button10:addEventListener("onClick",
+    obj._e_event89 = obj.button12:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.CD_array)
@@ -10047,16 +10261,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event88 = obj.edit177:addEventListener("onChange",
+    obj._e_event90 = obj.edit177:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event89 = obj.Efeito:addEventListener("onMouseEnter",
+    obj._e_event91 = obj.Efeito:addEventListener("onMouseEnter",
         function ()
             self.Efeito.hint = sheet.Efeito
         end);
 
-    obj._e_event90 = obj.button11:addEventListener("onClick",
+    obj._e_event92 = obj.button13:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Efeito_array)
@@ -10091,7 +10305,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event91 = obj.button12:addEventListener("onClick",
+    obj._e_event93 = obj.button14:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Efeito_array)
@@ -10140,16 +10354,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event92 = obj.edit180:addEventListener("onChange",
+    obj._e_event94 = obj.edit180:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event93 = obj.Poder:addEventListener("onMouseEnter",
+    obj._e_event95 = obj.Poder:addEventListener("onMouseEnter",
         function ()
             self.Poder.hint = sheet.Poder
         end);
 
-    obj._e_event94 = obj.button13:addEventListener("onClick",
+    obj._e_event96 = obj.button15:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Poder_array)
@@ -10184,7 +10398,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event95 = obj.button14:addEventListener("onClick",
+    obj._e_event97 = obj.button16:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Poder_array)
@@ -10233,16 +10447,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event96 = obj.edit183:addEventListener("onChange",
+    obj._e_event98 = obj.edit183:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event97 = obj.Dano:addEventListener("onMouseEnter",
+    obj._e_event99 = obj.Dano:addEventListener("onMouseEnter",
         function ()
             self.Dano.hint = sheet.Dano
         end);
 
-    obj._e_event98 = obj.button15:addEventListener("onClick",
+    obj._e_event100 = obj.button17:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Dano_array)
@@ -10277,7 +10491,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event99 = obj.button16:addEventListener("onClick",
+    obj._e_event101 = obj.button18:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Dano_array)
@@ -10326,16 +10540,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event100 = obj.edit186:addEventListener("onChange",
+    obj._e_event102 = obj.edit186:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event101 = obj.Bonus:addEventListener("onMouseEnter",
+    obj._e_event103 = obj.Bonus:addEventListener("onMouseEnter",
         function ()
             self.Bonus.hint = sheet.Bonus
         end);
 
-    obj._e_event102 = obj.button17:addEventListener("onClick",
+    obj._e_event104 = obj.button19:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Bonus_array)
@@ -10370,7 +10584,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event103 = obj.button18:addEventListener("onClick",
+    obj._e_event105 = obj.button20:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Bonus_array)
@@ -10419,16 +10633,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event104 = obj.edit189:addEventListener("onChange",
+    obj._e_event106 = obj.edit189:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event105 = obj.Range:addEventListener("onMouseEnter",
+    obj._e_event107 = obj.Range:addEventListener("onMouseEnter",
         function ()
             self.Range.hint = sheet.Range
         end);
 
-    obj._e_event106 = obj.button19:addEventListener("onClick",
+    obj._e_event108 = obj.button21:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Range_array)
@@ -10463,7 +10677,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event107 = obj.button20:addEventListener("onClick",
+    obj._e_event109 = obj.button22:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Range_array)
@@ -10512,16 +10726,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event108 = obj.edit192:addEventListener("onChange",
+    obj._e_event110 = obj.edit192:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event109 = obj.Area:addEventListener("onMouseEnter",
+    obj._e_event111 = obj.Area:addEventListener("onMouseEnter",
         function ()
             self.Area.hint = sheet.Area
         end);
 
-    obj._e_event110 = obj.button21:addEventListener("onClick",
+    obj._e_event112 = obj.button23:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Area_array)
@@ -10556,7 +10770,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event111 = obj.button22:addEventListener("onClick",
+    obj._e_event113 = obj.button24:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Area_array)
@@ -10605,16 +10819,16 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event112 = obj.edit195:addEventListener("onChange",
+    obj._e_event114 = obj.edit195:addEventListener("onChange",
         function ()
         end);
 
-    obj._e_event113 = obj.Duracao:addEventListener("onMouseEnter",
+    obj._e_event115 = obj.Duracao:addEventListener("onMouseEnter",
         function ()
             self.Duracao.hint = sheet.Duracao
         end);
 
-    obj._e_event114 = obj.button23:addEventListener("onClick",
+    obj._e_event116 = obj.button25:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Duracao_array)
@@ -10649,7 +10863,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event115 = obj.button24:addEventListener("onClick",
+    obj._e_event117 = obj.button26:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Duracao_array)
@@ -10698,27 +10912,27 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event116 = obj.button25:addEventListener("onClick",
+    obj._e_event118 = obj.button27:addEventListener("onClick",
         function (event)
             rolarFeitico()
         end);
 
-    obj._e_event117 = obj.button26:addEventListener("onClick",
+    obj._e_event119 = obj.button28:addEventListener("onClick",
         function (event)
             ListaDeFeitico()
         end);
 
-    obj._e_event118 = obj.button27:addEventListener("onClick",
+    obj._e_event120 = obj.button29:addEventListener("onClick",
         function (event)
             Aceitar()
         end);
 
-    obj._e_event119 = obj.button28:addEventListener("onClick",
+    obj._e_event121 = obj.button30:addEventListener("onClick",
         function (event)
             abrirPopUp()
         end);
 
-    obj._e_event120 = obj.rectangle94:addEventListener("onDblClick",
+    obj._e_event122 = obj.rectangle94:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                               local chat = minhaMesa.chat;
@@ -10734,7 +10948,7 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event121 = obj.rectangle96:addEventListener("onDblClick",
+    obj._e_event123 = obj.rectangle96:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                               local chat = minhaMesa.chat;
@@ -10750,7 +10964,7 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event122 = obj.rectangle98:addEventListener("onDblClick",
+    obj._e_event124 = obj.rectangle98:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                                 local chat = minhaMesa.chat;
@@ -10766,7 +10980,7 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event123 = obj.rectangle100:addEventListener("onDblClick",
+    obj._e_event125 = obj.rectangle100:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                                 local chat = minhaMesa.chat;
@@ -10782,17 +10996,19 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event124 = obj.button29:addEventListener("onClick",
+    obj._e_event126 = obj.button31:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
-    obj._e_event125 = obj.button30:addEventListener("onClick",
+    obj._e_event127 = obj.button32:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
     function obj:_releaseEvents()
+        __o_rrpgObjs.removeEventListenerById(self._e_event127);
+        __o_rrpgObjs.removeEventListenerById(self._e_event126);
         __o_rrpgObjs.removeEventListenerById(self._e_event125);
         __o_rrpgObjs.removeEventListenerById(self._e_event124);
         __o_rrpgObjs.removeEventListenerById(self._e_event123);
@@ -11128,6 +11344,7 @@ local function constructNew_HarryFicha()
         if self.tab17 ~= nil then self.tab17:destroy(); self.tab17 = nil; end;
         if self.tab9 ~= nil then self.tab9:destroy(); self.tab9 = nil; end;
         if self.edit174 ~= nil then self.edit174:destroy(); self.edit174 = nil; end;
+        if self.button31 ~= nil then self.button31:destroy(); self.button31 = nil; end;
         if self.form1 ~= nil then self.form1:destroy(); self.form1 = nil; end;
         if self.Grad ~= nil then self.Grad:destroy(); self.Grad = nil; end;
         if self.rectangle100 ~= nil then self.rectangle100:destroy(); self.rectangle100 = nil; end;
@@ -11567,6 +11784,7 @@ local function constructNew_HarryFicha()
         if self.edit173 ~= nil then self.edit173:destroy(); self.edit173 = nil; end;
         if self.edit1 ~= nil then self.edit1:destroy(); self.edit1 = nil; end;
         if self.edit100 ~= nil then self.edit100:destroy(); self.edit100 = nil; end;
+        if self.button32 ~= nil then self.button32:destroy(); self.button32 = nil; end;
         if self.rectangle103 ~= nil then self.rectangle103:destroy(); self.rectangle103 = nil; end;
         if self.label47 ~= nil then self.label47:destroy(); self.label47 = nil; end;
         if self.tab3 ~= nil then self.tab3:destroy(); self.tab3 = nil; end;
@@ -11598,9 +11816,9 @@ local function constructNew_HarryFicha()
         if self.label1 ~= nil then self.label1:destroy(); self.label1 = nil; end;
         if self.label88 ~= nil then self.label88:destroy(); self.label88 = nil; end;
         if self.nome ~= nil then self.nome:destroy(); self.nome = nil; end;
-        if self.label120 ~= nil then self.label120:destroy(); self.label120 = nil; end;
-        if self.edit34 ~= nil then self.edit34:destroy(); self.edit34 = nil; end;
         if self.button10 ~= nil then self.button10:destroy(); self.button10 = nil; end;
+        if self.edit34 ~= nil then self.edit34:destroy(); self.edit34 = nil; end;
+        if self.label120 ~= nil then self.label120:destroy(); self.label120 = nil; end;
         if self.button22 ~= nil then self.button22:destroy(); self.button22 = nil; end;
         if self.rectangle41 ~= nil then self.rectangle41:destroy(); self.rectangle41 = nil; end;
         if self.layout47 ~= nil then self.layout47:destroy(); self.layout47 = nil; end;

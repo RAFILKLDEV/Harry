@@ -1,5 +1,193 @@
 <tab title="Defesas" width="220">
-    <layout height="320" margins="{left=20}"
+
+    <script>
+        function testeResistenciaDanoDialog()
+            local resistencia = tonumber(sheet and sheet.RES_Total)
+            if not resistencia then
+                showMessage("RES_Total ausente na ficha.")
+                return
+            end
+
+            Dialogs.inputQuery("Dano", "Informe o DANO:", "",
+                function(txt)
+                local danoBase = tonumber(txt)
+                if not danoBase then
+                    showMessage("Valor inválido. Digite um número.")
+                    return
+                end
+
+                local cd = 15 + danoBase
+                local mesa = rrpg.getMesaDe(sheet)
+                if not mesa or not mesa.chat then
+                    showMessage("Chat indisponível.")
+                    return
+                end
+                local chat = mesa.chat
+
+                local titulo = (sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") .. string.format( "Teste de Resistência ([§K1]CD [§K4] %d[§K14] | [§K1]SAVE [§K9] %d)", cd, resistencia)
+                local rolagem = rrpg.interpretarRolagem("1d20+" .. resistencia)
+
+                chat:rolarDados(rolagem, titulo, function(rolado)
+                    -- extrair total com tolerância
+                    local total = nil
+                    if rolado and rolado.resultado then
+                    total = tonumber(rolado.resultado)
+                    end
+                    if not total and rolado and rolado.somatoria then
+                    total = tonumber(rolado.somatoria)
+                    end
+                    if not total and rolado and rolado.total then
+                    total = tonumber(rolado.total)
+                    end
+                    if not total then total = 0 end
+
+                    local margem = total - cd
+
+                    local function estagiosDe5(m)
+                    if m >= 0 then
+                        return math.min(4, math.floor(m / 5) + 1), "sucesso"
+                    else
+                        return math.min(4, math.floor((-m) / 5) + 1), "falha"
+                    end
+                    end
+
+                    local estagios, tipo = estagiosDe5(margem)
+                    local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
+                                                total,
+                                                margem >= 0 and ("+" .. margem) or tostring(margem),
+                                                estagios, tipo)
+
+                    if tipo == "sucesso" then
+                    chat:enviarMensagem("[§K1]O personagem Ignorou o Dano.")
+                    chat:enviarMensagem(detalhe)
+                    return
+                    end
+
+                    if estagios == 1 then
+                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento.")
+                    elseif estagios == 2 then
+                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento e foi Atordoado.")
+                    elseif estagios == 3 then
+                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento, foi Atordoado e está Abatido.")
+                    else -- 4
+                    chat:enviarMensagem("[§K1]O personagem caiu Inconsciente.")
+                    end
+
+                    chat:enviarMensagem(detalhe)
+                end)
+                end,
+                function()
+                showMessage("Operação cancelada.")
+                end
+            )
+        end
+
+
+        function testeResistenciaEfeitoDialog()
+        
+        local function getSaveValor(tipo)
+        if not tipo then return nil end
+        local t = tostring(tipo):gsub("^%s+",""):gsub("%s+$","")
+
+        if t == "Fortitude" then
+            return tonumber(sheet and sheet.FORT_Total)
+        elseif t == "Reflexos" then
+            return tonumber(sheet and sheet.REF_Total)
+        elseif t == "Vontade" then
+            return tonumber(sheet and sheet.VON_Total)
+        end
+
+        return nil
+        end
+
+
+        Dialogs.choose("Tipo de Efeito", {"Fortitude", "Reflexos", "Vontade"}, function(selected, selectedIndex, tipo)
+            if not tipo then
+            showMessage("Operação cancelada.")
+            return
+            end
+
+            local save = getSaveValor(tipo)
+            if not save then
+            showMessage("Valor de " .. tipo .. " ausente na ficha.")
+            return
+            end
+
+            Dialogs.inputQuery("Efeito", "Informe o MOD do efeito:", "0",
+            function(txt)
+                local mod = tonumber(txt)
+                if not mod then
+                showMessage("Valor inválido. Digite um número.")
+                return
+                end
+
+                local cd = 10 + mod
+                local mesa = rrpg.getMesaDe(sheet)
+                if not mesa or not mesa.chat then
+                showMessage("Chat indisponível.")
+                return
+                end
+                local chat = mesa.chat
+
+                local titulo = string.format((sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") ..  "Teste de Efeito (%s)  [§K2]CD %d[§K7] | SAVE %d", tipo, cd, save)
+                local rolagem = rrpg.interpretarRolagem("1d20+" .. save)
+
+                chat:rolarDados(rolagem, titulo, function(rolado)
+                -- extrai total compatível com diferentes versões
+                local total = nil
+                if rolado and rolado.resultado then total = tonumber(rolado.resultado) end
+                if not total and rolado and rolado.somatoria then total = tonumber(rolado.somatoria) end
+                if not total and rolado and rolado.total then total = tonumber(rolado.total) end
+                total = total or 0
+
+                local margem = total - cd
+                local function estagiosDe5(m)
+                    if m >= 0 then
+                    return math.min(4, math.floor(m / 5) + 1), "sucesso"
+                    else
+                    return math.min(4, math.floor((-m) / 5) + 1), "falha"
+                    end
+                end
+
+                local estagios, tipoRes = estagiosDe5(margem)
+                local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
+                                                total,
+                                                margem >= 0 and ("+" .. margem) or tostring(margem),
+                                                estagios, tipoRes)
+
+                if tipoRes == "sucesso" then
+                    if estagios >= 4 then
+                    chat:enviarMensagem("[§K1]O personagem Ignorou o Efeito.")
+                    else
+                    chat:enviarMensagem(string.format("[§K1]Sucesso em %d Estágio(s). Efeito reduzido.", estagios))
+                    end
+                    chat:enviarMensagem(detalhe)
+                    return
+                end
+
+                -- falhas graduais
+                if estagios == 1 then
+                    chat:enviarMensagem("[§K1]Falha em 1 Estágio. Efeito parcial.")
+                elseif estagios == 2 then
+                    chat:enviarMensagem("[§K1]Falha em 2 Estágios. Efeito agravado.")
+                elseif estagios == 3 then
+                    chat:enviarMensagem("[§K1]Falha em 3 Estágios. Efeito severo.")
+                else -- 4
+                    chat:enviarMensagem("[§K1]Falha em 4 Estágios. Efeito extremo.")
+                end
+
+                chat:enviarMensagem(detalhe)
+                end)
+            end,
+            function() showMessage("Operação cancelada.") end
+            )
+        end)
+        end
+
+
+    </script>
+
+    <layout height="300" margins="{left=20}"
         align="top">
         <label align="top" height="50" text="Defesas"
             horzTextAlign="center" fontSize="20" />
@@ -42,4 +230,11 @@
             grad="VON_Grad" out="VON_Out" align="top"
             height="30" />
     </layout>
+
+    <button align="top" height="30" text="Teste de Resistência"
+        margins="{left=20, right=20}"
+        onClick="testeResistenciaDanoDialog()" />
+    <button align="top" height="30" text="Teste de Efeito"
+        margins="{left=20, right=20, top=5}"
+        onClick="testeResistenciaEfeitoDialog()" />
 </tab>
