@@ -1,0 +1,4 @@
+<layout align="left" width="100">
+  <label align="top" height="35" margins="{top=5}" field="update" />
+  <label name="version" align="top" height="35" margins="{top=5}" text="Harry 3.6" />
+</layout>

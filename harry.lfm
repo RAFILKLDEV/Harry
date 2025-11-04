@@ -4,8 +4,6 @@
      title="Ficha Harry Potter Nova!" name="HarryFicha">
 
      <script>
-
-
           local function TotalPericia(ATR, MOD, OUT)
           local total = 0
 
@@ -227,12 +225,58 @@
                sheet.REB_MOD = cadaDez(sheet.REBA_QUAD_TOTAL + 10) .. "q"
                sheet.VEL_MOD = cadaDez(sheet.VEL_QUAD_TOTAL + 10) .. "q"
 
+               local function pontos()
+
+               local corpo = tonumber(sheet.ACR_Grad or 0) + tonumber(sheet.ATL_Grad or 0)
+               + tonumber(sheet.VEI_Grad or 0) + tonumber(sheet.FUR_Grad or 0)
+               + tonumber(sheet.PRE_Grad or 0)
+
+               local mente = tonumber(sheet.ENG_Grad or 0) + tonumber(sheet.INTU_Grad or 0) +
+               tonumber(sheet.INV_Grad or 0) + tonumber(sheet.PERC_Grad or 0) +
+               tonumber(sheet.PERS_Grad or 0) + tonumber(sheet.TRA_Grad or 0) +
+               tonumber(sheet.INT_Grad or 0) + tonumber(sheet.CON_Grad or 0)
+
+               local conhecimentos = tonumber(sheet.ATU_Grad or 0) + tonumber(sheet.C_ADI_Grad or 0)
+               + tonumber(sheet.C_AZA_Grad or 0) +
+               tonumber(sheet.C_CON_Grad or 0) + tonumber(sheet.C_CRI_Grad or 0) +
+               tonumber(sheet.C_ENC_Grad or 0) + tonumber(sheet.C_FEI_Grad or 0) +
+               tonumber(sheet.C_HER_Grad or 0) + tonumber(sheet.C_MAL_Grad or 0) +
+               tonumber(sheet.C_POC_Grad or 0) + tonumber(sheet.C_RUN_Grad or 0) +
+               tonumber(sheet.C_TRA_Grad or 0)
+
+               local feiticosCadastrados = NDB.getChildNodes(sheet.magias)
+               local totalFeiticos = 0
+
+               for x = 1, #feiticosCadastrados, 1 do
+               totalFeiticos = totalFeiticos + tonumber(feiticosCadastrados[x].GRAD or 0) 
+               end
+
+               local feiticos = tonumber(sheet.ACR_Grad or 0) + tonumber(sheet.ATL_Grad or 0)
+               + tonumber(sheet.VEI_Grad or 0) + tonumber(sheet.FUR_Grad or 0)
+               + tonumber(sheet.PRE_Grad or 0)
+
+               local atributos = tonumber(sheet.AGI or 0) + tonumber(sheet.DES or 0) +
+               tonumber(sheet.FOR or 0) + tonumber(sheet.LUT or 0) + tonumber(sheet.VIG or 0) +
+               tonumber(sheet.INTE or 0) + tonumber(sheet.PRE or 0) + tonumber(sheet.SAB or 0)
+
+               local defesas = tonumber(sheet.INI_Grad or 0) + tonumber(sheet.APA_Grad or 0) +
+               tonumber(sheet.FORT_Grad or 0) + tonumber(sheet.REF_Grad or 0) +
+               tonumber(sheet.RES_Grad or 0) + tonumber(sheet.VON_Grad or 0)
+
+               sheet.pontosDefesas = "Defesas - " .. defesas
+               sheet.pontosAtributos = "Atributos - " .. atributos * 2
+               sheet.pontosPericias = "Pericias - " .. ((corpo + mente + conhecimentos) / 2)
+               sheet.pontosFeiticos = "Feiticos - " .. totalFeiticos
+               end
+
+               pontos()
+
           </event>
      </dataLink>
 
      <tabControl align="client">
-          <import file="feitico.xml" />
           <import file="jogador.xml" />
+          <import file="feitico.xml" />
           <import file="anotacoes.xml" />
      </tabControl>
 
@@ -246,9 +290,6 @@
           end
 
           end
-
-          local node = NDB.getRoot(sheet)
-          node.soundControl = "desligado"
      </event>
 
 </form>

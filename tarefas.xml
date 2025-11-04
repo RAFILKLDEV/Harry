@@ -1,6 +1,187 @@
-<tab title="Tarefas" width="220">
+<tab title="Treinos e Tarefas" width="220">
+        <script>
+
+      local function condition(tipo)
+
+    if tipo == "fisico" then
+
+    if sheet.Exausto then
+    return -5
+    end
+
+    if sheet.Fadigado then
+    return -2
+    end
+
+    elseif tipo == "mental" then
+
+    if sheet.Tiltado then
+    return -5
+    end
+
+    if sheet.Frustrado then
+    return -2
+    end
+
+    end
+
+    return nil
+    end
+
+      local function ListaDeFeiticoParaTreino(str)
+        require("utils.lua");
+
+        local Raiz = NDB.load("listfetico.xml");
+        local Filho = NDB.getChildNodes(Raiz);
+        local mesaDoPersonagem = rrpg.getMesaDe(sheet);
+        local chat = mesaDoPersonagem.chat
+
+        ListaFeiticos = {} -- new array
+        ListaNomesFeitico = {} -- new array
+
+        for i = 1, #Filho, 1 do
+        ListaFeiticos[i] = Raiz["f" .. i]
+        ListaNomesFeitico[i] = Raiz["f" .. i].nome
+        end
+
+        table.sort(ListaNomesFeitico)
+
+        Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
+        function(selected, selectedIndex, selectedText)
+
+        if selected then
+
+        for k = 1, #Filho, 1 do
+
+        if tostring(selectedText) == ListaFeiticos[k].nome then
+
+          sheet.treinoCD = math.floor(totable(ListaFeiticos[k].cdfArray)[1] / 2  + 5)
+
+          if str == "Praticar Feitiços" then
+            chat:rolarDados("1d20+" .. (sheet.VIG or 0), "Prática Feitiço: " .. ListaFeiticos[k].nome .. " ( CD " .. sheet.treinoCD .. " )" .. (condition("fisico") and " Fisico " .. (-condition("fisico") or "") .. " = " .. (-condition("fisico") or "") + sheet.treinoCD or ""))
+          else
+            chat:rolarDados("1d20+" .. (sheet.INTE or 0), "Estudo Feitiço: " .. ListaFeiticos[k].nome .. " ( CD " .. sheet.treinoCD .. " )" .. (condition("mental") and " Mental " .. (-condition("mental") or "") .. " = " .. (-condition("mental") or "") + sheet.treinoCD or ""))
+          end
+
+        end
+
+        end
+
+        else
+
+        end;
+
+        end)
+
+        end
+
+      local function treinar()
+
+        local mesaDoPersonagem = rrpg.getMesaDe(sheet);
+        local chat = mesaDoPersonagem.chat
+        local node = NDB.getRoot(sheet)
+
+        Dialogs.choose("Escolha o tipo de treino:", {"Atributo", "Estudar", "Estudar Feitiços", "Praticar", "Praticar Feitiços"},
+        function(selected, selectedIndex, selectedText)
+        
+          if selectedText == "Atributo" then
+
+            local atributos = {
+                ["Força"]       = "FOR",
+                ["Destreza"]    = "DES",
+                ["Vigor"]       = "VIG",
+                ["Inteligencia"]= "INTE",
+                ["Sabedoria"]   = "SAB",
+                ["Presença"]    = "PRE",
+            }
+
+            Dialogs.choose("Escolha o atributo para treinar:", {"Força", "Destreza", "Vigor", "Inteligencia", "Sabedoria", "Presença"},
+            function(selectedAttr, selectedAttrIndex, selectedAttrText)
+
+              local atributo = atributos[selectedAttrText]
+              local cd = tonumber(sheet[atributo] and sheet[atributo]) + 10
+              showMessage(sheet[atributo])
+
+              if selectedAttrText == "Força" or selectedAttrText == "Destreza" or selectedAttrText == "Vigor" then
+                chat:rolarDados("1d20+" .. (sheet.VIG or 0), "Treino de " .. selectedAttrText .. " (CD " .. cd .. ")")
+              else
+                chat:rolarDados("1d20+" .. (sheet.INTE or 0), "Treino de " .. selectedAttrText .. " (CD " .. cd .. ")")
+              end
+
+            end)
+
+          elseif selectedText == "Estudar" then
+            Dialogs.inputQuery("Cadastro", "Informe Seu Nome", "",
+            function (valorPreenchido)
+              sheet.treinoCD = tonumber(valorPreenchido)
+              if sheet.treinoCD == nil then
+                showMessage("Valor inválido. Por favor, insira um número.");
+                return;
+              end
+              local cd = tonumber(valorPreenchido)
+              if not cd then
+                showMessage("Valor inválido. Por favor, insira um número.")
+                return
+              end
+
+              sheet.treinoCD = cd
+              chat:rolarDados(
+                "1d20+" .. (tonumber(sheet.VIG) or 0),
+                "Estudo (CD " .. cd .. ") " .. (condition("mental") and "Mental " .. (-condition("mental") or "") .. " = " .. (-condition("mental") or "") + cd)
+              )
+            end,       
+
+            function()
+              showMessage("O usuário cancelou");
+            end);
+            
+          elseif selectedText == "Praticar" then
+           Dialogs.inputQuery("Cadastro", "Informe a CD do treino", "",
+            function (valorPreenchido)
+              local cd = tonumber(valorPreenchido)
+              if not cd then
+                showMessage("Valor inválido. Por favor, insira um número.")
+                return
+              end
+
+              sheet.treinoCD = cd
+              chat:rolarDados(
+                "1d20+" .. (tonumber(sheet.VIG) or 0),
+                "Pratica (CD " .. cd .. ") " .. (condition("fisico") and "Fisico " .. (-condition("fisico") or "") .. " = " .. (-condition("fisico") or "") + cd)
+              )
+            end,
+            function()
+              showMessage("O usuário cancelou")
+            end
+          )
+
+          elseif selectedText == "Estudar Feitiços" then
+            ListaDeFeiticoParaTreino(selectedText)
+          elseif selectedText == "Praticar Feitiços" then
+            ListaDeFeiticoParaTreino(selectedText)
+          end
+
+        end)
+
+      end
+
+
+        
+
+    </script>
+
+    <layout height="50"
+        align="top">
+
+        <button text="Treinar" align="top"
+            height="30"
+            margins="{left = 5, top = 15, right = 5}"
+            horzTextAlign="center"
+            onClick="treinar()" />
+    </layout>
     <scrollBox  height="600"
         align="top">
+
 
         <button left="20" top="20" height="25" text="Nova Tarefa" width="80"
             onClick="self.kekzin:append();" />

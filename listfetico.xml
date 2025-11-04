@@ -22,6 +22,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f1>
     <f2
@@ -47,6 +48,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f2>
     <f3
@@ -72,6 +74,7 @@
         areaArray="{'0'}"
         duracaoGrad="0"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f3>
     <f4
@@ -99,6 +102,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f4>
     <f5
@@ -125,6 +129,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f5>
     <f6
@@ -151,6 +156,7 @@
          'Explosão 12m', 'Explosão 13.5m', 'Explosão 15m', 'Explosão 16.5m', 'Explosão 18m', 'Explosão 19.5m', 'Explosão 21m' }"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f6>
     <f7
@@ -177,6 +183,7 @@
         areaArray="{ '6m', '9m', '12m', '15m',  '18m', '21m', '23m' , '25m'}"
         duracaoGrad="0"
         duracaoArray="{'5m','15m','30m','45m','60m','90m','120m','150m','180m','210m'}"
+        efeito2=""
     >
     </f7>
     <f8
@@ -202,6 +209,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f8>
     <f9
@@ -228,6 +236,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f9>
     <f10
@@ -253,6 +262,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f10>
     <f11
@@ -278,6 +288,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{'5m','15m','30m','45m','60m','90m','120m','150m','180m','210m'}"
+        efeito2=""
     >
     </f11>
     <f12
@@ -303,6 +314,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f12>
     <f13
@@ -328,6 +340,7 @@
         areaArray="{ '1,5m', '3m', '4.5m', '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f13>
     <f14
@@ -353,6 +366,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f14>
     <f15
@@ -379,6 +393,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{'Cena'}"
+        efeito2=""
     >
     </f15>
     <f16
@@ -404,6 +419,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{'Cena'}"
+        efeito2=""
     >
     </f16>
     <f17
@@ -430,6 +446,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f17>
     <f18
@@ -455,6 +472,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f18>
     <f19
@@ -480,6 +498,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f19>
     <f20
@@ -506,6 +525,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f20>
     <f21
@@ -532,6 +552,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f21>
     <f22
@@ -558,6 +579,7 @@
         areaArray="{0}"
         duracaoGrad="0"
         duracaoArray="{'Cena'}"
+        efeito2=""
     >
     </f22>
     <f23
@@ -575,6 +597,7 @@
         rangeArray="{ '4,5m' ,'6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{ 'Explosão 4,5m','Explosão 6m','Explosão 7.5m','Explosão 9m','Explosão 12m','Explosão 13.5m','Explosão 15m','Explosão 16.5m','Explosão 18m','Explosão 19.5m','Explosão 21m' }"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f23>
     <f24
@@ -593,6 +616,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{0}"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f24>
     <f25
@@ -611,6 +635,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'3m'}"
         duracaoArray="{'Sustentado'}"
+        efeito2=""
     >
     </f25>
     <f26
@@ -628,6 +653,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'3m'}"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f26>
     <f27
@@ -646,6 +672,7 @@
         rangeArray="{ '3m' , '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{0}"
         duracaoArray="{'1h','6h','12h','18h','24h','30h','36h','42h','48h','54h'}"
+        efeito2=""
     >
     </f27>
     <f28
@@ -664,6 +691,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'1 Rodada','2 Rodada','3 Rodada','4 Rodada','5 Rodada','6 Rodada','7 Rodada','8 Rodada','9 Rodada','Sustentado'}"
+        efeito2=""
     >
     </f28>
     <f29
@@ -682,6 +710,7 @@
         rangeArray="{ '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'Sustentado'}"
+        efeito2=""
     >
     </f29>
     <f30
@@ -699,6 +728,7 @@
         rangeArray="{ '3m' , '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'1h','6h','12h','18h','24h','30h','36h','42h','48h','54h'}"
+        efeito2=""
     >
     </f30>
     <f31
@@ -717,6 +747,7 @@
         rangeArray="{ '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'1.5m','3m','4.5m'}"
         duracaoArray="{'1 Rodada','2 Rodada','3 Rodada','4 Rodada','5 Rodada','6 Rodada','7 Rodada','8 Rodada','9 Rodada','Sustentado'}"
+        efeito2=""
     >
     </f31>
     <f32
@@ -735,10 +766,11 @@
         rangeArray="{ '3m' , '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f32>
     <f33
-        nome="Levioso  - Básico"
+        nome="Levioso - Básico"
         escola="Encantamento"
         cast="Ataque"
         tempo="Instantanêo"
@@ -753,6 +785,7 @@
         rangeArray="{ '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f33>
     <f34
@@ -770,6 +803,7 @@
         rangeArray="{ '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'1,5m'}"
         duracaoArray="{'1 Rodada','2 Rodada','3 Rodada','Sustentado'}"
+        efeito2=""
     >
     </f34>
     <f35
@@ -788,6 +822,7 @@
         rangeArray="{ '18m', '18m a 36m', '18m a 72m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f35>
     <f36
@@ -806,6 +841,7 @@
         rangeArray="{ '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f36>
     <f37
@@ -824,6 +860,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'1.5m','3m','4.5m','6m'}"
         duracaoArray="{'Sustentado'}"
+        efeito2=""
     >
     </f37>
     <f38
@@ -831,7 +868,7 @@
         escola="Feitiço"
         cast="Cast"
         tempo="Instantanêo"
-        defesa=""
+        defesa="Nenhuma"
         gradArray="{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
         bonus="0"
         desc="Lança centelhas coloridas explodindo, podendo formar uma imagem no céu."
@@ -841,6 +878,7 @@
         rangeArray="{ '100m', '200m', '300m', '400m', '500m', '600m', '700m', '800m', '900m', '1000m' }"
         areaArray="{4.5m','6m' ,'7.5m','9m' ,'10.5m','12m'}"
         duracaoArray="{'3 Rodada''5 Rodada','10 Rodada','Sustentado'}"
+        efeito2=""
     >
     </f38>
     <f39
@@ -859,6 +897,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'3m','4.5m','6m','7.5m','9m'}"
         duracaoArray="{'Cena'}"
+        efeito2=""
     >
     </f39>
     <f40
@@ -876,6 +915,7 @@
         rangeArray="{ '4.5m', '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'3 Rodada''5 Rodada','10 Rodada','Sustentado'}"
+        efeito2=""
     >
     </f40>
     <f41
@@ -885,7 +925,7 @@
         tempo="Instantanêo"
         defesa="Poder"
         gradArray="{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
-        bonus="Aparar / Reflexo"
+        bonus="0"
         desc="Cria um escudo para se proteger de Ataques e Feitiços."
         efeito="Somando 10 + Poder + 1d8 + Aparar ou Reflexo"
         cdfArray="{18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0}"
@@ -894,6 +934,7 @@
         rangeArray="{ 'Pessoal' }"
         areaArray="{'0'}"
         duracaoArray="{'Reação'}"
+        efeito2=""
     >
     </f41>
     <f42
@@ -912,6 +953,7 @@
         rangeArray="{ 'Pessoal' }"
         areaArray="{'0'}"
         duracaoArray="{'Reação'}"
+        efeito2=""
     >
     </f42>
     <f43
@@ -929,6 +971,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'1 Criatura','2 Criaturas','3 Criaturas','4 Criaturas','5 Criaturas'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f43>
     <f44
@@ -946,6 +989,7 @@
         rangeArray="{'Pessoal'}"
         areaArray="{'4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         duracaoArray="{'1 Rodada','2 Rodada','3 Rodada','4 Rodada','5 Rodada','6 Rodada','7 Rodada','8 Rodada','9 Rodada','10 Rodada'}"
+        efeito2=""
     >
     </f44>
     <f45
@@ -963,6 +1007,7 @@
         rangeArray="{'Pessoal'}"
         areaArray="{ '3m', '4.5m', '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         duracaoArray="{'2 Rodada','3 Rodada','4 Rodada','5 Rodada','6 Rodada','7 Rodada','8 Rodada','9 Rodada','10 Rodada'}"
+        efeito2=""
     >
     </f45>
     <f46
@@ -980,6 +1025,7 @@
         rangeArray="{'4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'2 Rodada','3 Rodada','4 Rodada','5 Rodada','6 Rodada','7 Rodada','8 Rodada','9 Rodada','10 Rodada'}"
+        efeito2=""
     >
     </f46>
     <f47
@@ -998,6 +1044,7 @@
         rangeArray="{'4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'2 Rodada','3 Rodada','4 Rodada','5 Rodada','6 Rodada','7 Rodada','8 Rodada','9 Rodada','10 Rodada'}"
+        efeito2=""
     >
     </f47>
     <f48
@@ -1015,6 +1062,7 @@
         rangeArray="{'Pessoal' , '3m' , '6m' , '9m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f48>
     <f49
@@ -1033,6 +1081,7 @@
         rangeArray="{'6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'1.5m a Explosão de 6m'}"
         duracaoArray="{'2 Rodada','3 Rodada','4 Rodada','5 Rodada','6 Rodada','7 Rodada','8 Rodada','9 Rodada','10 Rodada'}"
+        efeito2=""
     >
     </f49>
     <f50
@@ -1050,6 +1099,7 @@
         rangeArray="{'6m', '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'Explosão de 1.5m','Explosão de 3m','Explosão de 4.5m'}"
         duracaoArray="{'1 Rodada','2 Rodada','3 Rodada'}"
+        efeito2=""
     >
     </f50>
     <f51
@@ -1067,6 +1117,7 @@
         rangeArray="{'7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'1.5m','Linha de 3m','Linha de 4.5m'}"
         duracaoArray="{'Final Próximo Turno','2 Rodadas'}"
+        efeito2=""
     >
     </f51>
     <f52
@@ -1084,6 +1135,7 @@
         rangeArray="{'3m' , '6m' , '9m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f52>
     <f53
@@ -1101,6 +1153,7 @@
         rangeArray="{'3m' , '6m' , '9m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f53>
     <f54
@@ -1118,6 +1171,7 @@
         rangeArray="{'3m' , '6m' , '9m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f54>
     <f55
@@ -1135,6 +1189,7 @@
         rangeArray="{'3m' , '6m' , '9m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f55>
     <f56
@@ -1142,10 +1197,10 @@
         escola="Feitiço"
         cast="Cast"
         tempo="Instantanêo"
-        defesa="Poder"
+        defesa="*Vontade"
         gradArray="{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
         bonus="0"
-        efeito="Camuflagem total, Desabilitado em Ataques a Criaturas Percebidas ou 1 a 5 de Margem de Erro para Ataques em Area,
+        efeito="Prejudicado em Ataques, 1 a 5 de Margem de Erro para Ataques em Area,
          presumindo que o atacante saiba (ou suponha) a localização do alvo."
         desc="Cria uma Cortina de Fumaça Densa."
         cdfArray="{15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0}"
@@ -1154,6 +1209,7 @@
         rangeArray="{'3m' , '6m' , '9m' }"
         areaArray="{'Explosão de 1.5m','Explosão de 3m','Explosão de 4.5m','Explosão de 6m'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f56>
     <f57
@@ -1171,6 +1227,7 @@
         rangeArray="{'Escolar'}"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f57>
     <f58
@@ -1188,6 +1245,7 @@
         rangeArray="{'15m','30m','60m','90m','200m'}"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f58>
     <f59
@@ -1198,13 +1256,14 @@
         defesa="Ataque"
         gradArray="{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
         bonus="0"
-        desc="Mata Instantaneamente um alvo."
+        desc="Mata Instantaneamente um alvo. Essa Maldição não pode Critar. "
         cdfArray="{20,19,18}"
         poderArray="{'-10 em Ataque', '-9 em Ataque', '-8 em Ataque', '-7 em Ataque', '-6 em Ataque', '-5 em Ataque', '-4 em Ataque', '-3 em Ataque', '-2 em Ataque', '-1 em Ataque', 'Sem Penalidade'}"
         danoArray="{0}"
         rangeArray="{'6m', '7.5m', '9m', '12m', '13.5m', '15m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f59>
     <f60
@@ -1223,6 +1282,7 @@
         rangeArray="{'4.5m','6m', '7.5m', '9m', '12m', '13.5m', '15m'}"
         areaArray="{'0'}"
         duracaoArray="{1,2,3}"
+        efeito2=""
     >
     </f60>
     <f61
@@ -1240,6 +1300,7 @@
         rangeArray="{'4.5m','6m', '7.5m', '9m', '12m', '13.5m', '15m'}"
         areaArray="{'0'}"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f61>
     <f62
@@ -1257,10 +1318,11 @@
         rangeArray="{'4.5m','6m', '7.5m', '9m', '12m', '13.5m', '15m'}"
         areaArray="{'0'}"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f62>
     <f63
-        nome="Room Locomotor"
+        nome="Portalis Locomotum"
         escola="Transmutação"
         cast="Cast"
         tempo="Instantanêo"
@@ -1274,6 +1336,7 @@
         rangeArray="{'4.5m','6m', '7.5m', '9m', '12m', '13.5m', '15m'}"
         areaArray="{'Escolar'}"
         duracaoArray="{0}"
+        efeito2=""
     >
     </f63>
     <f64
@@ -1291,6 +1354,7 @@
         rangeArray="{ '3m' , '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f64>
     <f65
@@ -1309,6 +1373,7 @@
         rangeArray="{ '3m' , '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f65>
     <f66
@@ -1327,6 +1392,7 @@
         rangeArray="{ '3m' , '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f66>
     <f67
@@ -1345,6 +1411,7 @@
         rangeArray="{ '3m' , '4.5m' , '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f67>
     <f68
@@ -1363,6 +1430,7 @@
         rangeArray="{ '6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{'0'}"
         duracaoArray="{'1 Rodada','2 Rodada','3 Rodada'}"
+        efeito2=""
     >
     </f68>
     <f69
@@ -1373,7 +1441,7 @@
         defesa="Vontade"
         gradArray="{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
         bonus="A Aura tem a forma de um animal unico de seu Conjurador"
-        efeito="A "
+        efeito="0"
         desc="Cria uma Aura expansiva que repele Dementadores"
         cdfArray="{15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0}"
         poderArray="{3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
@@ -1381,24 +1449,41 @@
         rangeArray="{ '3m' ,'4.5m' ,'6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
         areaArray="{ 'Explosão 3m' ,'Explosão 4.5m' ,'Explosão 6m' , 'Explosão 7.5m', 'Explosão 9m', 'Explosão 12m', 'Explosão 13.5m', 'Explosão 15m', 'Explosão 16.5m', 'Explosão 18m', 'Explosão 19.5m', 'Explosão 21m' }"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f69>
     <f70
-        nome="AA TESTE"
-        escola="Contra-Feitiço"
+        nome="Adivinhar"
+        escola="Adivinhação"
         cast="Cast"
         tempo="Instantanêo"
-        defesa="Vontade"
+        defesa="Poder"
         gradArray="{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
-        bonus="A Aura tem a forma de um animal unico de seu Conjurador"
-        efeito="A "
-        desc="Cria uma Aura expansiva que repele Dementadores"
-        cdfArray="{15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0}"
-        poderArray="{3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
+        bonus="0"
+        desc="Realiza Adivinhações"
+        cdfArray="{12,11,10,9,8,7,6,5,4,3,2,1,0}"
+        poderArray="{1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
         danoArray="{0}"
-        rangeArray="{ '3m' ,'4.5m' ,'6m' , '7.5m', '9m', '12m', '13.5m', '15m', '16.5m', '18m', '19.5m', '21m' }"
-        areaArray="{1,2,3,4,5,6,7,8,9,10}"
+        rangeArray="{'3m' , '6m' , '9m' }"
+        areaArray="{'0'}"
         duracaoArray="{'0'}"
+        efeito2=""
     >
     </f70>
+    <f71
+        nome="Aparatar"
+        escola="Transmutação"
+        cast="Cast"
+        tempo="Instantanêo"
+        defesa="Poder"
+        gradArray="{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20}"
+        bonus="0"
+        desc="Aparata para um local mentalizado. Concentração CD 20. Um local que você você possa ver ou é familiar. CD 25 Um local que você visita com frequência. CD 30. Um lugar conhecido, que você já visitou pelo menos uma vez."
+        danoArray="{0}"
+        rangeArray="{'3m' , '6m' , '9m' }"
+        areaArray="{'0'}"
+        duracaoArray="{'0'}"
+        efeito2=""
+    >
+    </f71>
 </base>

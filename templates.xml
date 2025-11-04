@@ -1,4 +1,4 @@
-<layout>
+<form>
     <template name="label3">
         <layout align="left" margins="{left=10}" width="80">
             <rectangle top="7" left="7" color="DarkSlateBlue" width="65" height="20">
@@ -35,28 +35,35 @@
                     <event name="onClick">
                    <![CDATA[
 
-                        local array = totable(sheet.$(field .. "_array"))
-                        local grad = tonumber(sheet.$(field .. "_grad"))
+                        local node = self.rclMagias.selectedNode;
+                        local array = totable(node.$(field .. "_array"))
+                        local grad = tonumber(node.$(field .. "_grad"))
                         local result = grad
-                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
-                        (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
+                        (node.Area_grad - 1) + (node.Duracao_grad - 1))
+
+                        if (grad - 1) == graduacoes then
+                            if node.$(field .. "_name") == "Grad" then
+                            return
+                            end
+                        end
 
                             if grad > 1 then
 
                                 result = result - 1
                                 sheet.$(field .. "_grad") = result
                                 sheet.$(field) = array[result]
+                                node.$(field .. "_grad") = result
+                                node.$(field) = array[result]
                             
                             end
-
                         
+                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
+                                (node.Area_grad - 1) + (node.Duracao_grad - 1))
 
-                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
-                                (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
-
-                        if sheet.Grad == tonumber(graduacoes) then
+                        if node.Grad == tonumber(graduacoes) then
                             self.rectangle.color = "gray"
-                        elseif sheet.Grad > tonumber(graduacoes) then
+                        elseif node.Grad > tonumber(graduacoes) then
                             self.rectangle.color = "green"
                         end
                     ]]>
@@ -64,21 +71,25 @@
                 </button>
                 <button text="+" align="right" width="20">
                     <event name="onClick">
-                    <![CDATA[
+                    <![CDATA[   
 
-                        local array = totable(sheet.$(field .. "_array"))
-                        local grad = tonumber(sheet.$(field .. "_grad"))
+                        local node = self.rclMagias.selectedNode;
+                        local array = totable(node.$(field .. "_array"))
+                        local grad = tonumber(node.$(field .. "_grad"))
                         local result = grad
-                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
-                        (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
+                        (node.Area_grad - 1) + (node.Duracao_grad - 1))
 
-                        if sheet.Grad > graduacoes then
+                        if node.Grad > graduacoes then
 
                             if grad < #array then
 
                                 result = result + 1
                                 sheet.$(field .. "_grad") = result
                                 sheet.$(field) = array[result]
+                                node.$(field .. "_grad") = result
+                                node.$(field) = array[result]
+
                             
                             end
 
@@ -89,20 +100,22 @@
                             result = result + 1
                             sheet.$(field .. "_grad") = result
                             sheet.$(field) = array[result]
+                            node.$(field .. "_grad") = result
+                            node.$(field) = array[result]
 
                         end
                         
 
                         end
 
-                        local graduacoes = tonumber((sheet.CD_grad - 1) + (sheet.Poder_grad - 1 ) + (sheet.Dano_grad - 1) + (sheet.Range_grad - 1) + 
-                                (sheet.Area_grad - 1) + (sheet.Duracao_grad - 1))
+                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
+                                (node.Area_grad - 1) + (node.Duracao_grad - 1))
 
-                        if sheet.Grad == tonumber(graduacoes) then
+                        if node.Grad == tonumber(graduacoes) then
                             self.rectangle.color = "gray"
-                        elseif sheet.Grad > tonumber(graduacoes) then
+                        elseif node.Grad > tonumber(graduacoes) then
                             self.rectangle.color = "green"
-                        elseif sheet.Grad < tonumber(graduacoes) then
+                        elseif node.Grad < tonumber(graduacoes) then
                             self.rectangle.color = "red"
                         end
 
@@ -124,36 +137,49 @@
     </template>
 
     <template name="CheckCondition">
-        <script>
-
-        </script>
         <rectangle height="35" align="top" margins="{top=3}" color="$(cor)">
             <checkBox align="left" width="20" text="Caixa de marcação" field="$(name)">
                 <event name="onChange">
                     local mesaDoPersonagem = Firecast.getRoomOf(sheet);
                     local chat = mesaDoPersonagem.chat
                     local jogador = mesaDoPersonagem.meuJogador
+                    local root = NDB.getRoot(sheet)
+                    local nick = root.nomePersonagem or jogador.nick
 
                     if sheet.$(name) then
 
-                    if self.$(name).text == "Exausto" then
+                        if self.$(name).text == "Exausto" and sheet.Fadigado then
 
-                    sheet.Fadigado = nil
-                    chat:enviarMensagem(jogador.nick .. " estava Fatigado agora está " ..
-                    self.$(name).text)
-                    elseif self.$(name).text == "Tiltado" then
-                    sheet.Frustrado = nil
-                    chat:enviarMensagem(jogador.nick .. " estava Frustrado agora está " ..
-                    self.$(name).text)
+                            sheet.Fadigado = nil
+                            chat:enviarMensagem(nick .. " estava Fatigado agora está " ..
+                            self.$(name).text)
+
+                        elseif self.$(name).text == "Fadigado" and sheet.Exausto  then
+
+                            sheet.Exausto = nil
+                            chat:enviarMensagem(nick .. " estava Exausto agora está " ..
+                            self.$(name).text)
+
+                        elseif self.$(name).text == "Tiltado" and sheet.Frustrado  then
+
+                            sheet.Frustrado = nil
+                            chat:enviarMensagem(nick .. " estava Frustrado agora está " ..
+                            self.$(name).text)
+
+                        elseif self.$(name).text == "Frustrado" and sheet.Tiltado  then
+
+                            sheet.Tiltado = nil
+                            chat:enviarMensagem(nick .. " estava Tiltado agora está " ..
+                            self.$(name).text)
+                            
+                        else
+                            chat:enviarMensagem(nick .. " está " .. self.$(name).text)
+
+                        end
+
                     else
-                    chat:enviarMensagem(jogador.nick .. " agora está " .. self.$(name).text)
-
+                        chat:enviarMensagem(nick .. " não está mais " .. self.$(name).text)
                     end
-
-                    else
-                    chat:enviarMensagem(jogador.nick .. " não está mais " .. self.$(name).text)
-                    end
-
 
                 </event>
             </checkBox>
@@ -170,6 +196,7 @@
                 <event name="onClick">
                     local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                     local chat = mesaDoPersonagem.chat
+                    local nodeMain = NDB.getRoot(sheet)
 
                     local function condition()
 
@@ -210,7 +237,7 @@
 
                     chat:rolarDados("1d20 + " .. (sheet.$(total) or 0) .. (condition()
                     and (condition()) or ""),
-                    self.$(name).text,
+                    (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.$(name).text,
                     function (rolado)
 
                     end);
@@ -241,6 +268,7 @@
                 <event name="onClick">
                     local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                     local chat = mesaDoPersonagem.chat
+                    local nodeMain = NDB.getRoot(sheet)
 
                     local function condition()
 
@@ -273,7 +301,7 @@
 
                     chat:rolarDados("1d20 + " .. (sheet.$(total) or 0) .. (condition() and
                     (condition()) or ""),
-                    self.$(name).text,
+                    (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.$(name).text,
                     function (rolado)
 
                     end);
@@ -326,6 +354,7 @@
             <event name="onClick">
                 local mesaDoPersonagem = rrpg.getMesaDe(sheet);
                 local chat = mesaDoPersonagem.chat
+                local nodeMain = NDB.getRoot(sheet)
 
                 local function condition()
 
@@ -361,11 +390,11 @@
 
                 chat:rolarDados("1d20 + " .. (sheet.$(field2) or sheet.$(field1)) .. (condition()
                 and (condition()) or ""),
-                self.$(name).text,
+                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.$(name).text,
                 function (rolado)
 
                 end);
             </event>
         </rectangle>
     </template>
-</layout>
+</form>

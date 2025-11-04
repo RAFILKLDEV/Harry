@@ -1,444 +1,496 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tab title="Feitiços">
-   <script>
-      -- Primeiro, é necessário usar a unidade "dialogs.lua"
-      require("dialogs.lua");
-      require("ndb.lua")
-      require("utils.lua");
-      local node = NDB.getRoot(sheet)
+  <script>
+    -- Primeiro, é necessário usar a unidade "dialogs.lua"
+    require("dialogs.lua");
+    require("ndb.lua")
+    require("utils.lua");
+    local node = NDB.getRoot(sheet)
 
-      local function abrirPopUp()
-      require("gui.lua");
+    local function abrirPopUp()
+    require("gui.lua");
 
-      local node = NDB.getRoot(sheet)
+    local node = NDB.getRoot(sheet)
 
-      local controle = self:findControlByName("popUp");
-      controle.visible = true
+    local controle = self:findControlByName("popUp");
+    controle.visible = true
 
-      local Raiz = NDB.load("listfetico.xml");
-      local Filho = NDB.getChildNodes(Raiz);
-      local node = NDB.getRoot(sheet)
+    local Raiz = NDB.load("listfetico.xml");
+    local Filho = NDB.getChildNodes(Raiz);
+    local node = NDB.getRoot(sheet)
 
-      ListaFeiticos = {}
-      ListaNomesFeitico = {}
+    ListaFeiticos = {}
+    ListaNomesFeitico = {}
 
-      for i = 1, #Filho, 1 do
-      ListaFeiticos[i] = Raiz["f" .. i]
-      ListaNomesFeitico[i] = Raiz["f" .. i].nome
-      table.sort(ListaNomesFeitico)
-      end
+    for i = 1, #Filho, 1 do
+    ListaFeiticos[i] = Raiz["f" .. i]
+    ListaNomesFeitico[i] = Raiz["f" .. i].nome
+    table.sort(ListaNomesFeitico)
+    end
 
-      for k = 1, #Filho, 1 do
+    for k = 1, #Filho, 1 do
 
-      if sheet.nome == ListaFeiticos[k].nome then
+    if sheet.nome == ListaFeiticos[i].nome then
 
-      node.escola2 = ListaFeiticos[k].escola
-      node.tipo2 = ListaFeiticos[k].cast
-      node.Efeito2 = ListaFeiticos[k].efeito
-      node.Grad2 = totable(ListaFeiticos[k].gradArray)[1]
-      node.CD2 = totable(ListaFeiticos[k].cdfArray)[1]
-      node.Dano2 = totable(ListaFeiticos[k].danoArray)[1]
-      node.Poder2 = totable(ListaFeiticos[k].poderArray)[1]
-      node.Range2 = totable(ListaFeiticos[k].rangeArray)[1]
-      node.Area2 = totable(ListaFeiticos[k].areaArray)[1]
-      node.Duracao2 = totable(ListaFeiticos[k].duracaoArray)[1]
-
-      node.escola = sheet.escola
-      node.tipo = sheet.tipo
-      node.Grad = sheet.Grad
-      node.CD = sheet.CD
-      node.Dano = sheet.Dano
-      node.Poder = sheet.Poder
-      node.Range = sheet.Range
-      node.Area = sheet.Area
-      node.Duracao = sheet.escola
-
-      node.Desc = ListaFeiticos[k].desc
-      node.Efeito = ListaFeiticos[k].efeito
-      node.Bonus = ListaFeiticos[k].bonus
-
-      end
-      end
-
-      end
-
-      local function condition(tipo)
-
-      if tipo == "fisico" then
-
-      if sheet.Exausto then
-      return -5
-      end
-
-      if sheet.Fadigado then
-      return -2
-      end
-
-      elseif tipo == "mental" then
-
-      if sheet.Tiltado then
-      return -5
-      end
-
-      if sheet.Frustrado then
-      return -2
-      end
-
-      end
-
-      return nil
-      end
-
-      local function testezz()
-
-      local node = NDB.getRoot(sheet)
-      showMessage(node.soundControl)
-
-      end
-
-      local function tocarAudio()
-      require("utils.lua");
-
-      local minhaMesa = Firecast.getRoomOf(sheet);
-      local node = NDB.getRoot(sheet)
-
-      if node.soundControl == "ligado" then
-
-      if sheet.Sound ~= nil then
-      local track = "/audios/" .. sheet.Sound
-      minhaMesa.audioPlayer:play(track,0.8)
-      end
-
-      end
-
-      end
-
-      local function Aceitar()
-      Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
-      function (confirmado)
-      if confirmado then
-      local node = self.boxDetalhesDoItem.node
-      NDB.deleteNode(node);
-      else
-      return
-      end;
-      end);
-
-      end
-
-      local function definirEscola()
-         if sheet.escola == 'Adivinhação' then
-         return sheet.C_ADI_Total
-         elseif sheet.escola == 'Azaração' then
-         return sheet.C_AZA_Total
-         elseif sheet.escola == 'Contra-Feitiço' then
-         return sheet.C_CON_Total
-         elseif sheet.escola == 'Encantamento' then
-         return sheet.C_ENC_Total
-         elseif sheet.escola == 'Feitiço' then
-         return sheet.C_FEI_Total
-         elseif sheet.escola == 'Transmutação' then
-         return sheet.C_TRA_Total
-         elseif sheet.escola == 'Maldição' then
-         return sheet.C_MAL_Total
-         end
-   
-         end
-   
-         local function stats()
-         local msg = ""
-   
-         if sheet.Grad ~= "" then
-         msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. ((sheet.Grad) or "")
-         else
-         end
-   
-         if sheet.CD ~= "" then
-         msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. ((sheet.CD) or "")
-         else
-         end
-   
-         if sheet.Dano ~= "" then
-         msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. ((sheet.Dano) or "")
-         else
-         end
-   
-         if sheet.Poder ~= "" then
-         msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. ((sheet.Poder) or "")
-         else
-         end
-   
-         -- if sheet.Bonus ~= "" then
-         -- msg = msg .. "[§K10]" .. " Bonus: " .. "[§K1]" .. ((sheet.Bonus) or "")
-         -- else
-         -- end
-   
-         if sheet.Range ~= "" then
-         msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. ((sheet.Range) or "")
-         else
-         end
-   
-         if sheet.Area ~= "" then
-         msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. ((sheet.Area) or "")
-         else
-         end
-   
-         if sheet.Duracao ~= "" then
-         msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" .. ((sheet.Duracao) or "")
-         else
-         end
-   
-         return msg
-         end
-
-      local function rolarFeitico()
-      local minhaMesa = Firecast.getRoomOf(sheet);
-      local chat = minhaMesa.chat;
-      local nick = minhaMesa.meuJogador.nick
-      local dataScope = self.boxDetalhesDoItem.node
-      local somatoria = sheet.Grad .. "+" .. math.floor(definirEscola() / 2) .. "-" .. (sheet.concentracao or 0)
-
-      chat:enviarMensagem("Nome:" .. (sheet.nome or "NIL") .. " CD " .. (sheet.CD or "NIL") .. " Grad" .. (sheet.Grad or "NIL") .. " Poder" .. (sheet.Poder or "NIL") .. " Range" .. (sheet.Range or "NIL") .. " Area" .. (sheet.Area or "NIL") .. " Duração" .. (sheet.Duracao or "NIL") .. " Dano " .. (sheet.Dano or "NIL") .. " Bonus " .. (sheet.Bonus or "NIL"));
-
-      chat:enviarMensagem("----------------");
-
-      chat:rolarDados("1d20+" .. somatoria, "Cast " ..
-      sheet.nome .. " CD " .. sheet.CD, function
-      (rolagem)
-
-      if rolagem.resultado >= tonumber(sheet.CD) then
-      chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta castando [§K6]" .. sheet.nome .. "[§K9] Sucesso!")
-
-      chat:enviarMensagem("[§K6]" .. sheet.nome .. " " .. stats())
-
-      if sheet.Efeito then
-      chat:enviarMensagem("[§K10]Efeito: " .. "[§K1]" .. sheet.Efeito)
-      end
-
-      if sheet.tipo == 'Ataque' then
-      chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. sheet.DES .. "-" .. (sheet.acerto or 0) ..
-      (condition("fisico") or ""),
-      "Ataque de " .. sheet.nome)
-      setTimeout(tocarAudio, 5000)
-
-      elseif sheet.tipo == 'Ataque Base' then
-      chat:rolarDados("1d20+" .. sheet.Grad .. "+" .. sheet.DES .. "-" .. (sheet.acerto or 0) ..
-      (condition("fisico") or ""),
-      "Ataque de " .. sheet.nome)
-      setTimeout(tocarAudio, 5000)
-
-      elseif sheet.tipo == 'Defesa' then
-      chat:rolarDados("1d8+" .. sheet.Poder .. "+" .. sheet.Bonus ..
-      (condition("fisico") or ""), "CA " .. sheet.nome)
-      setTimeout(tocarAudio, 5000)
-      end
-
-      chat:enviarMensagem("----------------");
-
-      elseif rolagem.resultado &lt; tonumber(sheet.CD) and rolagem.resultado >
-      tonumber(sheet.CD)
-      - 5 then
-      chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 1 Estagio!!");
-
-      elseif rolagem.resultado &lt; tonumber(sheet.CD) and rolagem.resultado >
-      tonumber(sheet.CD)
-      - 10 then
-      chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 2 Estagio!!");
-
-      elseif rolagem.resultado &lt; tonumber(sheet.CD) and rolagem.resultado >
-      tonumber(sheet.CD)
-      - 15 then
-      chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 3 Estagio!!");
-
-      else chat:enviarMensagem(sheet.nome .. "[§K4] Falhou em 4 Estagio!!");
-
-      end
-
-      end)
-
-      end
-
-      -- FUNÇÂO DE FEITICO
-      local function ListaDeFeitico()
-
-      require("utils.lua");
-      local Raiz = NDB.load("listfetico.xml");
-      local Filho = NDB.getChildNodes(Raiz);
-
-      ListaFeiticos = {} -- new array
-      ListaNomesFeitico = {} -- new array
-
-      for i = 1, #Filho, 1 do
-      ListaFeiticos[i] = Raiz["f" .. i]
-      ListaNomesFeitico[i] = Raiz["f" .. i].nome
-      table.sort(ListaNomesFeitico)
-      end
-
-      Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
-      function(selected, selectedIndex, selectedText)
-      if selected then
-
-      for k = 1, #Filho, 1 do
-      if tostring(selectedText) == ListaFeiticos[k].nome then
-
-      sheet.nome = ListaFeiticos[k].nome
-      sheet.escola = ListaFeiticos[k].escola
-      sheet.defesa = ListaFeiticos[k].defesa
-      sheet.tipo = ListaFeiticos[k].cast
-      sheet.Efeito = ListaFeiticos[k].efeito
-      sheet.Desc = ListaFeiticos[k].desc
-
-      sheet.Grad = totable(ListaFeiticos[k].gradArray)[1]
-      sheet.Grad_name = "Grad"
-      sheet.Grad_grad = 1
-      sheet.Grad_array = ListaFeiticos[k].gradArray
-
-      sheet.CD = totable(ListaFeiticos[k].cdfArray)[1]
-      sheet.CD_name = "CD"
-      sheet.CD_grad = 1
-      sheet.CD_array = ListaFeiticos[k].cdfArray
-
-      sheet.Dano = totable(ListaFeiticos[k].danoArray)[1]
-      sheet.Dano_name = "Dano"
-      sheet.Dano_grad = 1
-      sheet.Dano_array = ListaFeiticos[k].danoArray
-
-      sheet.Poder = totable(ListaFeiticos[k].poderArray)[1]
-      sheet.Poder_name = "Poder"
-      sheet.Poder_grad = 1
-      sheet.Poder_array = ListaFeiticos[k].poderArray
-
-      sheet.Range = totable(ListaFeiticos[k].rangeArray)[1]
-      sheet.Range_name = "Range"
-      sheet.Range_grad = 1
-      sheet.Range_array = ListaFeiticos[k].rangeArray
-
-      sheet.Area = totable(ListaFeiticos[k].areaArray)[1]
-      sheet.Area_name = "Area"
-      sheet.Area_grad = 1
-      sheet.Area_array = ListaFeiticos[k].areaArray
-
-      sheet.Duracao = totable(ListaFeiticos[k].duracaoArray)[1]
-      sheet.Duracao_name = "Duracao"
-      sheet.Duracao_grad = 1
-      sheet.Duracao_array = ListaFeiticos[k].duracaoArray
-
-      end
-      end
-      else
-      end;
-      end)
-      end
-
-   </script>
-   <scrollBox align="client">
-      <image style="autoFit" top="0" width="1300" height="800" src="/imagens/wizard.jpg" />
-      <layout align="top" height="100" padding="{top=5, left=5}">
-
-         <script>
-            local function onChange(node, attribute, oldValue)
-            showMessage(oldValue)
-
-            end
-
-            local function alternarFeiticos()
-
-            if self.rclMagias.visible == true then
-            self.botao.text = "Lista Completa"
-            self.rclMagias.visible = false
-            self.testezim.visible = true
-            else
-            self.botao.text = "Lista Simplificada"
-            self.rclMagias.visible = true
-            self.testezim.visible = false
-            end
-
-            end
-
-            local function alternarAudio()
-            local node = NDB.getRoot(sheet)
-
-            if self.sound.text == "🔊" then
-            self.sound.text = "🔇"
-            node.soundControl = "desligado"
-            else
-            self.sound.text = "🔊"
-            node.soundControl = "ligado"
-            end
-
-            end
-
-            local function adicionarFeitico()
-
-            local node = self.rclMagias:append();
-
-            node.nome = "Importar"
-            node.escola = "-"
-            node.tipo = "-"
-            node.Efeito = "-"
-
-            node.Grad = 0
-            node.Grad_name = "Grad"
-            node.Grad_grad = 1
-            node.Grad_array = {0}
-
-            node.CD = "-"
-            node.CD_name = "CD"
-            node.CD_grad = 1
-            node.CD_array = {0}
-
-            node.Dano = "-"
-            node.Dano_name = "Dano"
-            node.Dano_grad = 1
-            node.Dano_array = {"-"}
-
-            node.Poder = "-"
-            node.Poder_name = "Poder"
-            node.Poder_grad = 1
-            node.Poder_array = {"-"}
-
-            node.Range = "-"
-            node.Range_name = "Range"
-            node.Range_grad = 1
-            node.Range_array = {"-"}
-
-            node.Area = "-"
-            node.Area_name = "Area"
-            node.Area_grad = 1
-            node.Area_array = {"-"}
-
-            node.Duracao = "-"
-            node.Duracao_name = "Duracao"
-            node.Duracao_grad = 1
-            node.Duracao_array = {"-"}
-
-            end
-         </script>
-
-         <template name="label2">
-            <layout align="left" margins="{left=20}" width="120" height="70">
-               <rectangle top="5" left="10" color="$(color)" width="90" height="25">
-                  <label align="client" text="$(text)" horzTextAlign="center" />
-               </rectangle>
-               <edit top="30" width="120" field="$(field)" readOnly="$(read)" horzTextAlign="center"
-                  type="number" min="0">
-                  <event name="onUserChange">
-
-                  </event>
-               </edit>
-            </layout>
-         </template>
-
-         <layout align="top" height="70" margins="{top=10, left=0}">
-            <label2 field="DES" text="Destreza" color="#C59E01" read="true" />
-            <label2 field="C_ADI_Total" color="DarkSlateBlue" text="Adivinhação" read="true" />
-            <label2 field="C_AZA_Total" color="DarkSlateBlue" text="Azaração" read="true" />
-            <label2 field="C_CON_Total" color="DarkSlateBlue" text="Contra-Feitiço" read="true" />
-            <label2 field="C_ENC_Total" color="DarkSlateBlue" text="Encantamento" read="true" />
-            <label2 field="C_FEI_Total" color="DarkSlateBlue" text="Feitiço" read="true" />
-            <label2 field="C_TRA_Total" color="DarkSlateBlue" text="Transmutação" read="true" />
-            <label2 field="C_MAL_Total" color="DarkSlateBlue" text="Arte das Trevas" read="true" />
-            <!-- <button align="left" text="kek">
+    node.escola2 = ListaFeiticos[i].escola
+    node.tipo2 = ListaFeiticos[i].cast
+    node.Efeito2 = ListaFeiticos[i].efeito
+    node.Grad2 = totable(ListaFeiticos[i].gradArray)[1]
+    node.CD2 = totable(ListaFeiticos[i].cdfArray)[1]
+    node.Dano2 = totable(ListaFeiticos[i].danoArray)[1]
+    node.Poder2 = totable(ListaFeiticos[i].poderArray)[1]
+    node.Range2 = totable(ListaFeiticos[i].rangeArray)[1]
+    node.Area2 = totable(ListaFeiticos[i].areaArray)[1]
+    node.Duracao2 = totable(ListaFeiticos[i].duracaoArray)[1]
+
+    node.escola = sheet.escola
+    node.tipo = sheet.tipo
+    node.Grad = sheet.Grad
+    node.CD = sheet.CD
+    node.Dano = sheet.Dano
+    node.Poder = sheet.Poder
+    node.Range = sheet.Range
+    node.Area = sheet.Area
+    node.Duracao = sheet.escola
+
+    node.Desc = ListaFeiticos[i].desc
+    node.Efeito = ListaFeiticos[i].efeito
+    node.Bonus = ListaFeiticos[i].bonus
+
+    end
+    end
+
+    end
+
+    local function condition(tipo)
+
+    if tipo == "fisico" then
+
+    if sheet.Exausto then
+    return -5
+    end
+
+    if sheet.Fadigado then
+    return -2
+    end
+
+    elseif tipo == "mental" then
+
+    if sheet.Tiltado then
+    return -5
+    end
+
+    if sheet.Frustrado then
+    return -2
+    end
+
+    end
+
+    return nil
+    end
+
+    local function testezz()
+
+    local node = NDB.getRoot(sheet)
+    showMessage(node.soundControl)
+
+    end
+
+    local function tocarAudio()
+    require("utils.lua");
+
+    local minhaMesa = Firecast.getRoomOf(sheet);
+    local node = NDB.getRoot(sheet)
+
+    if node.soundControl == "ligado" then
+
+    if sheet.Sound ~= nil then
+    local track = "/audios/" .. sheet.Sound
+    minhaMesa.audioPlayer:play(track,0.8)
+    end
+
+    end
+
+    end
+
+    local function Aceitar()
+    Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
+    function (confirmado)
+    if confirmado then
+    local node = self.boxDetalhesDoItem.node
+    NDB.deleteNode(node);
+    else
+    return
+    end;
+    end);
+
+    end
+
+    local function definirEscola()
+    local node = self.rclMagias.selectedNode;
+
+    if node.escola == 'Adivinhação' then
+    return sheet.C_ADI_Total
+    elseif node.escola == 'Azaração' then
+    return sheet.C_AZA_Total
+    elseif node.escola == 'Contra-Feitiço' then
+    return sheet.C_CON_Total
+    elseif node.escola == 'Encantamento' then
+    return sheet.C_ENC_Total
+    elseif node.escola == 'Feitiço' then
+    return sheet.C_FEI_Total
+    elseif node.escola == 'Transmutação' then
+    return sheet.C_TRA_Total
+    elseif node.escola == 'Maldição' then
+    return sheet.C_MAL_Total
+    end
+
+    end
+
+    local function stats()
+    local node = self.rclMagias.selectedNode;
+    local msg = ""
+
+    if node.Grad ~= "" then
+    msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. ((node.Grad) or "")
+    else
+    end
+
+    if node.CD ~= "" then
+    msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. ((node.CD) or "")
+    else
+    end
+
+    if node.Dano ~= "" then
+    msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. ((node.Dano) or "")
+    else
+    end
+
+    if node.Poder ~= "" then
+    msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. ((node.Poder) or "")
+    else
+    end
+
+    -- if node.Bonus ~= "" then
+    -- msg = msg .. "[§K10]" .. " Bonus: " .. "[§K1]" .. ((node.Bonus) or "")
+    -- else
+    -- end
+
+    if node.Range ~= "" then
+    msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. ((node.Range) or "")
+    else
+    end
+
+    if node.Area ~= "" then
+    msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. ((node.Area) or "")
+    else
+    end
+
+    if node.Duracao ~= "" then
+    msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" .. ((node.Duracao) or "")
+    else
+    end
+
+    return msg
+    end
+
+    local function rolarFeitico()
+    local minhaMesa = Firecast.getRoomOf(sheet);
+    local chat = minhaMesa.chat;
+    local root = NDB.getRoot(sheet)
+    local nick = root.nomePersonagem or minhaMesa.meuJogador.nick
+    local node = self.rclMagias.selectedNode;
+    local dataScope = self.boxDetalhesDoItem.node
+    local defesaTipo = "Distancia"
+    local defesaValor = 0
+
+    if sheet.concentracao == nil then
+    sheet.concentracao = 0
+    end
+
+    if sheet.mental == nil then
+    sheet.mental = 0
+    end
+
+    local somatoria = node.Grad .. "+" .. math.floor(definirEscola() / 2) .. ((sheet.concentracao ~=
+    0) and
+    ("-" .. sheet.concentracao) or "") .. (condition("mental") or "")
+    chat:enviarMensagem("----------------");
+
+    chat:rolarDados("1d20+" .. somatoria,
+    "[§K8] Grad [§K1]" .. node.Grad ..
+    ((definirEscola() / 2) ~= 0 and ("[§K8] Escola [§K1]" .. math.floor(definirEscola() / 2)) or "")
+    ..
+    (sheet.concentracao ~= 0 and ("[§K8] Concentração [§K1] -" ..
+    sheet.concentracao) or "") ..
+    (condition("mental") and ("[§K8] Mental [§K1]" .. condition("mental")) or ""),
+    function(rolagem)
+
+    if rolagem.resultado >= tonumber(node.CD) then
+    chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta castando [§K6]" .. node.nome ..
+    "[§K1] CD [§K7]" .. sheet.CD .. "[§K1] =[§K9] Sucesso!")
+
+    chat:enviarMensagem("[§K6]" .. node.nome .. " " .. stats())
+    chat:enviarMensagem("[§K1]" .. "Testes: [§K10]" .. (node.defesa or ""))
+
+    if node.tipo == 'Ataque' then
+    chat:rolarDados("1d20+" .. node.Grad .. "+" .. sheet.DES ..
+    (sheet.acerto and sheet.acerto ~= 0 and ("-" .. sheet.acerto) or "") ..
+    (condition("fisico") or ""),
+
+    "[§K8] Grad [§K1]" .. node.Grad ..
+    "[§K8] Des [§K1]" .. sheet.DES ..
+    (sheet.acerto and sheet.acerto ~= 0 and ("[§K8] Acerto [§K1]-" .. sheet.acerto) or "") ..
+    (condition("fisico") and ("[§K8] Fisico [§K1]" .. condition("fisico")) or ""))
+
+    elseif node.tipo == 'Ataque Base' then
+    chat:rolarDados("1d20+" .. node.Grad .. "+" .. sheet.DES .. ((sheet.acerto ~= 0) and ("-"
+    ..sheet.acerto) or "") ..
+    (condition("fisico") or ""),
+
+    "[§K8] Grad [§K1]" .. node.Grad ..
+    "[§K8] Des [§K1]" .. sheet.DES ..
+    (sheet.acerto and sheet.acerto ~= 0 and ("[§K8] Acerto [§K1]-" .. sheet.acerto) or "") ..
+    (condition("fisico") and ("[§K8] Fisico [§K1]" .. condition("fisico")) or ""))
+
+    elseif node.tipo == 'Defesa' then
+
+    Dialogs.choose("Ataque Corpo-a-Corpo ou a Distancia ?", {"Corpo-a-Corpo", "Distancia"}, function(selected, selectedIndex, selectedText)
+    local nodeMain = NDB.getRoot(sheet)
+
+    if selectedText == "Corpo-a-Corpo" then
+    defesaValor = tonumber(nodeMain.APA_Total) or 0
+    defesaTipo = "Corpo-a-Corpo"
+    end
+
+    if selectedText == "Distancia" then
+    defesaValor = tonumber(nodeMain.REF_Total) or 0
+    defesaTipo = "Distancia"
+    end
+
+    chat:rolarDados("1d8+" .. node.Poder .. "+" .. defesaValor .. "+" .. 10 ..
+    (condition("fisico") or ""), "CA " .. node.nome .. " " .. defesaTipo)
+    end)
+    end
+
+    chat:enviarMensagem("----------------");
+
+    elseif rolagem.resultado > tonumber(node.CD) - 5 then
+    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
+    "[§K4] Falhou em 1 Estágio!!");
+
+    elseif rolagem.resultado > tonumber(node.CD) - 10 then
+    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
+    "[§K4] Falhou em 2 Estágio!!");
+
+    elseif rolagem.resultado > tonumber(node.CD) - 15 then
+    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
+    "[§K4] Falhou em 3 Estágio!!");
+
+    else
+    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
+    "[§K4] Falhou em 4 Estágio!!");
+
+
+    end
+
+    end)
+
+    end
+
+    -- FUNÇÂO DE FEITICO
+    local function ListaDeFeitico()
+
+    require("utils.lua");
+    local Raiz = NDB.load("listfetico.xml");
+    local Filho = NDB.getChildNodes(Raiz);
+    local node = self.rclMagias.selectedNode;
+
+    ListaFeiticos = {} -- new array
+    ListaNomesFeitico = {} -- new array
+
+    for i = 1, #Filho, 1 do
+    ListaFeiticos[i] = Raiz["f" .. i]
+    ListaNomesFeitico[i] = Raiz["f" .. i].nome
+    table.sort(ListaNomesFeitico)
+    end
+
+    Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
+    function(selected, selectedIndex, selectedText)
+    if selected then
+
+    for k = 1, #Filho, 1 do
+    if tostring(selectedText) == ListaFeiticos[k].nome then
+
+    sheet.nome = ListaFeiticos[k].nome
+    sheet.escola = ListaFeiticos[k].escola
+    sheet.defesa = ListaFeiticos[k].defesa
+    sheet.tipo = ListaFeiticos[k].cast
+    sheet.Efeito = ListaFeiticos[k].efeito
+    sheet.Desc = ListaFeiticos[k].desc
+
+    node.nome = ListaFeiticos[k].nome
+    node.escola = ListaFeiticos[k].escola
+    node.defesa = ListaFeiticos[k].defesa
+    node.tipo = ListaFeiticos[k].cast
+    node.Efeito = ListaFeiticos[k].efeito
+    node.Desc = ListaFeiticos[k].desc
+
+
+    sheet.Grad = totable(ListaFeiticos[k].gradArray)[1]
+    sheet.Grad_name = "Grad"
+    sheet.Grad_grad = 1
+    sheet.Grad_array = ListaFeiticos[k].gradArray
+
+    sheet.CD = totable(ListaFeiticos[k].cdfArray)[1]
+    sheet.CD_name = "CD"
+    sheet.CD_grad = 1
+    sheet.CD_array = ListaFeiticos[k].cdfArray
+
+    sheet.Dano = totable(ListaFeiticos[k].danoArray)[1]
+    sheet.Dano_name = "Dano"
+    sheet.Dano_grad = 1
+    sheet.Dano_array = ListaFeiticos[k].danoArray
+
+    sheet.Poder = totable(ListaFeiticos[k].poderArray)[1]
+    sheet.Poder_name = "Poder"
+    sheet.Poder_grad = 1
+    sheet.Poder_array = ListaFeiticos[k].poderArray
+
+    sheet.Range = totable(ListaFeiticos[k].rangeArray)[1]
+    sheet.Range_name = "Range"
+    sheet.Range_grad = 1
+    sheet.Range_array = ListaFeiticos[k].rangeArray
+
+    sheet.Area = totable(ListaFeiticos[k].areaArray)[1]
+    sheet.Area_name = "Area"
+    sheet.Area_grad = 1
+    sheet.Area_array = ListaFeiticos[k].areaArray
+
+    sheet.Duracao = totable(ListaFeiticos[k].duracaoArray)[1]
+    sheet.Duracao_name = "Duracao"
+    sheet.Duracao_grad = 1
+    sheet.Duracao_array = ListaFeiticos[k].duracaoArray
+
+    node.Grad = totable(ListaFeiticos[k].gradArray)[1]
+    node.Grad_name = "Grad"
+    node.Grad_grad = 1
+    node.Grad_array = ListaFeiticos[k].gradArray
+
+    node.CD = totable(ListaFeiticos[k].cdfArray)[1]
+    node.CD_name = "CD"
+    node.CD_grad = 1
+    node.CD_array = ListaFeiticos[k].cdfArray
+
+    node.Dano = totable(ListaFeiticos[k].danoArray)[1]
+    node.Dano_name = "Dano"
+    node.Dano_grad = 1
+    node.Dano_array = ListaFeiticos[k].danoArray
+
+    node.Poder = totable(ListaFeiticos[k].poderArray)[1]
+    node.Poder_name = "Poder"
+    node.Poder_grad = 1
+    node.Poder_array = ListaFeiticos[k].poderArray
+
+    node.Range = totable(ListaFeiticos[k].rangeArray)[1]
+    node.Range_name = "Range"
+    node.Range_grad = 1
+    node.Range_array = ListaFeiticos[k].rangeArray
+
+    node.Area = totable(ListaFeiticos[k].areaArray)[1]
+    node.Area_name = "Area"
+    node.Area_grad = 1
+    node.Area_array = ListaFeiticos[k].areaArray
+
+    node.Duracao = totable(ListaFeiticos[k].duracaoArray)[1]
+    node.Duracao_name = "Duracao"
+    node.Duracao_grad = 1
+    node.Duracao_array = ListaFeiticos[k].duracaoArray
+
+    end
+    end
+    else
+    end;
+    end)
+    end
+
+  </script>
+  <scrollBox align="client">
+    <image style="autoFit" top="0" width="1300" height="800" src="/imagens/wizard.jpg" />
+    <layout align="top" height="100" padding="{top=5, left=5}">
+
+      <script>
+        local function adicionarFeitico()
+
+        local node = self.rclMagias:append();
+
+        node.nome = "Importar"
+        node.escola = "-"
+        node.tipo = "-"
+        node.Efeito = "-"
+
+        node.Grad = 0
+        node.Grad_name = "Grad"
+        node.Grad_grad = 1
+        node.Grad_array = {0}
+
+        node.CD = "-"
+        node.CD_name = "CD"
+        node.CD_grad = 1
+        node.CD_array = {0}
+
+        node.Dano = "-"
+        node.Dano_name = "Dano"
+        node.Dano_grad = 1
+        node.Dano_array = {"-"}
+
+        node.Poder = "-"
+        node.Poder_name = "Poder"
+        node.Poder_grad = 1
+        node.Poder_array = {"-"}
+
+        node.Range = "-"
+        node.Range_name = "Range"
+        node.Range_grad = 1
+        node.Range_array = {"-"}
+
+        node.Area = "-"
+        node.Area_name = "Area"
+        node.Area_grad = 1
+        node.Area_array = {"-"}
+
+        node.Duracao = "-"
+        node.Duracao_name = "Duracao"
+        node.Duracao_grad = 1
+        node.Duracao_array = {"-"}
+
+        end
+      </script>
+
+      <template name="label2">
+        <layout align="left" margins="{left=20}" width="120" height="70">
+          <rectangle top="5" left="10" color="$(color)" width="90" height="25">
+            <label align="client" text="$(text)" horzTextAlign="center" />
+          </rectangle>
+          <edit top="30" width="120" field="$(field)" readOnly="$(read)" horzTextAlign="center"
+            type="number" min="0">
+            <event name="onUserChange">
+
+            </event>
+          </edit>
+        </layout>
+      </template>
+
+      <layout align="top" height="70" margins="{top=10, left=0}">
+        <label2 field="DES" text="Destreza" color="#C59E01" read="true" />
+        <label2 field="C_ADI_Total" color="DarkSlateBlue" text="Adivinhação" read="true" />
+        <label2 field="C_AZA_Total" color="DarkSlateBlue" text="Azaração" read="true" />
+        <label2 field="C_CON_Total" color="DarkSlateBlue" text="Contra-Feitiço" read="true" />
+        <label2 field="C_ENC_Total" color="DarkSlateBlue" text="Encantamento" read="true" />
+        <label2 field="C_FEI_Total" color="DarkSlateBlue" text="Feitiço" read="true" />
+        <label2 field="C_TRA_Total" color="DarkSlateBlue" text="Transmutação" read="true" />
+        <label2 field="C_MAL_Total" color="DarkSlateBlue" text="Arte das Trevas" read="true" />
+        <!-- <button align="left" text="kek">
             <event name="onClick">
                require("ndb.lua");
                local minhaMesa = Firecast.getRoomOf(sheet);
@@ -453,90 +505,217 @@
                showMessage(tableToStr(Child[1].nome))
             </event>
          </button> -->
-         </layout>
-
       </layout>
 
-      <layout align="top" height="80" margins="{top=0, left=0}">
-         <layout align="left" margins="{left=20}" width="120" height="80">
-            <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-               <label align="client" text="Fisico" horzTextAlign="center" />
-            </rectangle>
-            <edit top="30" width="120" field="fisico" horzTextAlign="center" type="float"/>
-            <dataLink field="fisico">
-               <event name="onChange">
+    </layout>
 
-                  -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
+    <layout align="top" height="80" margins="{top=0, left=0}">
+      <layout align="left" margins="{left=20}" width="120" height="80">
+        <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+          <label align="client" text="Fisico" horzTextAlign="center" />
+        </rectangle>
+        <edit top="30" width="120" field="fisico" horzTextAlign="center" type="float" />
+        <dataLink field="fisico">
+          <event name="onChange">
 
-                  local minhaMesa = Firecast.getRoomOf(sheet);
-                  local chat = minhaMesa.chat;
+            -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
 
-                  if oldValue == nil then
-                  return
-                  end
+            local minhaMesa = Firecast.getRoomOf(sheet);
+            local chat = minhaMesa.chat;
 
-                  local novoValor = math.abs(newValue or 0)
-                  local antigoValor = math.abs(oldValue or 0)
+            if oldValue == nil then
+            return
+            end
 
-                  chat:enviarAcao("Estava com penalidade de Fisica de " .. antigoValor ..
-                  " e agora esta com " .. novoValor)
+            local novoValor = math.abs(newValue or 0)
+            local antigoValor = math.abs(oldValue or 0)
 
-                  sheet.fisico = novoValor
-               </event>
-            </dataLink>
-         </layout>
-         <layout align="left" margins="{left=20}" width="120" height="80">
-            <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-               <label align="client" text="Mental" horzTextAlign="center" />
-            </rectangle>
-            <edit top="30" width="120" field="mental" horzTextAlign="center"  type="float" />
-            <dataLink field="mental">
-               <event name="onChange">
+            chat:enviarAcao("Estava com penalidade de Fisica de " .. antigoValor ..
+            " e agora esta com " .. novoValor)
 
-                  -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
+            sheet.fisico = novoValor
+          </event>
+        </dataLink>
+      </layout>
+      <layout align="left" margins="{left=20}" width="120" height="80">
+        <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
+          <label align="client" text="Mental" horzTextAlign="center" />
+        </rectangle>
+        <edit top="30" width="120" field="mental" horzTextAlign="center" type="float" />
+        <dataLink field="mental">
+          <event name="onChange">
 
-                  local minhaMesa = Firecast.getRoomOf(sheet);
-                  local chat = minhaMesa.chat;
+            -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
 
-                  if oldValue == nil then
-                  return
-                  end
+            local minhaMesa = Firecast.getRoomOf(sheet);
+            local chat = minhaMesa.chat;
 
-                  local novoValor = math.abs(newValue or 0)
-                  local antigoValor = math.abs(oldValue or 0)
+            if oldValue == nil then
+            return
+            end
 
-                  chat:enviarAcao("Estava com penalidade de Fisica de " .. antigoValor ..
-                  " e agora esta com " .. novoValor)
+            local novoValor = math.abs(newValue or 0)
+            local antigoValor = math.abs(oldValue or 0)
 
-                  sheet.mental = novoValor
-               </event>
-            </dataLink>
-         </layout>
-         <label2 field="concentracao" color="purple" text="Concentração" read="false" />
-         <label2 field="acerto" color="purple" text="Acerto" read="false" />
+            chat:enviarAcao("Estava com penalidade de Mente de " .. antigoValor ..
+            " e agora esta com " .. novoValor)
+
+            sheet.mental = novoValor
+          </event>
+        </dataLink>
+      </layout>
+      <label2 field="concentracao" color="purple" text="Concentração" read="false" />
+      <label2 field="acerto" color="purple" text="Acerto" read="false" />
+    </layout>
+
+    <layout name="aqui" align="top" height="600" padding="{top=5, left=5}">
+      <layout left="20" top="15" width="600" height="35">
+        <button align="left" margins="{left=20}" height="25" text="Novo Feitiço" width="100"
+          onClick="adicionarFeitico()" />
+        <button align="left" height="25" text="Ordenar" width="100" margins="{left=20}"
+          onClick="self.rclMagias:sort();" />
+        <button align="left" text="Atualizar Feitiços" width="120" margins="{left=20}">
+          <event name="onClick">
+            Dialogs.showMessageDlg("Deseja Atualizar sua Lista de Feitiços ?",
+            dialogs.DT_INFORMATION,
+            {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
+
+            if escolha == dialogs.DB_YES then
+
+            local Raiz = NDB.load("listfetico.xml");
+            local baseDeFeiticos = NDB.getChildNodes(Raiz);
+            local feiticosCadastrados = NDB.getChildNodes(sheet.magias)
+            local falhas = ""
+
+            ListaFeiticos = {} -- new array
+            ListaNomesFeitico = {} -- new array
+
+            for i = 1, #baseDeFeiticos, 1 do
+            ListaFeiticos[i] = Raiz["f" .. i]
+            ListaNomesFeitico[i] = Raiz["f" .. i].nome
+            table.sort(ListaNomesFeitico)
+            end
+
+            for k = 1, #feiticosCadastrados, 1 do
+
+            local falha = true
+
+            for i = 1, #ListaFeiticos , 1 do
+
+            if feiticosCadastrados[k].nome == ListaFeiticos[i].nome then
+
+            falha = false
+
+            self.rclMagias.selectedNode = feiticosCadastrados[k]
+            local node = self.rclMagias.selectedNode;
+            self.boxDetalhesDoItem.node = node;
+            self.boxDetalhesDoItem.visible = (node ~= nil);
+
+            feiticosCadastrados[k].escola = ListaFeiticos[i].escola
+            feiticosCadastrados[k].tipo = ListaFeiticos[i].cast
+            feiticosCadastrados[k].Desc = ListaFeiticos[i].Desc
+            feiticosCadastrados[k].Efeito = ListaFeiticos[i].Efeito
+            feiticosCadastrados[k].Bonus = ListaFeiticos[i].Bonus
+            feiticosCadastrados[k].defesa = ListaFeiticos[i].defesa
+
+            feiticosCadastrados[k].CD = totable(ListaFeiticos[i].cdfArray)[node.CD_grad]
+            feiticosCadastrados[k].CD_array = ListaFeiticos[i].cdfArray
+            feiticosCadastrados[k].Dano = totable(ListaFeiticos[i].danoArray)[node.Dano_grad]
+            feiticosCadastrados[k].Dano_array = ListaFeiticos[i].danoArray
+            feiticosCadastrados[k].Poder = totable(ListaFeiticos[i].poderArray)[node.Poder_grad]
+            feiticosCadastrados[k].Poder_array = ListaFeiticos[i].poderArray
+            feiticosCadastrados[k].Range = totable(ListaFeiticos[i].rangeArray)[node.Range_grad]
+            feiticosCadastrados[k].Range_array = ListaFeiticos[i].rangeArray
+            feiticosCadastrados[k].Area = totable(ListaFeiticos[i].areaArray)[node.Area_grad]
+            feiticosCadastrados[k].Area_array = ListaFeiticos[i].areaArray
+            feiticosCadastrados[k].Duracao =
+            totable(ListaFeiticos[i].duracaoArray)[node.Duracao_grad]
+
+            node.Duracao_array = ListaFeiticos[i].duracaoArray
+            node.escola = ListaFeiticos[i].escola
+            node.tipo = ListaFeiticos[i].cast
+            node.Desc = ListaFeiticos[i].Desc
+            node.Efeito = ListaFeiticos[i].Efeito
+            node.Bonus = ListaFeiticos[i].Bonus
+            node.defesa = ListaFeiticos[i].defesa
+
+            node.CD = totable(ListaFeiticos[i].cdfArray)[node.CD_grad]
+            node.CD_array = ListaFeiticos[i].cdfArray
+            node.Dano = totable(ListaFeiticos[i].danoArray)[node.Dano_grad]
+            node.Dano_array = ListaFeiticos[i].danoArray
+            node.Poder = totable(ListaFeiticos[i].poderArray)[node.Poder_grad]
+            node.Poder_array = ListaFeiticos[i].poderArray
+            node.Range = totable(ListaFeiticos[i].rangeArray)[node.Range_grad]
+            node.Range_array = ListaFeiticos[i].rangeArray
+            node.Area = totable(ListaFeiticos[i].areaArray)[node.Area_grad]
+            node.Area_array = ListaFeiticos[i].areaArray
+            node.Duracao =
+            totable(ListaFeiticos[i].duracaoArray)[node.Duracao_grad]
+            node.Duracao_array = ListaFeiticos[i].duracaoArray
+
+            end
+
+            end
+
+            if falha == true then
+
+            falhas = falhas .. feiticosCadastrados[k].nome .. "\n"
+
+            end
+            end
+
+            if falhas ~= "" then
+            showMessage("Falha em Atualizar os Feitiços: \n\n "
+            .. falhas ..
+            "\n\n O Nome do Feitiço deve ser Igual para atualiza-lo" ..
+            " Ou Anote seus valores e importe o Feitiço novamente")
+            else
+            showMessage("Todos os Feitiços foram atualizados!")
+            end
+
+            elseif escolha == dialogs.DB_NO then
+            showMessage("Se não atualizar vai perder ponto")
+            -- usuário escolheu IGNORE
+            end;
+            end);
+          </event>
+        </button>
       </layout>
 
-      <layout name="aqui" align="top" height="600" padding="{top=5, left=5}">
-         <layout left="20" top="15" width="600" height="35">
-            <button align="left" margins="{left=20}" height="25" text="Novo Feitiço" width="100"
-               onClick="adicionarFeitico()" />
-            <button align="left" height="25" text="Ordenar" width="100" margins="{left=20}"
-               onClick="self.rclMagias:sort();" />
-            <!-- <button align="left" text="Feitiços" width="80" margins="{left=20}"
-               onClick="feiticos()" /> -->
-         </layout>
 
+      <layout left="20" top="60" height="310" width="1200">
+        <rectangle color="#444444" width="200" align="left" strokeColor="#333333" strokeSize="2">
+          <recordList name="rclMagias" field="magias" itemHeight="45" templateForm="feiticos"
+            align="left" width="200" visible="true" autoHeight="false" selectable="true">
+            <event name="onSelect"> 
+            <![CDATA[   
+              local node = self.rclMagias.selectedNode;
 
-         <layout left="20" top="60" height="310" width="1200">
-            <rectangle color="#444444" width="200" align="left" strokeColor="#333333" strokeSize="2" >
-               <recordList name="rclMagias" field="magias" itemHeight="45" templateForm="feiticos"
-                  align="left" width="200" visible="true" autoHeight="false" selectable="true">
-                  <event name="onSelect">
-                     local node = self.rclMagias.selectedNode;
-                     self.boxDetalhesDoItem.node = node;
-                     self.boxDetalhesDoItem.visible = (node ~= nil);
-                  </event>
-                  <event name="onCompare">
+              if node == nil then
+                return
+              end
+              
+              self.boxDetalhesDoItem.node = node; 
+              self.boxDetalhesDoItem.visible = (node ~= nil);
+
+              if node.CD_grad then
+
+                local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) +
+                (node.Dano_grad - 1) + (node.Range_grad - 1) + (node.Area_grad - 1) +
+                (node.Duracao_grad - 1)) 
+
+                if node.Grad == tonumber(graduacoes) then
+                              self.rectangle.color = "gray"
+                  elseif node.Grad > tonumber(graduacoes) then
+                      self.rectangle.color = "green"
+                  elseif node.Grad < tonumber(graduacoes) then
+                      self.rectangle.color = "red"
+                  end
+
+              end
+              ]]>
+            </event>
+            <event name="onCompare">
                      <![CDATA[     
                            if (tonumber(nodeA.Order) or 0) < (tonumber(nodeB.Order) or 0) then
                                  return -1;
@@ -546,258 +725,313 @@
                                  return Utils.compareStringPtBr(nodeA.nome, nodeB.nome);
                            end;               
                      ]]>
+            </event>
+            <event name="onEndEnumeration">
+              if self.rclMagias.selectedNode == nil and sheet ~= nil then
+              local nodes = ndb.getChildNodes(sheet.magias);
+
+              if #nodes > 0 then
+              self.rclMagias.selectedNode = nodes[1];
+              end;
+              end;
+            </event>
+          </recordList>
+        </rectangle>
+        <dataScopeBox name="boxDetalhesDoItem" visible="false" align="left"
+          width="1000" margins="{left=4, right=4}">
+          <rectangle name="rectangle" color="darkGrey" opacity="0.35" width="1020" height="170" />
+          <layout align="top" height="170">
+            <layout align="left" margins="{left=10}" width="180">
+              <rectangle align="top" color="DarkSlateBlue" margins="{left=60,right=60,top=5}"
+                height="20">
+                <label align="client" text="Nome" horzTextAlign="center" />
+              </rectangle>
+              <edit name="nome" fontStyle="bold italic" fontSize="15"
+                horzTextAlign="center" height="27" align="top" field="nome" hitTest="true">
+              </edit>
+              <rectangle align="top" color="DarkSlateBlue" margins="{left=60,right=60,top=5}"
+                height="20">
+                <label align="client" text="Escola" horzTextAlign="center" />
+              </rectangle>
+              <edit name="escola" horzTextAlign="center" height="27" fontStyle="bold italic"
+                align="top"
+                readOnly="true"
+                field="escola">
+                <event name="onChange">
+                  local dataScope = self.boxDetalhesDoItem.node
+
+                  if dataScope then
+                  if dataScope.escola == "Contra-Feitiço" then
+                  self.escola.fontColor = "#EABFCB"
+                  elseif dataScope.escola == "Encantamento" then
+                  self.escola.fontColor = "#2BD9FE"
+                  elseif dataScope.escola == "Feitiço" then
+                  self.escola.fontColor = "#7765E3"
+                  elseif dataScope.escola == "Azaração" then
+                  self.escola.fontColor = "#A1683A"
+                  elseif dataScope.escola == "Transmutação" then
+                  self.escola.fontColor = "#E4572E"
+                  elseif dataScope.escola == "Maldição" then
+                  self.escola.fontColor = "#32936F"
+                  elseif dataScope.escola == "Adivinhação" then
+                  self.escola.fontColor = "#BCCCE0"
+                  end
+                  end
+                </event>
+              </edit>
+              <rectangle align="top" color="DarkSlateBlue" margins="{left=60,right=60,top=5}"
+                height="20">
+                <label align="client" text="Ação" horzTextAlign="center" />
+              </rectangle>
+              <edit name="tipo" horzTextAlign="center" height="27" fontStyle="bold italic"
+                align="top"
+                readOnly="true"
+                field="tipo">
+                <event name="onChange">
+                  local dataScope = self.boxDetalhesDoItem.node
+
+                  if dataScope then
+                  if dataScope.tipo == "Ataque" then
+                  self.tipo.fontColor = "#FF0022"
+                  elseif dataScope.tipo == "Ataque Base" then
+                  self.tipo.fontColor = "#F22"
+                  elseif dataScope.tipo == "Defesa" then
+                  self.tipo.fontColor = "#53FF45"
+                  elseif dataScope.tipo == "Cast" then
+                  self.tipo.fontColor = "#E8C547"
+                  end
+                  end
+                </event>
+              </edit>
+            </layout>
+
+            <layout align="left" width="530">
+              <layout align="top" height="55">
+                <levelLabel name="Grad" field="Grad" text="Grad" />
+                <levelLabel name="CD" field="CD" text="CD" />
+                <levelLabel name="Efeito" field="Efeito" text="Efeito" />
+              </layout>
+              <layout align="top" height="55">
+                <levelLabel name="Poder" field="Poder" text="Poder" />
+                <levelLabel name="Dano" field="Dano" text="Dano" />
+                <levelLabel name="Bonus" field="Bonus" text="Bonus" />
+              </layout>
+              <layout align="top" height="55">
+                <levelLabel name="Range" field="Range" text="Range" />
+                <levelLabel name="Area" field="Area" text="Area" />
+                <levelLabel name="Duracao" field="Duracao" text="Duração" hitTest="true"
+                  hint="Duracao" />
+              </layout>
+            </layout>
+
+            <layout width="50" align="left">
+              <rectangle top="55" left="5" color="purple" width="40" height="20">
+                <label align="client" text="Order" horzTextAlign="center" />
+              </rectangle>
+              <edit top="75" left="5" width="40" height="25" field="Order"
+                horzTextAlign="center"
+                hint="Quanto menor mais acima na lista!" />
+            </layout>
+
+            <layout width="100" align="left">
+              <button align="top" text="Rolar" height="35" margins="{bottom=5}"
+                onClick="rolarFeitico()" />
+              <button align="top" text="Importar" height="35" margins="{bottom=5}"
+                onClick="ListaDeFeitico()" />
+              <button align="top" text="Apagar" height="35" margins="{bottom=5}"
+                onClick="Aceitar()" />
+              <button align="top" text="Comparar" height="35" onClick="abrirPopUp()" />
+            </layout>
+          </layout>
+
+          <layout align="top" height="170">
+            <layout align="left" width="300" margins="{right=5}">
+              <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
+                height="20">
+                <label align="client" text="Descrição" horzTextAlign="center" />
+              </rectangle>
+              <rectangle align="top" color="#333333" margins="{top=5}"
+                height="150">
+                <label align="client" field="Desc" margins="{top=5,left=5,right=5}"
+                  horzTextAlign="center"
+                  vertTextAlign="leading">
+
+                </label>
+                <event name="onDblClick">
+                  local minhaMesa = Firecast.getRoomOf(sheet);
+                  local chat = minhaMesa.chat;
+                  local node = self.rclMagias.selectedNode;
+                  Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
+                  dialogs.DT_INFORMATION,
+                  {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
+
+                  if escolha == dialogs.DB_YES then
+                  chat:enviarMensagem("Descrição do " .. node.nome .. ":\n" .. node.Desc)
+                  end
+
+                  end)
+                </event>
+              </rectangle>
+            </layout>
+            <layout align="left" width="300" margins="{right=5}">
+              <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
+                height="20">
+                <label align="client" text="Efeito" horzTextAlign="center" />
+              </rectangle>
+              <rectangle align="top" color="#333333" margins="{top=5}"
+                height="150">
+                <label align="client" field="Efeito" margins="{top=5,left=5,right=5}"
+                  horzTextAlign="center" vertTextAlign="leading" />
+                <event name="onDblClick">
+                  local minhaMesa = Firecast.getRoomOf(sheet);
+                  local chat = minhaMesa.chat;
+                  local node = self.rclMagias.selectedNode;
+                  Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
+                  dialogs.DT_INFORMATION,
+                  {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
+
+                  if escolha == dialogs.DB_YES then
+                  chat:enviarMensagem("Efeito do " .. node.nome .. ":\n" .. node.Efeito)
+                  end
+
+                  end)
+                </event>
+              </rectangle>
+            </layout>
+            <layout align="left" width="300" margins="{right=5}">
+              <layout align="top" height="70">
+                <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
+                  height="20">
+                  <label align="client" text="Testes" horzTextAlign="center" />
+                </rectangle>
+                <rectangle align="top" color="#333333" margins="{top=5}"
+                  height="150">
+                  <label align="client" field="defesa" margins="{top=5,left=5,right=5}"
+                    horzTextAlign="center" vertTextAlign="leading" />
+                  <event name="onDblClick">
+                    local minhaMesa = Firecast.getRoomOf(sheet);
+                    local chat = minhaMesa.chat;
+                    local node = self.rclMagias.selectedNode;
+                    Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
+                    dialogs.DT_INFORMATION,
+                    {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
+
+                    if escolha == dialogs.DB_YES then
+                    chat:enviarMensagem("Testes do " .. node.nome .. ":\n" .. (node.defesa or ""))
+                    end
+
+                    end)
                   </event>
-               </recordList>
-            </rectangle>
-            <dataScopeBox name="boxDetalhesDoItem" visible="false" align="left"
-               width="1000" margins="{left=4, right=4}">
-               <rectangle name="rectangle" color="darkGrey" opacity="0.35" width="1020" height="170" />
-               <layout align="top" height="170">
-                  <layout align="left" margins="{left=10}" width="180">
-                     <rectangle align="top" color="DarkSlateBlue" margins="{left=60,right=60,top=5}"
-                        height="20">
-                        <label align="client" text="Nome" horzTextAlign="center" />
-                     </rectangle>
-                     <edit name="nome" fontStyle="bold italic" fontSize="15"
-                        horzTextAlign="center" height="27" align="top" field="nome" hitTest="true">
-                     </edit>
-                     <rectangle align="top" color="DarkSlateBlue" margins="{left=60,right=60,top=5}"
-                        height="20">
-                        <label align="client" text="Escola" horzTextAlign="center" />
-                     </rectangle>
-                     <edit name="escola" horzTextAlign="center" height="27" fontStyle="bold italic"
-                        align="top"
-                        readOnly="true"
-                        field="escola">
-                        <event name="onChange">
-                           local dataScope = self.boxDetalhesDoItem.node
+                </rectangle>
+              </layout>
+              <layout align="top" height="85">
+                <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
+                  height="20">
+                  <label align="client" text="Bonus" horzTextAlign="center" />
+                </rectangle>
+                <rectangle align="top" color="#333333" margins="{top=5}"
+                  height="150">
+                  <label align="client" field="Bonus" margins="{top=5,left=5,right=5}"
+                    horzTextAlign="center" vertTextAlign="leading" />
+                  <event name="onDblClick">
+                    local minhaMesa = Firecast.getRoomOf(sheet);
+                    local chat = minhaMesa.chat;
+                    local node = self.rclMagias.selectedNode;
+                    Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
+                    dialogs.DT_INFORMATION,
+                    {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
 
-                           if dataScope then
-                           if dataScope.escola == "Contra-Feitiço" then
-                           self.escola.fontColor = "#EABFCB"
-                           elseif dataScope.escola == "Encantamento" then
-                           self.escola.fontColor = "#2BD9FE"
-                           elseif dataScope.escola == "Feitiço" then
-                           self.escola.fontColor = "#7765E3"
-                           elseif dataScope.escola == "Azaração" then
-                           self.escola.fontColor = "#A1683A"
-                           elseif dataScope.escola == "Transmutação" then
-                           self.escola.fontColor = "#E4572E"
-                           elseif dataScope.escola == "Maldição" then
-                           self.escola.fontColor = "#32936F"
-                           elseif dataScope.escola == "Adivinhação" then
-                           self.escola.fontColor = "#BCCCE0"
-                           end
-                           end
-                        </event>
-                     </edit>
-                     <rectangle align="top" color="DarkSlateBlue" margins="{left=60,right=60,top=5}"
-                        height="20">
-                        <label align="client" text="Ação" horzTextAlign="center" />
-                     </rectangle>
-                     <edit name="tipo" horzTextAlign="center" height="27" fontStyle="bold italic"
-                        align="top"
-                        readOnly="true"
-                        field="tipo">
-                        <event name="onChange">
-                           local dataScope = self.boxDetalhesDoItem.node
+                    if escolha == dialogs.DB_YES then
+                    chat:enviarMensagem("Bonus do " .. node.nome .. ":\n" .. node.Bonus)
+                    end
 
-                           if dataScope then
-                           if dataScope.tipo == "Ataque" then
-                           self.tipo.fontColor = "#FF0022"
-                           elseif dataScope.tipo == "Defesa" then
-                           self.tipo.fontColor = "#53FF45"
-                           elseif dataScope.tipo == "Cast" then
-                           self.tipo.fontColor = "#E8C547"
-                           end
-                           end
-                        </event>
-                     </edit>
-                  </layout>
+                    end)
+                  </event>
+                </rectangle>
+              </layout>
+            </layout>
+          </layout>
 
-                  <layout align="left" width="530">
-                     <layout align="top" height="55">
-                        <levelLabel name="Grad" field="Grad" text="Grad" />
-                        <levelLabel name="CD" field="CD" text="CD" />
-                        <levelLabel name="Efeito" field="Efeito" text="Efeito" />
-                     </layout>
-                     <layout align="top" height="55">
-                        <levelLabel name="Poder" field="Poder" text="Poder" />
-                        <levelLabel name="Dano" field="Dano" text="Dano" />
-                        <levelLabel name="Bonus" field="Bonus" text="Bonus" />
-                     </layout>
-                     <layout align="top" height="55">
-                        <levelLabel name="Range" field="Range" text="Range" />
-                        <levelLabel name="Area" field="Area" text="Area" />
-                        <levelLabel name="Duracao" field="Duracao" text="Duração" hitTest="true"
-                           hint="Duracao" />
-                     </layout>
-                  </layout>
+        </dataScopeBox>
+      </layout>
 
-                  <layout width="50" align="left">
-                     <rectangle top="55" left="5" color="purple" width="40" height="20">
-                        <label align="client" text="Order" horzTextAlign="center" />
-                     </rectangle>
-                     <edit top="75" left="5" width="40" height="25" field="Order"
-                        horzTextAlign="center"
-                        hint="Quanto menor mais acima na lista!" />
-                  </layout>
-
-                  <layout width="100" align="left">
-                     <button align="top" text="Rolar" height="35" margins="{bottom=5}"
-                        onClick="rolarFeitico()" />
-                     <button align="top" text="Importar" height="35" margins="{bottom=5}"
-                        onClick="ListaDeFeitico()" />
-                     <button align="top" text="Apagar" height="35" margins="{bottom=5}"
-                        onClick="Aceitar()" />
-                     <button align="top" text="Comparar" height="35" onClick="abrirPopUp()" />
-                  </layout>
-               </layout>
-
-               <layout align="top" height="170">
-                  <layout align="left" width="300" margins="{right=5}">
-                     <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                        height="20">
-                        <label align="client" text="Descrição" horzTextAlign="center" />
-                     </rectangle>
-                     <rectangle align="top" color="#333333" margins="{top=5}"
-                        height="150">
-                        <label align="client" field="Desc" margins="{top=5,left=5,right=5}" horzTextAlign="center"
-                           vertTextAlign="leading">
-                           
-                        </label>
-                        <event name="onDblClick">
-                           local minhaMesa = Firecast.getRoomOf(sheet);
-                           local chat = minhaMesa.chat;
-                           chat:enviarMensagem(sheet.Desc)
-                        </event>
-                     </rectangle>
-                  </layout>
-                  <layout align="left" width="300" margins="{right=5}">
-                     <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                        height="20">
-                        <label align="client" text="Efeito" horzTextAlign="center" />
-                     </rectangle>
-                     <rectangle align="top" color="#333333" margins="{top=5}"
-                        height="150">
-                        <label align="client" field="Efeito" margins="{top=5,left=5,right=5}"
-                           horzTextAlign="center" vertTextAlign="leading" />
-                           <event name="onDblClick">
-                           local minhaMesa = Firecast.getRoomOf(sheet);
-                           local chat = minhaMesa.chat;
-                           chat:enviarMensagem(sheet.Desc)
-                        </event>
-                     </rectangle>
-                  </layout>
-                  <layout align="left" width="300" margins="{right=5}">
-                     <layout align="top" height="70">
-                        <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                           height="20">
-                           <label align="client" text="Testes" horzTextAlign="center" />
-                        </rectangle>
-                        <rectangle align="top" color="#333333" margins="{top=5}"
-                           height="150">
-                           <label align="client" field="defesa" margins="{top=5,left=5,right=5}"
-                              horzTextAlign="center" vertTextAlign="leading" />
-                        </rectangle>
-                     </layout>
-                     <layout align="top" height="85">
-                        <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                           height="20">
-                           <label align="client" text="Bonus" horzTextAlign="center" />
-                        </rectangle>
-                        <rectangle align="top" color="#333333" margins="{top=5}"
-                           height="150">
-                           <label align="client" field="Bonus" margins="{top=5,left=5,right=5}"
-                              horzTextAlign="center" vertTextAlign="leading" />
-                           <event name="onDblClick">
-                           local minhaMesa = Firecast.getRoomOf(sheet);
-                           local chat = minhaMesa.chat;
-                           chat:enviarMensagem(sheet.Bonus)
-                           </event>
-                        </rectangle>
-                     </layout>
-                  </layout>
-               </layout>
-
-            </dataScopeBox>
-         </layout>
-
-         <!-- <recordList name="testezim" field="magias" templateForm="feiticosFacil" left="20"
+      <!-- <recordList name="testezim" field="magias" templateForm="feiticosFacil" left="20"
          top="60"
             width="760" height="450" autoHeight="false">
          </recordList> -->
 
+    </layout>
+
+    <popup name="popUp" left="50" top="50" width="600" height="420" backOpacity="0.5">
+      <layout align="left" width="200">
+        <layout align="top" height="30">
+          <label align="left" width="100" text="" horzTextAlign="center" />
+          <label align="left" width="100" text="Original" horzTextAlign="center" />
+        </layout>
+
+        <layout align="top" height="400">
+          <rectangle align="left" width="100" color="black">
+            <edit transparent="true" margins="{top=5,bottom=5}" align="top" text="GRAD"
+              horzTextAlign="center" />
+            <edit transparent="true" margins="{bottom=5}" align="top" text="CD"
+              horzTextAlign="center" />
+            <edit transparent="true" margins="{bottom=5}" align="top" text="PODER"
+              horzTextAlign="center" />
+            <edit transparent="true" margins="{bottom=5}" align="top" text="DANO"
+              horzTextAlign="center" />
+            <edit transparent="true" margins="{bottom=5}" align="top" text="RANGE"
+              horzTextAlign="center" />
+            <edit transparent="true" margins="{bottom=5}" align="top" text="AREA"
+              horzTextAlign="center" />
+            <edit transparent="true" margins="{bottom=5}" align="top" text="DURAÇÃO"
+              horzTextAlign="center" />
+          </rectangle>
+
+          <rectangle align="left" width="100" color="black">
+            <edit margins="{top=5,bottom=5}" align="top" field="Grad2"
+              horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="CD2" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Poder2" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Dano2" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Range2" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Area2" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Duracao2" horzTextAlign="center" />
+          </rectangle>
+        </layout>
       </layout>
 
-      <popup name="popUp" left="50" top="50" width="600" height="420" backOpacity="0.5">
-         <layout align="left" width="200">
-            <layout align="top" height="30">
-               <label align="left" width="100" text="" horzTextAlign="center" />
-               <label align="left" width="100" text="Original" horzTextAlign="center" />
-            </layout>
+      <layout align="left" width="100">
+        <label align="top" height="30" text="Atual" horzTextAlign="center" />
+        <layout align="top" height="360">
+          <rectangle align="left" width="100" color="black">
+            <edit margins="{top=5,bottom=5}" align="top" field="Grad"
+              horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="CD" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Poder" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Dano" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Range" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Area" horzTextAlign="center" />
+            <edit margins="{bottom=5}" align="top" field="Duracao" horzTextAlign="center" />
+          </rectangle>
+        </layout>
+      </layout>
+      <layout align="left" width="280" margins="{left=10}">
+        <label align="top" height="30" text="Descrição" horzTextAlign="center" />
+        <label align="top" height="70" margins="{top=10}" autoSize="true" field="Desc"
+          horzTextAlign="center" />
+        <label align="top" height="50" text="Efeito" horzTextAlign="center" />
+        <label align="top" height="70" margins="{top=10}" autoSize="true" field="Efeito"
+          horzTextAlign="center" />
+        <label align="top" height="30" text="Bonus" horzTextAlign="center" />
+        <label align="top" height="70" margins="{top=10}" autoSize="true" field="Bonus"
+          horzTextAlign="center" />
+      </layout>
+      <layout align="bottom" margins="{top=10}">
+        <button align="top" onClick="self.popUp.visible = false" text="Fechar" />
+        <button align="top" onClick="self.popUp.visible = false" text="Enviar na Mesa" />
+      </layout>
+    </popup>
+  </scrollBox>
 
-            <layout align="top" height="400">
-               <rectangle align="left" width="100" color="black">
-                  <edit transparent="true" margins="{top=5,bottom=5}" align="top" text="GRAD"
-                     horzTextAlign="center" />
-                  <edit transparent="true" margins="{bottom=5}" align="top" text="CD"
-                     horzTextAlign="center" />
-                  <edit transparent="true" margins="{bottom=5}" align="top" text="PODER"
-                     horzTextAlign="center" />
-                  <edit transparent="true" margins="{bottom=5}" align="top" text="DANO"
-                     horzTextAlign="center" />
-                  <edit transparent="true" margins="{bottom=5}" align="top" text="RANGE"
-                     horzTextAlign="center" />
-                  <edit transparent="true" margins="{bottom=5}" align="top" text="AREA"
-                     horzTextAlign="center" />
-                  <edit transparent="true" margins="{bottom=5}" align="top" text="DURAÇÃO"
-                     horzTextAlign="center" />
-               </rectangle>
 
-               <rectangle align="left" width="100" color="black">
-                  <edit margins="{top=5,bottom=5}" align="top" field="Grad2"
-                     horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="CD2" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Poder2" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Dano2" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Range2" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Area2" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Duracao2" horzTextAlign="center" />
-               </rectangle>
-            </layout>
-         </layout>
-
-         <layout align="left" width="100">
-            <label align="top" height="30" text="Atual" horzTextAlign="center" />
-            <layout align="top" height="360">
-               <rectangle align="left" width="100" color="black">
-                  <edit margins="{top=5,bottom=5}" align="top" field="Grad"
-                     horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="CD" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Poder" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Dano" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Range" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Area" horzTextAlign="center" />
-                  <edit margins="{bottom=5}" align="top" field="Duracao" horzTextAlign="center" />
-               </rectangle>
-            </layout>
-         </layout>
-         <layout align="left" width="280" margins="{left=10}">
-            <label align="top" height="30" text="Descrição" horzTextAlign="center" />
-            <label align="top" height="70" margins="{top=10}" autoSize="true" field="Desc"
-               horzTextAlign="center" />
-            <label align="top" height="50" text="Efeito" horzTextAlign="center" />
-            <label align="top" height="70" margins="{top=10}" autoSize="true" field="Efeito"
-               horzTextAlign="center" />
-            <label align="top" height="30" text="Bonus" horzTextAlign="center" />
-            <label align="top" height="70" margins="{top=10}" autoSize="true" field="Bonus"
-               horzTextAlign="center" />
-         </layout>
-         <layout align="bottom" margins="{top=10}">
-            <button align="top" onClick="self.popUp.visible = false" text="Fechar" />
-            <button align="top" onClick="self.popUp.visible = false" text="Enviar na Mesa" />
-         </layout>
-      </popup>
-   </scrollBox>
 </tab>

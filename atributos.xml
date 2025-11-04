@@ -10,19 +10,34 @@
           <label left="130" top="125" text="Level" width="90" height="25" />
           <label left="222" top="125" text="XP" width="90" height="25" />
 
-          <edit left="100" top="5" width="245" height="25" />
-          <edit left="120" top="35" width="225" height="25" />
-          <edit left="52" top="65" width="293" height="25" />
-          <edit left="75" top="95" width="270" height="25" />
+          <edit field="nomeJogador" left="100" top="5" width="245" height="25" />
+          <edit field="nomePersonagem" left="120" top="35" width="225" height="25" />
+          <edit field="casa" left="52" top="65" width="293" height="25" />
+          <edit field="continente" left="75" top="95" width="270" height="25" />
           <edit left="45" top="125" width="80" height="25" />
           <edit left="165" top="125" width="50" height="25" />
           <edit left="245" top="125" width="100" height="25" />
 
           <rectangle left="355" top="0" width="80" height="155" color="black">
-               <CheckCondition name="Fadigado" cor="#0000FF4D" horzTextAlign="center" margins="{left=5,top=5}"  />
-               <CheckCondition name="Exausto" cor="#0000FF4D" horzTextAlign="center" margins="{left=5,top=5}"  />
-               <CheckCondition name="Frustrado" cor="#00FF004D" horzTextAlign="center" margins="{left=5,top=5}"  />
-               <CheckCondition name="Tiltado" cor="#00FF004D" horzTextAlign="center" margins="{left=5,top=5}"  />
+               <CheckCondition name="Fadigado" cor="#0000FF4D" horzTextAlign="center"
+                    margins="{left=5,top=5}" />
+               <CheckCondition name="Exausto" cor="#0000FF4D" horzTextAlign="center"
+                    margins="{left=5,top=5}" />
+               <CheckCondition name="Frustrado" cor="#00FF004D" horzTextAlign="center"
+                    margins="{left=5,top=5}" />
+               <CheckCondition name="Tiltado" cor="#00FF004D" horzTextAlign="center"
+                    margins="{left=5,top=5}" />
+          </rectangle>
+
+          <rectangle left="450" top="0" width="80" height="155" margins="{top=3}" color="yellow">
+               <label field="pontosAtributos" fontColor="black" align="top" height="35" />
+               <label field="pontosPericias" align="top" fontColor="black" height="35" />
+               <label field="pontosDefesas" align="top" fontColor="black" height="35" />
+               <label field="pontosFeiticos" align="top" fontColor="black" height="35" />
+          </rectangle>
+
+          <rectangle left="590" top="0" width="80" height="155" color="black">
+               <import file="version.xml" />
           </rectangle>
 
      </rectangle>
@@ -54,7 +69,5 @@
           <Atributo name="INTELIGENCIA" text1="INTELIGÊNCIA" field1="INTE" field2="INTE_OUT" />
           <Atributo name="PRESENCA" text1="PRESENÇA" field1="PRE" field2="PRES_OUT" />
           <Atributo name="SABEDORIA" text1="SABEDORIA" field1="SAB" field2="SAB_OUT" />
-
-          <label align="top" height="35" margins="{top=50}" text="Ficha na Versão 3.1" />
      </layout>
 </layout>
