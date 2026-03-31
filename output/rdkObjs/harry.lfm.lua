@@ -426,7 +426,7 @@ local function constructNew_HarryFicha()
     obj.version:setAlign("top");
     obj.version:setHeight(35);
     obj.version:setMargins({top=5});
-    obj.version:setText("Harry 3.6");
+    obj.version:setText("Harry 3.7 - Triunfo Edition - PARTE 2");
 
     obj.layout3 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout3:setParent(obj.layout1);
@@ -4309,419 +4309,51 @@ local function constructNew_HarryFicha()
     obj.tab9:setName("tab9");
 
 
-    -- Primeiro, é necessário usar a unidade "dialogs.lua"
-    require("dialogs.lua");
-    require("ndb.lua")
-    require("utils.lua");
-    local node = NDB.getRoot(sheet)
+    local feiticoScript = require("feitico_script.lua");
 
-    local function abrirPopUp()
-    require("gui.lua");
-
-    local node = NDB.getRoot(sheet)
-
-    local controle = self:findControlByName("popUp");
-    controle.visible = true
-
-    local Raiz = NDB.load("listfetico.xml");
-    local Filho = NDB.getChildNodes(Raiz);
-    local node = NDB.getRoot(sheet)
-
-    ListaFeiticos = {}
-    ListaNomesFeitico = {}
-
-    for i = 1, #Filho, 1 do
-    ListaFeiticos[i] = Raiz["f" .. i]
-    ListaNomesFeitico[i] = Raiz["f" .. i].nome
-    table.sort(ListaNomesFeitico)
+    function abrirPopUp()
+      return feiticoScript.abrirPopUp(self, sheet)
     end
 
-    for k = 1, #Filho, 1 do
-
-    if sheet.nome == ListaFeiticos[i].nome then
-
-    node.escola2 = ListaFeiticos[i].escola
-    node.tipo2 = ListaFeiticos[i].cast
-    node.Efeito2 = ListaFeiticos[i].efeito
-    node.Grad2 = totable(ListaFeiticos[i].gradArray)[1]
-    node.CD2 = totable(ListaFeiticos[i].cdfArray)[1]
-    node.Dano2 = totable(ListaFeiticos[i].danoArray)[1]
-    node.Poder2 = totable(ListaFeiticos[i].poderArray)[1]
-    node.Range2 = totable(ListaFeiticos[i].rangeArray)[1]
-    node.Area2 = totable(ListaFeiticos[i].areaArray)[1]
-    node.Duracao2 = totable(ListaFeiticos[i].duracaoArray)[1]
-
-    node.escola = sheet.escola
-    node.tipo = sheet.tipo
-    node.Grad = sheet.Grad
-    node.CD = sheet.CD
-    node.Dano = sheet.Dano
-    node.Poder = sheet.Poder
-    node.Range = sheet.Range
-    node.Area = sheet.Area
-    node.Duracao = sheet.escola
-
-    node.Desc = ListaFeiticos[i].desc
-    node.Efeito = ListaFeiticos[i].efeito
-    node.Bonus = ListaFeiticos[i].bonus
-
-    end
+    function condition(tipo)
+      return feiticoScript.condition(sheet, tipo)
     end
 
+    function testezz()
+      return feiticoScript.testezz(sheet)
     end
 
-    local function condition(tipo)
-
-    if tipo == "fisico" then
-
-    if sheet.Exausto then
-    return -5
+    function tocarAudio()
+      return feiticoScript.tocarAudio(sheet)
     end
 
-    if sheet.Fadigado then
-    return -2
+    function Aceitar()
+      return feiticoScript.Aceitar(self)
     end
 
-    elseif tipo == "mental" then
-
-    if sheet.Tiltado then
-    return -5
+    function definirEscola()
+      return feiticoScript.definirEscola(self, sheet)
     end
 
-    if sheet.Frustrado then
-    return -2
+    function stats()
+      return feiticoScript.stats(self)
     end
 
+    function rolarFeitico(onFinish)
+      return feiticoScript.rolarFeitico(self, sheet, onFinish)
     end
 
-    return nil
+    function abrirPopupFeitico()
+      return feiticoScript.abrirPopupFeitico(self, sheet)
     end
 
-    local function testezz()
-
-    local node = NDB.getRoot(sheet)
-    showMessage(node.soundControl)
-
+    function ListaDeFeitico()
+      return feiticoScript.ListaDeFeitico(self, sheet)
     end
 
-    local function tocarAudio()
-    require("utils.lua");
-
-    local minhaMesa = Firecast.getRoomOf(sheet);
-    local node = NDB.getRoot(sheet)
-
-    if node.soundControl == "ligado" then
-
-    if sheet.Sound ~= nil then
-    local track = "/audios/" .. sheet.Sound
-    minhaMesa.audioPlayer:play(track,0.8)
+    function adicionarFeitico()
+      return feiticoScript.adicionarFeitico(self)
     end
-
-    end
-
-    end
-
-    local function Aceitar()
-    Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
-    function (confirmado)
-    if confirmado then
-    local node = self.boxDetalhesDoItem.node
-    NDB.deleteNode(node);
-    else
-    return
-    end;
-    end);
-
-    end
-
-    local function definirEscola()
-    local node = self.rclMagias.selectedNode;
-
-    if node.escola == 'Adivinhação' then
-    return sheet.C_ADI_Total
-    elseif node.escola == 'Azaração' then
-    return sheet.C_AZA_Total
-    elseif node.escola == 'Contra-Feitiço' then
-    return sheet.C_CON_Total
-    elseif node.escola == 'Encantamento' then
-    return sheet.C_ENC_Total
-    elseif node.escola == 'Feitiço' then
-    return sheet.C_FEI_Total
-    elseif node.escola == 'Transmutação' then
-    return sheet.C_TRA_Total
-    elseif node.escola == 'Maldição' then
-    return sheet.C_MAL_Total
-    end
-
-    end
-
-    local function stats()
-    local node = self.rclMagias.selectedNode;
-    local msg = ""
-
-    if node.Grad ~= "" then
-    msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. ((node.Grad) or "")
-    else
-    end
-
-    if node.CD ~= "" then
-    msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. ((node.CD) or "")
-    else
-    end
-
-    if node.Dano ~= "" then
-    msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. ((node.Dano) or "")
-    else
-    end
-
-    if node.Poder ~= "" then
-    msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. ((node.Poder) or "")
-    else
-    end
-
-    -- if node.Bonus ~= "" then
-    -- msg = msg .. "[§K10]" .. " Bonus: " .. "[§K1]" .. ((node.Bonus) or "")
-    -- else
-    -- end
-
-    if node.Range ~= "" then
-    msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. ((node.Range) or "")
-    else
-    end
-
-    if node.Area ~= "" then
-    msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. ((node.Area) or "")
-    else
-    end
-
-    if node.Duracao ~= "" then
-    msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" .. ((node.Duracao) or "")
-    else
-    end
-
-    return msg
-    end
-
-    local function rolarFeitico()
-    local minhaMesa = Firecast.getRoomOf(sheet);
-    local chat = minhaMesa.chat;
-    local root = NDB.getRoot(sheet)
-    local nick = root.nomePersonagem or minhaMesa.meuJogador.nick
-    local node = self.rclMagias.selectedNode;
-    local dataScope = self.boxDetalhesDoItem.node
-    local defesaTipo = "Distancia"
-    local defesaValor = 0
-
-    if sheet.concentracao == nil then
-    sheet.concentracao = 0
-    end
-
-    if sheet.mental == nil then
-    sheet.mental = 0
-    end
-
-    local somatoria = node.Grad .. "+" .. math.floor(definirEscola() / 2) .. ((sheet.concentracao ~=
-    0) and
-    ("-" .. sheet.concentracao) or "") .. (condition("mental") or "")
-    chat:enviarMensagem("----------------");
-
-    chat:rolarDados("1d20+" .. somatoria,
-    "[§K8] Grad [§K1]" .. node.Grad ..
-    ((definirEscola() / 2) ~= 0 and ("[§K8] Escola [§K1]" .. math.floor(definirEscola() / 2)) or "")
-    ..
-    (sheet.concentracao ~= 0 and ("[§K8] Concentração [§K1] -" ..
-    sheet.concentracao) or "") ..
-    (condition("mental") and ("[§K8] Mental [§K1]" .. condition("mental")) or ""),
-    function(rolagem)
-
-    if rolagem.resultado >= tonumber(node.CD) then
-    chat:enviarMensagem("[§K10]" .. nick .. "[§K1] esta castando [§K6]" .. node.nome ..
-    "[§K1] CD [§K7]" .. sheet.CD .. "[§K1] =[§K9] Sucesso!")
-
-    chat:enviarMensagem("[§K6]" .. node.nome .. " " .. stats())
-    chat:enviarMensagem("[§K1]" .. "Testes: [§K10]" .. (node.defesa or ""))
-
-    if node.tipo == 'Ataque' then
-    chat:rolarDados("1d20+" .. node.Grad .. "+" .. sheet.DES ..
-    (sheet.acerto and sheet.acerto ~= 0 and ("-" .. sheet.acerto) or "") ..
-    (condition("fisico") or ""),
-
-    "[§K8] Grad [§K1]" .. node.Grad ..
-    "[§K8] Des [§K1]" .. sheet.DES ..
-    (sheet.acerto and sheet.acerto ~= 0 and ("[§K8] Acerto [§K1]-" .. sheet.acerto) or "") ..
-    (condition("fisico") and ("[§K8] Fisico [§K1]" .. condition("fisico")) or ""))
-
-    elseif node.tipo == 'Ataque Base' then
-    chat:rolarDados("1d20+" .. node.Grad .. "+" .. sheet.DES .. ((sheet.acerto ~= 0) and ("-"
-    ..sheet.acerto) or "") ..
-    (condition("fisico") or ""),
-
-    "[§K8] Grad [§K1]" .. node.Grad ..
-    "[§K8] Des [§K1]" .. sheet.DES ..
-    (sheet.acerto and sheet.acerto ~= 0 and ("[§K8] Acerto [§K1]-" .. sheet.acerto) or "") ..
-    (condition("fisico") and ("[§K8] Fisico [§K1]" .. condition("fisico")) or ""))
-
-    elseif node.tipo == 'Defesa' then
-
-    Dialogs.choose("Ataque Corpo-a-Corpo ou a Distancia ?", {"Corpo-a-Corpo", "Distancia"}, function(selected, selectedIndex, selectedText)
-    local nodeMain = NDB.getRoot(sheet)
-
-    if selectedText == "Corpo-a-Corpo" then
-    defesaValor = tonumber(nodeMain.APA_Total) or 0
-    defesaTipo = "Corpo-a-Corpo"
-    end
-
-    if selectedText == "Distancia" then
-    defesaValor = tonumber(nodeMain.REF_Total) or 0
-    defesaTipo = "Distancia"
-    end
-
-    chat:rolarDados("1d8+" .. node.Poder .. "+" .. defesaValor .. "+" .. 10 ..
-    (condition("fisico") or ""), "CA " .. node.nome .. " " .. defesaTipo)
-    end)
-    end
-
-    chat:enviarMensagem("----------------");
-
-    elseif rolagem.resultado > tonumber(node.CD) - 5 then
-    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
-    "[§K4] Falhou em 1 Estágio!!");
-
-    elseif rolagem.resultado > tonumber(node.CD) - 10 then
-    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
-    "[§K4] Falhou em 2 Estágio!!");
-
-    elseif rolagem.resultado > tonumber(node.CD) - 15 then
-    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
-    "[§K4] Falhou em 3 Estágio!!");
-
-    else
-    chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome .. "[§K1] CD [§K7]" .. node.CD ..
-    "[§K4] Falhou em 4 Estágio!!");
-
-
-    end
-
-    end)
-
-    end
-
-    -- FUNÇÂO DE FEITICO
-    local function ListaDeFeitico()
-
-    require("utils.lua");
-    local Raiz = NDB.load("listfetico.xml");
-    local Filho = NDB.getChildNodes(Raiz);
-    local node = self.rclMagias.selectedNode;
-
-    ListaFeiticos = {} -- new array
-    ListaNomesFeitico = {} -- new array
-
-    for i = 1, #Filho, 1 do
-    ListaFeiticos[i] = Raiz["f" .. i]
-    ListaNomesFeitico[i] = Raiz["f" .. i].nome
-    table.sort(ListaNomesFeitico)
-    end
-
-    Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
-    function(selected, selectedIndex, selectedText)
-    if selected then
-
-    for k = 1, #Filho, 1 do
-    if tostring(selectedText) == ListaFeiticos[k].nome then
-
-    sheet.nome = ListaFeiticos[k].nome
-    sheet.escola = ListaFeiticos[k].escola
-    sheet.defesa = ListaFeiticos[k].defesa
-    sheet.tipo = ListaFeiticos[k].cast
-    sheet.Efeito = ListaFeiticos[k].efeito
-    sheet.Desc = ListaFeiticos[k].desc
-
-    node.nome = ListaFeiticos[k].nome
-    node.escola = ListaFeiticos[k].escola
-    node.defesa = ListaFeiticos[k].defesa
-    node.tipo = ListaFeiticos[k].cast
-    node.Efeito = ListaFeiticos[k].efeito
-    node.Desc = ListaFeiticos[k].desc
-
-
-    sheet.Grad = totable(ListaFeiticos[k].gradArray)[1]
-    sheet.Grad_name = "Grad"
-    sheet.Grad_grad = 1
-    sheet.Grad_array = ListaFeiticos[k].gradArray
-
-    sheet.CD = totable(ListaFeiticos[k].cdfArray)[1]
-    sheet.CD_name = "CD"
-    sheet.CD_grad = 1
-    sheet.CD_array = ListaFeiticos[k].cdfArray
-
-    sheet.Dano = totable(ListaFeiticos[k].danoArray)[1]
-    sheet.Dano_name = "Dano"
-    sheet.Dano_grad = 1
-    sheet.Dano_array = ListaFeiticos[k].danoArray
-
-    sheet.Poder = totable(ListaFeiticos[k].poderArray)[1]
-    sheet.Poder_name = "Poder"
-    sheet.Poder_grad = 1
-    sheet.Poder_array = ListaFeiticos[k].poderArray
-
-    sheet.Range = totable(ListaFeiticos[k].rangeArray)[1]
-    sheet.Range_name = "Range"
-    sheet.Range_grad = 1
-    sheet.Range_array = ListaFeiticos[k].rangeArray
-
-    sheet.Area = totable(ListaFeiticos[k].areaArray)[1]
-    sheet.Area_name = "Area"
-    sheet.Area_grad = 1
-    sheet.Area_array = ListaFeiticos[k].areaArray
-
-    sheet.Duracao = totable(ListaFeiticos[k].duracaoArray)[1]
-    sheet.Duracao_name = "Duracao"
-    sheet.Duracao_grad = 1
-    sheet.Duracao_array = ListaFeiticos[k].duracaoArray
-
-    node.Grad = totable(ListaFeiticos[k].gradArray)[1]
-    node.Grad_name = "Grad"
-    node.Grad_grad = 1
-    node.Grad_array = ListaFeiticos[k].gradArray
-
-    node.CD = totable(ListaFeiticos[k].cdfArray)[1]
-    node.CD_name = "CD"
-    node.CD_grad = 1
-    node.CD_array = ListaFeiticos[k].cdfArray
-
-    node.Dano = totable(ListaFeiticos[k].danoArray)[1]
-    node.Dano_name = "Dano"
-    node.Dano_grad = 1
-    node.Dano_array = ListaFeiticos[k].danoArray
-
-    node.Poder = totable(ListaFeiticos[k].poderArray)[1]
-    node.Poder_name = "Poder"
-    node.Poder_grad = 1
-    node.Poder_array = ListaFeiticos[k].poderArray
-
-    node.Range = totable(ListaFeiticos[k].rangeArray)[1]
-    node.Range_name = "Range"
-    node.Range_grad = 1
-    node.Range_array = ListaFeiticos[k].rangeArray
-
-    node.Area = totable(ListaFeiticos[k].areaArray)[1]
-    node.Area_name = "Area"
-    node.Area_grad = 1
-    node.Area_array = ListaFeiticos[k].areaArray
-
-    node.Duracao = totable(ListaFeiticos[k].duracaoArray)[1]
-    node.Duracao_name = "Duracao"
-    node.Duracao_grad = 1
-    node.Duracao_array = ListaFeiticos[k].duracaoArray
-
-    end
-    end
-    else
-    end;
-    end)
-    end
-
   
 
 
@@ -4745,55 +4377,6 @@ local function constructNew_HarryFicha()
     obj.layout64:setHeight(100);
     obj.layout64:setPadding({top=5, left=5});
     obj.layout64:setName("layout64");
-
-
-        local function adicionarFeitico()
-
-        local node = self.rclMagias:append();
-
-        node.nome = "Importar"
-        node.escola = "-"
-        node.tipo = "-"
-        node.Efeito = "-"
-
-        node.Grad = 0
-        node.Grad_name = "Grad"
-        node.Grad_grad = 1
-        node.Grad_array = {0}
-
-        node.CD = "-"
-        node.CD_name = "CD"
-        node.CD_grad = 1
-        node.CD_array = {0}
-
-        node.Dano = "-"
-        node.Dano_name = "Dano"
-        node.Dano_grad = 1
-        node.Dano_array = {"-"}
-
-        node.Poder = "-"
-        node.Poder_name = "Poder"
-        node.Poder_grad = 1
-        node.Poder_array = {"-"}
-
-        node.Range = "-"
-        node.Range_name = "Range"
-        node.Range_grad = 1
-        node.Range_array = {"-"}
-
-        node.Area = "-"
-        node.Area_name = "Area"
-        node.Area_grad = 1
-        node.Area_array = {"-"}
-
-        node.Duracao = "-"
-        node.Duracao_name = "Duracao"
-        node.Duracao_grad = 1
-        node.Duracao_array = {"-"}
-
-        end
-      
-
 
     obj.layout65 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout65:setParent(obj.layout64);
@@ -5434,16 +5017,33 @@ local function constructNew_HarryFicha()
     obj.rectangle83:setTop(7);
     obj.rectangle83:setLeft(27);
     obj.rectangle83:setColor("DarkSlateBlue");
-    obj.rectangle83:setWidth(105);
+    obj.rectangle83:setWidth(80);
     obj.rectangle83:setHeight(20);
     obj.rectangle83:setName("rectangle83");
 
     obj.label119 = GUI.fromHandle(_obj_newObject("label"));
     obj.label119:setParent(obj.rectangle83);
-    obj.label119:setAlign("client");
+    obj.label119:setAlign("left");
+    obj.label119:setWidth(50);
+    obj.label119:setMargins({left=4});
     obj.label119:setText("Grad");
     obj.label119:setHorzTextAlign("center");
+    obj.label119:setFontColor("white");
     obj.label119:setName("label119");
+
+    obj.GradGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.GradGradBadge:setParent(obj.rectangle83);
+    obj.GradGradBadge:setName("GradGradBadge");
+    obj.GradGradBadge:setAlign("right");
+    obj.GradGradBadge:setWidth(25);
+    obj.GradGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.GradGradBadge:setText("0");
+    obj.GradGradBadge:setHorzTextAlign("center");
+    obj.GradGradBadge:setTransparent(true);
+    obj.GradGradBadge:setFontSize(13);
+    obj.GradGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.GradGradBadge, "fontStyle", "bold");
+    obj.GradGradBadge:setReadOnly(true);
 
     obj.layout86 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout86:setParent(obj.layout85);
@@ -5457,7 +5057,7 @@ local function constructNew_HarryFicha()
     obj.edit169:setTop(0);
     obj.edit169:setWidth(160);
     obj.edit169:setHeight(25);
-    obj.edit169:setField("Grad .. _name");
+    obj.edit169:setField("Grad_name");
     obj.edit169:setHorzTextAlign("center");
     obj.edit169:setName("edit169");
 
@@ -5466,7 +5066,7 @@ local function constructNew_HarryFicha()
     obj.edit170:setTop(0);
     obj.edit170:setWidth(160);
     obj.edit170:setHeight(25);
-    obj.edit170:setField("Grad .. _array");
+    obj.edit170:setField("Grad_array");
     obj.edit170:setHorzTextAlign("center");
     obj.edit170:setName("edit170");
 
@@ -5475,7 +5075,7 @@ local function constructNew_HarryFicha()
     obj.edit171:setTop(0);
     obj.edit171:setWidth(160);
     obj.edit171:setHeight(25);
-    obj.edit171:setField("Grad .. _grad");
+    obj.edit171:setField("Grad_grad");
     obj.edit171:setHorzTextAlign("center");
     obj.edit171:setName("edit171");
 
@@ -5516,16 +5116,33 @@ local function constructNew_HarryFicha()
     obj.rectangle84:setTop(7);
     obj.rectangle84:setLeft(27);
     obj.rectangle84:setColor("DarkSlateBlue");
-    obj.rectangle84:setWidth(105);
+    obj.rectangle84:setWidth(80);
     obj.rectangle84:setHeight(20);
     obj.rectangle84:setName("rectangle84");
 
     obj.label120 = GUI.fromHandle(_obj_newObject("label"));
     obj.label120:setParent(obj.rectangle84);
-    obj.label120:setAlign("client");
+    obj.label120:setAlign("left");
+    obj.label120:setWidth(50);
+    obj.label120:setMargins({left=4});
     obj.label120:setText("CD");
     obj.label120:setHorzTextAlign("center");
+    obj.label120:setFontColor("white");
     obj.label120:setName("label120");
+
+    obj.CDGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.CDGradBadge:setParent(obj.rectangle84);
+    obj.CDGradBadge:setName("CDGradBadge");
+    obj.CDGradBadge:setAlign("right");
+    obj.CDGradBadge:setWidth(25);
+    obj.CDGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.CDGradBadge:setText("0");
+    obj.CDGradBadge:setHorzTextAlign("center");
+    obj.CDGradBadge:setTransparent(true);
+    obj.CDGradBadge:setFontSize(13);
+    obj.CDGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.CDGradBadge, "fontStyle", "bold");
+    obj.CDGradBadge:setReadOnly(true);
 
     obj.layout88 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout88:setParent(obj.layout87);
@@ -5539,7 +5156,7 @@ local function constructNew_HarryFicha()
     obj.edit172:setTop(0);
     obj.edit172:setWidth(160);
     obj.edit172:setHeight(25);
-    obj.edit172:setField("CD .. _name");
+    obj.edit172:setField("CD_name");
     obj.edit172:setHorzTextAlign("center");
     obj.edit172:setName("edit172");
 
@@ -5548,7 +5165,7 @@ local function constructNew_HarryFicha()
     obj.edit173:setTop(0);
     obj.edit173:setWidth(160);
     obj.edit173:setHeight(25);
-    obj.edit173:setField("CD .. _array");
+    obj.edit173:setField("CD_array");
     obj.edit173:setHorzTextAlign("center");
     obj.edit173:setName("edit173");
 
@@ -5557,7 +5174,7 @@ local function constructNew_HarryFicha()
     obj.edit174:setTop(0);
     obj.edit174:setWidth(160);
     obj.edit174:setHeight(25);
-    obj.edit174:setField("CD .. _grad");
+    obj.edit174:setField("CD_grad");
     obj.edit174:setHorzTextAlign("center");
     obj.edit174:setName("edit174");
 
@@ -5598,16 +5215,33 @@ local function constructNew_HarryFicha()
     obj.rectangle85:setTop(7);
     obj.rectangle85:setLeft(27);
     obj.rectangle85:setColor("DarkSlateBlue");
-    obj.rectangle85:setWidth(105);
+    obj.rectangle85:setWidth(80);
     obj.rectangle85:setHeight(20);
     obj.rectangle85:setName("rectangle85");
 
     obj.label121 = GUI.fromHandle(_obj_newObject("label"));
     obj.label121:setParent(obj.rectangle85);
-    obj.label121:setAlign("client");
+    obj.label121:setAlign("left");
+    obj.label121:setWidth(50);
+    obj.label121:setMargins({left=4});
     obj.label121:setText("Efeito");
     obj.label121:setHorzTextAlign("center");
+    obj.label121:setFontColor("white");
     obj.label121:setName("label121");
+
+    obj.EfeitoGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.EfeitoGradBadge:setParent(obj.rectangle85);
+    obj.EfeitoGradBadge:setName("EfeitoGradBadge");
+    obj.EfeitoGradBadge:setAlign("right");
+    obj.EfeitoGradBadge:setWidth(25);
+    obj.EfeitoGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.EfeitoGradBadge:setText("0");
+    obj.EfeitoGradBadge:setHorzTextAlign("center");
+    obj.EfeitoGradBadge:setTransparent(true);
+    obj.EfeitoGradBadge:setFontSize(13);
+    obj.EfeitoGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.EfeitoGradBadge, "fontStyle", "bold");
+    obj.EfeitoGradBadge:setReadOnly(true);
 
     obj.layout90 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout90:setParent(obj.layout89);
@@ -5621,7 +5255,7 @@ local function constructNew_HarryFicha()
     obj.edit175:setTop(0);
     obj.edit175:setWidth(160);
     obj.edit175:setHeight(25);
-    obj.edit175:setField("Efeito .. _name");
+    obj.edit175:setField("Efeito_name");
     obj.edit175:setHorzTextAlign("center");
     obj.edit175:setName("edit175");
 
@@ -5630,7 +5264,7 @@ local function constructNew_HarryFicha()
     obj.edit176:setTop(0);
     obj.edit176:setWidth(160);
     obj.edit176:setHeight(25);
-    obj.edit176:setField("Efeito .. _array");
+    obj.edit176:setField("Efeito_array");
     obj.edit176:setHorzTextAlign("center");
     obj.edit176:setName("edit176");
 
@@ -5639,7 +5273,7 @@ local function constructNew_HarryFicha()
     obj.edit177:setTop(0);
     obj.edit177:setWidth(160);
     obj.edit177:setHeight(25);
-    obj.edit177:setField("Efeito .. _grad");
+    obj.edit177:setField("Efeito_grad");
     obj.edit177:setHorzTextAlign("center");
     obj.edit177:setName("edit177");
 
@@ -5686,16 +5320,33 @@ local function constructNew_HarryFicha()
     obj.rectangle86:setTop(7);
     obj.rectangle86:setLeft(27);
     obj.rectangle86:setColor("DarkSlateBlue");
-    obj.rectangle86:setWidth(105);
+    obj.rectangle86:setWidth(80);
     obj.rectangle86:setHeight(20);
     obj.rectangle86:setName("rectangle86");
 
     obj.label122 = GUI.fromHandle(_obj_newObject("label"));
     obj.label122:setParent(obj.rectangle86);
-    obj.label122:setAlign("client");
+    obj.label122:setAlign("left");
+    obj.label122:setWidth(50);
+    obj.label122:setMargins({left=4});
     obj.label122:setText("Poder");
     obj.label122:setHorzTextAlign("center");
+    obj.label122:setFontColor("white");
     obj.label122:setName("label122");
+
+    obj.PoderGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.PoderGradBadge:setParent(obj.rectangle86);
+    obj.PoderGradBadge:setName("PoderGradBadge");
+    obj.PoderGradBadge:setAlign("right");
+    obj.PoderGradBadge:setWidth(25);
+    obj.PoderGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.PoderGradBadge:setText("0");
+    obj.PoderGradBadge:setHorzTextAlign("center");
+    obj.PoderGradBadge:setTransparent(true);
+    obj.PoderGradBadge:setFontSize(13);
+    obj.PoderGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.PoderGradBadge, "fontStyle", "bold");
+    obj.PoderGradBadge:setReadOnly(true);
 
     obj.layout93 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout93:setParent(obj.layout92);
@@ -5709,7 +5360,7 @@ local function constructNew_HarryFicha()
     obj.edit178:setTop(0);
     obj.edit178:setWidth(160);
     obj.edit178:setHeight(25);
-    obj.edit178:setField("Poder .. _name");
+    obj.edit178:setField("Poder_name");
     obj.edit178:setHorzTextAlign("center");
     obj.edit178:setName("edit178");
 
@@ -5718,7 +5369,7 @@ local function constructNew_HarryFicha()
     obj.edit179:setTop(0);
     obj.edit179:setWidth(160);
     obj.edit179:setHeight(25);
-    obj.edit179:setField("Poder .. _array");
+    obj.edit179:setField("Poder_array");
     obj.edit179:setHorzTextAlign("center");
     obj.edit179:setName("edit179");
 
@@ -5727,7 +5378,7 @@ local function constructNew_HarryFicha()
     obj.edit180:setTop(0);
     obj.edit180:setWidth(160);
     obj.edit180:setHeight(25);
-    obj.edit180:setField("Poder .. _grad");
+    obj.edit180:setField("Poder_grad");
     obj.edit180:setHorzTextAlign("center");
     obj.edit180:setName("edit180");
 
@@ -5768,16 +5419,33 @@ local function constructNew_HarryFicha()
     obj.rectangle87:setTop(7);
     obj.rectangle87:setLeft(27);
     obj.rectangle87:setColor("DarkSlateBlue");
-    obj.rectangle87:setWidth(105);
+    obj.rectangle87:setWidth(80);
     obj.rectangle87:setHeight(20);
     obj.rectangle87:setName("rectangle87");
 
     obj.label123 = GUI.fromHandle(_obj_newObject("label"));
     obj.label123:setParent(obj.rectangle87);
-    obj.label123:setAlign("client");
+    obj.label123:setAlign("left");
+    obj.label123:setWidth(50);
+    obj.label123:setMargins({left=4});
     obj.label123:setText("Dano");
     obj.label123:setHorzTextAlign("center");
+    obj.label123:setFontColor("white");
     obj.label123:setName("label123");
+
+    obj.DanoGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.DanoGradBadge:setParent(obj.rectangle87);
+    obj.DanoGradBadge:setName("DanoGradBadge");
+    obj.DanoGradBadge:setAlign("right");
+    obj.DanoGradBadge:setWidth(25);
+    obj.DanoGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.DanoGradBadge:setText("0");
+    obj.DanoGradBadge:setHorzTextAlign("center");
+    obj.DanoGradBadge:setTransparent(true);
+    obj.DanoGradBadge:setFontSize(13);
+    obj.DanoGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.DanoGradBadge, "fontStyle", "bold");
+    obj.DanoGradBadge:setReadOnly(true);
 
     obj.layout95 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout95:setParent(obj.layout94);
@@ -5791,7 +5459,7 @@ local function constructNew_HarryFicha()
     obj.edit181:setTop(0);
     obj.edit181:setWidth(160);
     obj.edit181:setHeight(25);
-    obj.edit181:setField("Dano .. _name");
+    obj.edit181:setField("Dano_name");
     obj.edit181:setHorzTextAlign("center");
     obj.edit181:setName("edit181");
 
@@ -5800,7 +5468,7 @@ local function constructNew_HarryFicha()
     obj.edit182:setTop(0);
     obj.edit182:setWidth(160);
     obj.edit182:setHeight(25);
-    obj.edit182:setField("Dano .. _array");
+    obj.edit182:setField("Dano_array");
     obj.edit182:setHorzTextAlign("center");
     obj.edit182:setName("edit182");
 
@@ -5809,7 +5477,7 @@ local function constructNew_HarryFicha()
     obj.edit183:setTop(0);
     obj.edit183:setWidth(160);
     obj.edit183:setHeight(25);
-    obj.edit183:setField("Dano .. _grad");
+    obj.edit183:setField("Dano_grad");
     obj.edit183:setHorzTextAlign("center");
     obj.edit183:setName("edit183");
 
@@ -5850,16 +5518,33 @@ local function constructNew_HarryFicha()
     obj.rectangle88:setTop(7);
     obj.rectangle88:setLeft(27);
     obj.rectangle88:setColor("DarkSlateBlue");
-    obj.rectangle88:setWidth(105);
+    obj.rectangle88:setWidth(80);
     obj.rectangle88:setHeight(20);
     obj.rectangle88:setName("rectangle88");
 
     obj.label124 = GUI.fromHandle(_obj_newObject("label"));
     obj.label124:setParent(obj.rectangle88);
-    obj.label124:setAlign("client");
+    obj.label124:setAlign("left");
+    obj.label124:setWidth(50);
+    obj.label124:setMargins({left=4});
     obj.label124:setText("Bonus");
     obj.label124:setHorzTextAlign("center");
+    obj.label124:setFontColor("white");
     obj.label124:setName("label124");
+
+    obj.BonusGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.BonusGradBadge:setParent(obj.rectangle88);
+    obj.BonusGradBadge:setName("BonusGradBadge");
+    obj.BonusGradBadge:setAlign("right");
+    obj.BonusGradBadge:setWidth(25);
+    obj.BonusGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.BonusGradBadge:setText("0");
+    obj.BonusGradBadge:setHorzTextAlign("center");
+    obj.BonusGradBadge:setTransparent(true);
+    obj.BonusGradBadge:setFontSize(13);
+    obj.BonusGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.BonusGradBadge, "fontStyle", "bold");
+    obj.BonusGradBadge:setReadOnly(true);
 
     obj.layout97 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout97:setParent(obj.layout96);
@@ -5873,7 +5558,7 @@ local function constructNew_HarryFicha()
     obj.edit184:setTop(0);
     obj.edit184:setWidth(160);
     obj.edit184:setHeight(25);
-    obj.edit184:setField("Bonus .. _name");
+    obj.edit184:setField("Bonus_name");
     obj.edit184:setHorzTextAlign("center");
     obj.edit184:setName("edit184");
 
@@ -5882,7 +5567,7 @@ local function constructNew_HarryFicha()
     obj.edit185:setTop(0);
     obj.edit185:setWidth(160);
     obj.edit185:setHeight(25);
-    obj.edit185:setField("Bonus .. _array");
+    obj.edit185:setField("Bonus_array");
     obj.edit185:setHorzTextAlign("center");
     obj.edit185:setName("edit185");
 
@@ -5891,7 +5576,7 @@ local function constructNew_HarryFicha()
     obj.edit186:setTop(0);
     obj.edit186:setWidth(160);
     obj.edit186:setHeight(25);
-    obj.edit186:setField("Bonus .. _grad");
+    obj.edit186:setField("Bonus_grad");
     obj.edit186:setHorzTextAlign("center");
     obj.edit186:setName("edit186");
 
@@ -5938,16 +5623,33 @@ local function constructNew_HarryFicha()
     obj.rectangle89:setTop(7);
     obj.rectangle89:setLeft(27);
     obj.rectangle89:setColor("DarkSlateBlue");
-    obj.rectangle89:setWidth(105);
+    obj.rectangle89:setWidth(80);
     obj.rectangle89:setHeight(20);
     obj.rectangle89:setName("rectangle89");
 
     obj.label125 = GUI.fromHandle(_obj_newObject("label"));
     obj.label125:setParent(obj.rectangle89);
-    obj.label125:setAlign("client");
+    obj.label125:setAlign("left");
+    obj.label125:setWidth(50);
+    obj.label125:setMargins({left=4});
     obj.label125:setText("Range");
     obj.label125:setHorzTextAlign("center");
+    obj.label125:setFontColor("white");
     obj.label125:setName("label125");
+
+    obj.RangeGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.RangeGradBadge:setParent(obj.rectangle89);
+    obj.RangeGradBadge:setName("RangeGradBadge");
+    obj.RangeGradBadge:setAlign("right");
+    obj.RangeGradBadge:setWidth(25);
+    obj.RangeGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.RangeGradBadge:setText("0");
+    obj.RangeGradBadge:setHorzTextAlign("center");
+    obj.RangeGradBadge:setTransparent(true);
+    obj.RangeGradBadge:setFontSize(13);
+    obj.RangeGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.RangeGradBadge, "fontStyle", "bold");
+    obj.RangeGradBadge:setReadOnly(true);
 
     obj.layout100 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout100:setParent(obj.layout99);
@@ -5961,7 +5663,7 @@ local function constructNew_HarryFicha()
     obj.edit187:setTop(0);
     obj.edit187:setWidth(160);
     obj.edit187:setHeight(25);
-    obj.edit187:setField("Range .. _name");
+    obj.edit187:setField("Range_name");
     obj.edit187:setHorzTextAlign("center");
     obj.edit187:setName("edit187");
 
@@ -5970,7 +5672,7 @@ local function constructNew_HarryFicha()
     obj.edit188:setTop(0);
     obj.edit188:setWidth(160);
     obj.edit188:setHeight(25);
-    obj.edit188:setField("Range .. _array");
+    obj.edit188:setField("Range_array");
     obj.edit188:setHorzTextAlign("center");
     obj.edit188:setName("edit188");
 
@@ -5979,7 +5681,7 @@ local function constructNew_HarryFicha()
     obj.edit189:setTop(0);
     obj.edit189:setWidth(160);
     obj.edit189:setHeight(25);
-    obj.edit189:setField("Range .. _grad");
+    obj.edit189:setField("Range_grad");
     obj.edit189:setHorzTextAlign("center");
     obj.edit189:setName("edit189");
 
@@ -6020,16 +5722,33 @@ local function constructNew_HarryFicha()
     obj.rectangle90:setTop(7);
     obj.rectangle90:setLeft(27);
     obj.rectangle90:setColor("DarkSlateBlue");
-    obj.rectangle90:setWidth(105);
+    obj.rectangle90:setWidth(80);
     obj.rectangle90:setHeight(20);
     obj.rectangle90:setName("rectangle90");
 
     obj.label126 = GUI.fromHandle(_obj_newObject("label"));
     obj.label126:setParent(obj.rectangle90);
-    obj.label126:setAlign("client");
+    obj.label126:setAlign("left");
+    obj.label126:setWidth(50);
+    obj.label126:setMargins({left=4});
     obj.label126:setText("Area");
     obj.label126:setHorzTextAlign("center");
+    obj.label126:setFontColor("white");
     obj.label126:setName("label126");
+
+    obj.AreaGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.AreaGradBadge:setParent(obj.rectangle90);
+    obj.AreaGradBadge:setName("AreaGradBadge");
+    obj.AreaGradBadge:setAlign("right");
+    obj.AreaGradBadge:setWidth(25);
+    obj.AreaGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.AreaGradBadge:setText("0");
+    obj.AreaGradBadge:setHorzTextAlign("center");
+    obj.AreaGradBadge:setTransparent(true);
+    obj.AreaGradBadge:setFontSize(13);
+    obj.AreaGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.AreaGradBadge, "fontStyle", "bold");
+    obj.AreaGradBadge:setReadOnly(true);
 
     obj.layout102 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout102:setParent(obj.layout101);
@@ -6043,7 +5762,7 @@ local function constructNew_HarryFicha()
     obj.edit190:setTop(0);
     obj.edit190:setWidth(160);
     obj.edit190:setHeight(25);
-    obj.edit190:setField("Area .. _name");
+    obj.edit190:setField("Area_name");
     obj.edit190:setHorzTextAlign("center");
     obj.edit190:setName("edit190");
 
@@ -6052,7 +5771,7 @@ local function constructNew_HarryFicha()
     obj.edit191:setTop(0);
     obj.edit191:setWidth(160);
     obj.edit191:setHeight(25);
-    obj.edit191:setField("Area .. _array");
+    obj.edit191:setField("Area_array");
     obj.edit191:setHorzTextAlign("center");
     obj.edit191:setName("edit191");
 
@@ -6061,7 +5780,7 @@ local function constructNew_HarryFicha()
     obj.edit192:setTop(0);
     obj.edit192:setWidth(160);
     obj.edit192:setHeight(25);
-    obj.edit192:setField("Area .. _grad");
+    obj.edit192:setField("Area_grad");
     obj.edit192:setHorzTextAlign("center");
     obj.edit192:setName("edit192");
 
@@ -6102,16 +5821,33 @@ local function constructNew_HarryFicha()
     obj.rectangle91:setTop(7);
     obj.rectangle91:setLeft(27);
     obj.rectangle91:setColor("DarkSlateBlue");
-    obj.rectangle91:setWidth(105);
+    obj.rectangle91:setWidth(80);
     obj.rectangle91:setHeight(20);
     obj.rectangle91:setName("rectangle91");
 
     obj.label127 = GUI.fromHandle(_obj_newObject("label"));
     obj.label127:setParent(obj.rectangle91);
-    obj.label127:setAlign("client");
+    obj.label127:setAlign("left");
+    obj.label127:setWidth(50);
+    obj.label127:setMargins({left=4});
     obj.label127:setText("Duração");
     obj.label127:setHorzTextAlign("center");
+    obj.label127:setFontColor("white");
     obj.label127:setName("label127");
+
+    obj.DuracaoGradBadge = GUI.fromHandle(_obj_newObject("edit"));
+    obj.DuracaoGradBadge:setParent(obj.rectangle91);
+    obj.DuracaoGradBadge:setName("DuracaoGradBadge");
+    obj.DuracaoGradBadge:setAlign("right");
+    obj.DuracaoGradBadge:setWidth(25);
+    obj.DuracaoGradBadge:setMargins({right=4,top=1,bottom=1});
+    obj.DuracaoGradBadge:setText("0");
+    obj.DuracaoGradBadge:setHorzTextAlign("center");
+    obj.DuracaoGradBadge:setTransparent(true);
+    obj.DuracaoGradBadge:setFontSize(13);
+    obj.DuracaoGradBadge:setFontColor("green");
+    lfm_setPropAsString(obj.DuracaoGradBadge, "fontStyle", "bold");
+    obj.DuracaoGradBadge:setReadOnly(true);
 
     obj.layout104 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout104:setParent(obj.layout103);
@@ -6125,7 +5861,7 @@ local function constructNew_HarryFicha()
     obj.edit193:setTop(0);
     obj.edit193:setWidth(160);
     obj.edit193:setHeight(25);
-    obj.edit193:setField("Duracao .. _name");
+    obj.edit193:setField("Duracao_name");
     obj.edit193:setHorzTextAlign("center");
     obj.edit193:setName("edit193");
 
@@ -6134,7 +5870,7 @@ local function constructNew_HarryFicha()
     obj.edit194:setTop(0);
     obj.edit194:setWidth(160);
     obj.edit194:setHeight(25);
-    obj.edit194:setField("Duracao .. _array");
+    obj.edit194:setField("Duracao_array");
     obj.edit194:setHorzTextAlign("center");
     obj.edit194:setName("edit194");
 
@@ -6143,7 +5879,7 @@ local function constructNew_HarryFicha()
     obj.edit195:setTop(0);
     obj.edit195:setWidth(160);
     obj.edit195:setHeight(25);
-    obj.edit195:setField("Duracao .. _grad");
+    obj.edit195:setField("Duracao_grad");
     obj.edit195:setHorzTextAlign("center");
     obj.edit195:setName("edit195");
 
@@ -10077,6 +9813,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event82 = obj.edit171:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Grad_grad or 1) or 1
+                                    self.GradGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event83 = obj.Grad:addEventListener("onMouseEnter",
@@ -10170,6 +9908,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event86 = obj.edit174:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.CD_grad or 1) or 1
+                                    self.CDGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event87 = obj.CD:addEventListener("onMouseEnter",
@@ -10263,6 +10003,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event90 = obj.edit177:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Efeito_grad or 1) or 1
+                                    self.EfeitoGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event91 = obj.Efeito:addEventListener("onMouseEnter",
@@ -10356,6 +10098,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event94 = obj.edit180:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Poder_grad or 1) or 1
+                                    self.PoderGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event95 = obj.Poder:addEventListener("onMouseEnter",
@@ -10449,6 +10193,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event98 = obj.edit183:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Dano_grad or 1) or 1
+                                    self.DanoGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event99 = obj.Dano:addEventListener("onMouseEnter",
@@ -10542,6 +10288,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event102 = obj.edit186:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Bonus_grad or 1) or 1
+                                    self.BonusGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event103 = obj.Bonus:addEventListener("onMouseEnter",
@@ -10635,6 +10383,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event106 = obj.edit189:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Range_grad or 1) or 1
+                                    self.RangeGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event107 = obj.Range:addEventListener("onMouseEnter",
@@ -10728,6 +10478,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event110 = obj.edit192:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Area_grad or 1) or 1
+                                    self.AreaGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event111 = obj.Area:addEventListener("onMouseEnter",
@@ -10821,6 +10573,8 @@ local function constructNew_HarryFicha()
 
     obj._e_event114 = obj.edit195:addEventListener("onChange",
         function ()
+            local grad = tonumber(newValue or sheet.Duracao_grad or 1) or 1
+                                    self.DuracaoGradBadge.text = tostring(grad - 1)
         end);
 
     obj._e_event115 = obj.Duracao:addEventListener("onMouseEnter",
@@ -10917,22 +10671,27 @@ local function constructNew_HarryFicha()
             rolarFeitico()
         end);
 
-    obj._e_event119 = obj.button28:addEventListener("onClick",
+    obj._e_event119 = obj.button27:addEventListener("onMenu",
+        function (x, y, event)
+            abrirPopupFeitico()
+        end);
+
+    obj._e_event120 = obj.button28:addEventListener("onClick",
         function (event)
             ListaDeFeitico()
         end);
 
-    obj._e_event120 = obj.button29:addEventListener("onClick",
+    obj._e_event121 = obj.button29:addEventListener("onClick",
         function (event)
             Aceitar()
         end);
 
-    obj._e_event121 = obj.button30:addEventListener("onClick",
+    obj._e_event122 = obj.button30:addEventListener("onClick",
         function (event)
             abrirPopUp()
         end);
 
-    obj._e_event122 = obj.rectangle94:addEventListener("onDblClick",
+    obj._e_event123 = obj.rectangle94:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                               local chat = minhaMesa.chat;
@@ -10948,7 +10707,7 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event123 = obj.rectangle96:addEventListener("onDblClick",
+    obj._e_event124 = obj.rectangle96:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                               local chat = minhaMesa.chat;
@@ -10964,7 +10723,7 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event124 = obj.rectangle98:addEventListener("onDblClick",
+    obj._e_event125 = obj.rectangle98:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                                 local chat = minhaMesa.chat;
@@ -10980,7 +10739,7 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event125 = obj.rectangle100:addEventListener("onDblClick",
+    obj._e_event126 = obj.rectangle100:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                                 local chat = minhaMesa.chat;
@@ -10996,17 +10755,18 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event126 = obj.button31:addEventListener("onClick",
+    obj._e_event127 = obj.button31:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
-    obj._e_event127 = obj.button32:addEventListener("onClick",
+    obj._e_event128 = obj.button32:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
     function obj:_releaseEvents()
+        __o_rrpgObjs.removeEventListenerById(self._e_event128);
         __o_rrpgObjs.removeEventListenerById(self._e_event127);
         __o_rrpgObjs.removeEventListenerById(self._e_event126);
         __o_rrpgObjs.removeEventListenerById(self._e_event125);
@@ -11233,6 +10993,7 @@ local function constructNew_HarryFicha()
         if self.layout7 ~= nil then self.layout7:destroy(); self.layout7 = nil; end;
         if self.rectangle49 ~= nil then self.rectangle49:destroy(); self.rectangle49 = nil; end;
         if self.rectangle64 ~= nil then self.rectangle64:destroy(); self.rectangle64 = nil; end;
+        if self.DuracaoGradBadge ~= nil then self.DuracaoGradBadge:destroy(); self.DuracaoGradBadge = nil; end;
         if self.button21 ~= nil then self.button21:destroy(); self.button21 = nil; end;
         if self.edit31 ~= nil then self.edit31:destroy(); self.edit31 = nil; end;
         if self.layout2 ~= nil then self.layout2:destroy(); self.layout2 = nil; end;
@@ -11391,8 +11152,9 @@ local function constructNew_HarryFicha()
         if self.edit80 ~= nil then self.edit80:destroy(); self.edit80 = nil; end;
         if self.Acrobacia ~= nil then self.Acrobacia:destroy(); self.Acrobacia = nil; end;
         if self.label124 ~= nil then self.label124:destroy(); self.label124 = nil; end;
-        if self.button26 ~= nil then self.button26:destroy(); self.button26 = nil; end;
+        if self.PoderGradBadge ~= nil then self.PoderGradBadge:destroy(); self.PoderGradBadge = nil; end;
         if self.rectangle45 ~= nil then self.rectangle45:destroy(); self.rectangle45 = nil; end;
+        if self.button26 ~= nil then self.button26:destroy(); self.button26 = nil; end;
         if self.richEdit3 ~= nil then self.richEdit3:destroy(); self.richEdit3 = nil; end;
         if self.label12 ~= nil then self.label12:destroy(); self.label12 = nil; end;
         if self.label20 ~= nil then self.label20:destroy(); self.label20 = nil; end;
@@ -11457,15 +11219,15 @@ local function constructNew_HarryFicha()
         if self.edit155 ~= nil then self.edit155:destroy(); self.edit155 = nil; end;
         if self.label113 ~= nil then self.label113:destroy(); self.label113 = nil; end;
         if self.label90 ~= nil then self.label90:destroy(); self.label90 = nil; end;
-        if self.edit169 ~= nil then self.edit169:destroy(); self.edit169 = nil; end;
+        if self.GradGradBadge ~= nil then self.GradGradBadge:destroy(); self.GradGradBadge = nil; end;
         if self.edit94 ~= nil then self.edit94:destroy(); self.edit94 = nil; end;
         if self.edit73 ~= nil then self.edit73:destroy(); self.edit73 = nil; end;
         if self.edit43 ~= nil then self.edit43:destroy(); self.edit43 = nil; end;
+        if self.edit169 ~= nil then self.edit169:destroy(); self.edit169 = nil; end;
         if self.rectangle84 ~= nil then self.rectangle84:destroy(); self.rectangle84 = nil; end;
-        if self.Dano ~= nil then self.Dano:destroy(); self.Dano = nil; end;
         if self.Encantamentos ~= nil then self.Encantamentos:destroy(); self.Encantamentos = nil; end;
         if self.rectangle72 ~= nil then self.rectangle72:destroy(); self.rectangle72 = nil; end;
-        if self.edit204 ~= nil then self.edit204:destroy(); self.edit204 = nil; end;
+        if self.Dano ~= nil then self.Dano:destroy(); self.Dano = nil; end;
         if self.edit162 ~= nil then self.edit162:destroy(); self.edit162 = nil; end;
         if self.edit150 ~= nil then self.edit150:destroy(); self.edit150 = nil; end;
         if self.label116 ~= nil then self.label116:destroy(); self.label116 = nil; end;
@@ -11473,6 +11235,7 @@ local function constructNew_HarryFicha()
         if self.rectangle81 ~= nil then self.rectangle81:destroy(); self.rectangle81 = nil; end;
         if self.edit99 ~= nil then self.edit99:destroy(); self.edit99 = nil; end;
         if self.rectangle91 ~= nil then self.rectangle91:destroy(); self.rectangle91 = nil; end;
+        if self.edit204 ~= nil then self.edit204:destroy(); self.edit204 = nil; end;
         if self.layout117 ~= nil then self.layout117:destroy(); self.layout117 = nil; end;
         if self.rectangle75 ~= nil then self.rectangle75:destroy(); self.rectangle75 = nil; end;
         if self.label64 ~= nil then self.label64:destroy(); self.label64 = nil; end;
@@ -11689,8 +11452,9 @@ local function constructNew_HarryFicha()
         if self.layout44 ~= nil then self.layout44:destroy(); self.layout44 = nil; end;
         if self.label21 ~= nil then self.label21:destroy(); self.label21 = nil; end;
         if self.edit11 ~= nil then self.edit11:destroy(); self.edit11 = nil; end;
-        if self.edit180 ~= nil then self.edit180:destroy(); self.edit180 = nil; end;
+        if self.CDGradBadge ~= nil then self.CDGradBadge:destroy(); self.CDGradBadge = nil; end;
         if self.label80 ~= nil then self.label80:destroy(); self.label80 = nil; end;
+        if self.edit180 ~= nil then self.edit180:destroy(); self.edit180 = nil; end;
         if self.edit84 ~= nil then self.edit84:destroy(); self.edit84 = nil; end;
         if self.richEdit7 ~= nil then self.richEdit7:destroy(); self.richEdit7 = nil; end;
         if self.rclMagias ~= nil then self.rclMagias:destroy(); self.rclMagias = nil; end;
@@ -11727,6 +11491,7 @@ local function constructNew_HarryFicha()
         if self.outrasPericias_record ~= nil then self.outrasPericias_record:destroy(); self.outrasPericias_record = nil; end;
         if self.label138 ~= nil then self.label138:destroy(); self.label138 = nil; end;
         if self.layout105 ~= nil then self.layout105:destroy(); self.layout105 = nil; end;
+        if self.RangeGradBadge ~= nil then self.RangeGradBadge:destroy(); self.RangeGradBadge = nil; end;
         if self.edit110 ~= nil then self.edit110:destroy(); self.edit110 = nil; end;
         if self.rectangle24 ~= nil then self.rectangle24:destroy(); self.rectangle24 = nil; end;
         if self.rectangle16 ~= nil then self.rectangle16:destroy(); self.rectangle16 = nil; end;
@@ -11737,6 +11502,7 @@ local function constructNew_HarryFicha()
         if self.edit45 ~= nil then self.edit45:destroy(); self.edit45 = nil; end;
         if self.edit202 ~= nil then self.edit202:destroy(); self.edit202 = nil; end;
         if self.edit210 ~= nil then self.edit210:destroy(); self.edit210 = nil; end;
+        if self.EfeitoGradBadge ~= nil then self.EfeitoGradBadge:destroy(); self.EfeitoGradBadge = nil; end;
         if self.edit117 ~= nil then self.edit117:destroy(); self.edit117 = nil; end;
         if self.rectangle21 ~= nil then self.rectangle21:destroy(); self.rectangle21 = nil; end;
         if self.edit168 ~= nil then self.edit168:destroy(); self.edit168 = nil; end;
@@ -11746,8 +11512,9 @@ local function constructNew_HarryFicha()
         if self.edit72 ~= nil then self.edit72:destroy(); self.edit72 = nil; end;
         if self.edit40 ~= nil then self.edit40:destroy(); self.edit40 = nil; end;
         if self.layout79 ~= nil then self.layout79:destroy(); self.layout79 = nil; end;
-        if self.edit205 ~= nil then self.edit205:destroy(); self.edit205 = nil; end;
+        if self.BonusGradBadge ~= nil then self.BonusGradBadge:destroy(); self.BonusGradBadge = nil; end;
         if self.rectangle73 ~= nil then self.rectangle73:destroy(); self.rectangle73 = nil; end;
+        if self.edit205 ~= nil then self.edit205:destroy(); self.edit205 = nil; end;
         if self.edit215 ~= nil then self.edit215:destroy(); self.edit215 = nil; end;
         if self.edit165 ~= nil then self.edit165:destroy(); self.edit165 = nil; end;
         if self.Aparar ~= nil then self.Aparar:destroy(); self.Aparar = nil; end;
@@ -11802,6 +11569,7 @@ local function constructNew_HarryFicha()
         if self.layout17 ~= nil then self.layout17:destroy(); self.layout17 = nil; end;
         if self.layout68 ~= nil then self.layout68:destroy(); self.layout68 = nil; end;
         if self.layout9 ~= nil then self.layout9:destroy(); self.layout9 = nil; end;
+        if self.AreaGradBadge ~= nil then self.AreaGradBadge:destroy(); self.AreaGradBadge = nil; end;
         if self.boxDetalhesDoItem ~= nil then self.boxDetalhesDoItem:destroy(); self.boxDetalhesDoItem = nil; end;
         if self.edit129 ~= nil then self.edit129:destroy(); self.edit129 = nil; end;
         if self.rectangle66 ~= nil then self.rectangle66:destroy(); self.rectangle66 = nil; end;
@@ -11823,11 +11591,12 @@ local function constructNew_HarryFicha()
         if self.rectangle41 ~= nil then self.rectangle41:destroy(); self.rectangle41 = nil; end;
         if self.layout47 ~= nil then self.layout47:destroy(); self.layout47 = nil; end;
         if self.edit127 ~= nil then self.edit127:destroy(); self.edit127 = nil; end;
-        if self.label125 ~= nil then self.label125:destroy(); self.label125 = nil; end;
+        if self.DanoGradBadge ~= nil then self.DanoGradBadge:destroy(); self.DanoGradBadge = nil; end;
         if self.label4 ~= nil then self.label4:destroy(); self.label4 = nil; end;
         if self.label83 ~= nil then self.label83:destroy(); self.label83 = nil; end;
         if self.button15 ~= nil then self.button15:destroy(); self.button15 = nil; end;
         if self.edit83 ~= nil then self.edit83:destroy(); self.edit83 = nil; end;
+        if self.label125 ~= nil then self.label125:destroy(); self.label125 = nil; end;
         if self.button29 ~= nil then self.button29:destroy(); self.button29 = nil; end;
         if self.richEdit2 ~= nil then self.richEdit2:destroy(); self.richEdit2 = nil; end;
         if self.rectangle46 ~= nil then self.rectangle46:destroy(); self.rectangle46 = nil; end;
