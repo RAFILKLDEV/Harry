@@ -33,6 +33,12 @@
                         self.$(field .. "GradBadge").text = tostring(grad - 1)
                     </event>
                 </edit>
+                <dataLink field="$(field)_grad">
+                    <event name="onChange">
+                        local grad = tonumber(newValue or sheet.$(field .. "_grad") or 1) or 1
+                        self.$(field .. "GradBadge").text = tostring(grad - 1)
+                    </event>
+                </dataLink>
                 <edit name="$(field)" top="0" width="160" height="25" field="$(field)" horzTextAlign="center" hitTest="true" hint="">
                     <event name="onMouseEnter">
                         self.$(field).hint = sheet.$(field)

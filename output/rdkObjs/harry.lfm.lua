@@ -5079,6 +5079,11 @@ local function constructNew_HarryFicha()
     obj.edit171:setHorzTextAlign("center");
     obj.edit171:setName("edit171");
 
+    obj.dataLink4 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink4:setParent(obj.layout86);
+    obj.dataLink4:setField("Grad_grad");
+    obj.dataLink4:setName("dataLink4");
+
     obj.Grad = GUI.fromHandle(_obj_newObject("edit"));
     obj.Grad:setParent(obj.layout86);
     obj.Grad:setName("Grad");
@@ -5178,6 +5183,11 @@ local function constructNew_HarryFicha()
     obj.edit174:setHorzTextAlign("center");
     obj.edit174:setName("edit174");
 
+    obj.dataLink5 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink5:setParent(obj.layout88);
+    obj.dataLink5:setField("CD_grad");
+    obj.dataLink5:setName("dataLink5");
+
     obj.CD = GUI.fromHandle(_obj_newObject("edit"));
     obj.CD:setParent(obj.layout88);
     obj.CD:setName("CD");
@@ -5276,6 +5286,11 @@ local function constructNew_HarryFicha()
     obj.edit177:setField("Efeito_grad");
     obj.edit177:setHorzTextAlign("center");
     obj.edit177:setName("edit177");
+
+    obj.dataLink6 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink6:setParent(obj.layout90);
+    obj.dataLink6:setField("Efeito_grad");
+    obj.dataLink6:setName("dataLink6");
 
     obj.Efeito = GUI.fromHandle(_obj_newObject("edit"));
     obj.Efeito:setParent(obj.layout90);
@@ -5382,6 +5397,11 @@ local function constructNew_HarryFicha()
     obj.edit180:setHorzTextAlign("center");
     obj.edit180:setName("edit180");
 
+    obj.dataLink7 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink7:setParent(obj.layout93);
+    obj.dataLink7:setField("Poder_grad");
+    obj.dataLink7:setName("dataLink7");
+
     obj.Poder = GUI.fromHandle(_obj_newObject("edit"));
     obj.Poder:setParent(obj.layout93);
     obj.Poder:setName("Poder");
@@ -5481,6 +5501,11 @@ local function constructNew_HarryFicha()
     obj.edit183:setHorzTextAlign("center");
     obj.edit183:setName("edit183");
 
+    obj.dataLink8 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink8:setParent(obj.layout95);
+    obj.dataLink8:setField("Dano_grad");
+    obj.dataLink8:setName("dataLink8");
+
     obj.Dano = GUI.fromHandle(_obj_newObject("edit"));
     obj.Dano:setParent(obj.layout95);
     obj.Dano:setName("Dano");
@@ -5579,6 +5604,11 @@ local function constructNew_HarryFicha()
     obj.edit186:setField("Bonus_grad");
     obj.edit186:setHorzTextAlign("center");
     obj.edit186:setName("edit186");
+
+    obj.dataLink9 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink9:setParent(obj.layout97);
+    obj.dataLink9:setField("Bonus_grad");
+    obj.dataLink9:setName("dataLink9");
 
     obj.Bonus = GUI.fromHandle(_obj_newObject("edit"));
     obj.Bonus:setParent(obj.layout97);
@@ -5685,6 +5715,11 @@ local function constructNew_HarryFicha()
     obj.edit189:setHorzTextAlign("center");
     obj.edit189:setName("edit189");
 
+    obj.dataLink10 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink10:setParent(obj.layout100);
+    obj.dataLink10:setField("Range_grad");
+    obj.dataLink10:setName("dataLink10");
+
     obj.Range = GUI.fromHandle(_obj_newObject("edit"));
     obj.Range:setParent(obj.layout100);
     obj.Range:setName("Range");
@@ -5784,6 +5819,11 @@ local function constructNew_HarryFicha()
     obj.edit192:setHorzTextAlign("center");
     obj.edit192:setName("edit192");
 
+    obj.dataLink11 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink11:setParent(obj.layout102);
+    obj.dataLink11:setField("Area_grad");
+    obj.dataLink11:setName("dataLink11");
+
     obj.Area = GUI.fromHandle(_obj_newObject("edit"));
     obj.Area:setParent(obj.layout102);
     obj.Area:setName("Area");
@@ -5882,6 +5922,11 @@ local function constructNew_HarryFicha()
     obj.edit195:setField("Duracao_grad");
     obj.edit195:setHorzTextAlign("center");
     obj.edit195:setName("edit195");
+
+    obj.dataLink12 = GUI.fromHandle(_obj_newObject("dataLink"));
+    obj.dataLink12:setParent(obj.layout104);
+    obj.dataLink12:setField("Duracao_grad");
+    obj.dataLink12:setName("dataLink12");
 
     obj.Duracao = GUI.fromHandle(_obj_newObject("edit"));
     obj.Duracao:setParent(obj.layout104);
@@ -9817,12 +9862,18 @@ local function constructNew_HarryFicha()
                                     self.GradGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event83 = obj.Grad:addEventListener("onMouseEnter",
+    obj._e_event83 = obj.dataLink4:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Grad_grad or 1) or 1
+                                    self.GradGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event84 = obj.Grad:addEventListener("onMouseEnter",
         function ()
             self.Grad.hint = sheet.Grad
         end);
 
-    obj._e_event84 = obj.button9:addEventListener("onClick",
+    obj._e_event85 = obj.button9:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Grad_array)
@@ -9857,7 +9908,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event85 = obj.button10:addEventListener("onClick",
+    obj._e_event86 = obj.button10:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Grad_array)
@@ -9906,18 +9957,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event86 = obj.edit174:addEventListener("onChange",
+    obj._e_event87 = obj.edit174:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.CD_grad or 1) or 1
                                     self.CDGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event87 = obj.CD:addEventListener("onMouseEnter",
+    obj._e_event88 = obj.dataLink5:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.CD_grad or 1) or 1
+                                    self.CDGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event89 = obj.CD:addEventListener("onMouseEnter",
         function ()
             self.CD.hint = sheet.CD
         end);
 
-    obj._e_event88 = obj.button11:addEventListener("onClick",
+    obj._e_event90 = obj.button11:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.CD_array)
@@ -9952,7 +10009,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event89 = obj.button12:addEventListener("onClick",
+    obj._e_event91 = obj.button12:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.CD_array)
@@ -10001,18 +10058,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event90 = obj.edit177:addEventListener("onChange",
+    obj._e_event92 = obj.edit177:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.Efeito_grad or 1) or 1
                                     self.EfeitoGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event91 = obj.Efeito:addEventListener("onMouseEnter",
+    obj._e_event93 = obj.dataLink6:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Efeito_grad or 1) or 1
+                                    self.EfeitoGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event94 = obj.Efeito:addEventListener("onMouseEnter",
         function ()
             self.Efeito.hint = sheet.Efeito
         end);
 
-    obj._e_event92 = obj.button13:addEventListener("onClick",
+    obj._e_event95 = obj.button13:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Efeito_array)
@@ -10047,7 +10110,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event93 = obj.button14:addEventListener("onClick",
+    obj._e_event96 = obj.button14:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Efeito_array)
@@ -10096,18 +10159,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event94 = obj.edit180:addEventListener("onChange",
+    obj._e_event97 = obj.edit180:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.Poder_grad or 1) or 1
                                     self.PoderGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event95 = obj.Poder:addEventListener("onMouseEnter",
+    obj._e_event98 = obj.dataLink7:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Poder_grad or 1) or 1
+                                    self.PoderGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event99 = obj.Poder:addEventListener("onMouseEnter",
         function ()
             self.Poder.hint = sheet.Poder
         end);
 
-    obj._e_event96 = obj.button15:addEventListener("onClick",
+    obj._e_event100 = obj.button15:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Poder_array)
@@ -10142,7 +10211,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event97 = obj.button16:addEventListener("onClick",
+    obj._e_event101 = obj.button16:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Poder_array)
@@ -10191,18 +10260,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event98 = obj.edit183:addEventListener("onChange",
+    obj._e_event102 = obj.edit183:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.Dano_grad or 1) or 1
                                     self.DanoGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event99 = obj.Dano:addEventListener("onMouseEnter",
+    obj._e_event103 = obj.dataLink8:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Dano_grad or 1) or 1
+                                    self.DanoGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event104 = obj.Dano:addEventListener("onMouseEnter",
         function ()
             self.Dano.hint = sheet.Dano
         end);
 
-    obj._e_event100 = obj.button17:addEventListener("onClick",
+    obj._e_event105 = obj.button17:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Dano_array)
@@ -10237,7 +10312,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event101 = obj.button18:addEventListener("onClick",
+    obj._e_event106 = obj.button18:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Dano_array)
@@ -10286,18 +10361,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event102 = obj.edit186:addEventListener("onChange",
+    obj._e_event107 = obj.edit186:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.Bonus_grad or 1) or 1
                                     self.BonusGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event103 = obj.Bonus:addEventListener("onMouseEnter",
+    obj._e_event108 = obj.dataLink9:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Bonus_grad or 1) or 1
+                                    self.BonusGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event109 = obj.Bonus:addEventListener("onMouseEnter",
         function ()
             self.Bonus.hint = sheet.Bonus
         end);
 
-    obj._e_event104 = obj.button19:addEventListener("onClick",
+    obj._e_event110 = obj.button19:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Bonus_array)
@@ -10332,7 +10413,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event105 = obj.button20:addEventListener("onClick",
+    obj._e_event111 = obj.button20:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Bonus_array)
@@ -10381,18 +10462,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event106 = obj.edit189:addEventListener("onChange",
+    obj._e_event112 = obj.edit189:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.Range_grad or 1) or 1
                                     self.RangeGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event107 = obj.Range:addEventListener("onMouseEnter",
+    obj._e_event113 = obj.dataLink10:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Range_grad or 1) or 1
+                                    self.RangeGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event114 = obj.Range:addEventListener("onMouseEnter",
         function ()
             self.Range.hint = sheet.Range
         end);
 
-    obj._e_event108 = obj.button21:addEventListener("onClick",
+    obj._e_event115 = obj.button21:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Range_array)
@@ -10427,7 +10514,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event109 = obj.button22:addEventListener("onClick",
+    obj._e_event116 = obj.button22:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Range_array)
@@ -10476,18 +10563,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event110 = obj.edit192:addEventListener("onChange",
+    obj._e_event117 = obj.edit192:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.Area_grad or 1) or 1
                                     self.AreaGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event111 = obj.Area:addEventListener("onMouseEnter",
+    obj._e_event118 = obj.dataLink11:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Area_grad or 1) or 1
+                                    self.AreaGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event119 = obj.Area:addEventListener("onMouseEnter",
         function ()
             self.Area.hint = sheet.Area
         end);
 
-    obj._e_event112 = obj.button23:addEventListener("onClick",
+    obj._e_event120 = obj.button23:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Area_array)
@@ -10522,7 +10615,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event113 = obj.button24:addEventListener("onClick",
+    obj._e_event121 = obj.button24:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Area_array)
@@ -10571,18 +10664,24 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event114 = obj.edit195:addEventListener("onChange",
+    obj._e_event122 = obj.edit195:addEventListener("onChange",
         function ()
             local grad = tonumber(newValue or sheet.Duracao_grad or 1) or 1
                                     self.DuracaoGradBadge.text = tostring(grad - 1)
         end);
 
-    obj._e_event115 = obj.Duracao:addEventListener("onMouseEnter",
+    obj._e_event123 = obj.dataLink12:addEventListener("onChange",
+        function (field, oldValue, newValue)
+            local grad = tonumber(newValue or sheet.Duracao_grad or 1) or 1
+                                    self.DuracaoGradBadge.text = tostring(grad - 1)
+        end);
+
+    obj._e_event124 = obj.Duracao:addEventListener("onMouseEnter",
         function ()
             self.Duracao.hint = sheet.Duracao
         end);
 
-    obj._e_event116 = obj.button25:addEventListener("onClick",
+    obj._e_event125 = obj.button25:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Duracao_array)
@@ -10617,7 +10716,7 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event117 = obj.button26:addEventListener("onClick",
+    obj._e_event126 = obj.button26:addEventListener("onClick",
         function (event)
             local node = self.rclMagias.selectedNode;
                                     local array = totable(node.Duracao_array)
@@ -10666,32 +10765,32 @@ local function constructNew_HarryFicha()
                                     end
         end);
 
-    obj._e_event118 = obj.button27:addEventListener("onClick",
+    obj._e_event127 = obj.button27:addEventListener("onClick",
         function (event)
             rolarFeitico()
         end);
 
-    obj._e_event119 = obj.button27:addEventListener("onMenu",
+    obj._e_event128 = obj.button27:addEventListener("onMenu",
         function (x, y, event)
             abrirPopupFeitico()
         end);
 
-    obj._e_event120 = obj.button28:addEventListener("onClick",
+    obj._e_event129 = obj.button28:addEventListener("onClick",
         function (event)
             ListaDeFeitico()
         end);
 
-    obj._e_event121 = obj.button29:addEventListener("onClick",
+    obj._e_event130 = obj.button29:addEventListener("onClick",
         function (event)
             Aceitar()
         end);
 
-    obj._e_event122 = obj.button30:addEventListener("onClick",
+    obj._e_event131 = obj.button30:addEventListener("onClick",
         function (event)
             abrirPopUp()
         end);
 
-    obj._e_event123 = obj.rectangle94:addEventListener("onDblClick",
+    obj._e_event132 = obj.rectangle94:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                               local chat = minhaMesa.chat;
@@ -10707,7 +10806,7 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event124 = obj.rectangle96:addEventListener("onDblClick",
+    obj._e_event133 = obj.rectangle96:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                               local chat = minhaMesa.chat;
@@ -10723,7 +10822,7 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event125 = obj.rectangle98:addEventListener("onDblClick",
+    obj._e_event134 = obj.rectangle98:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                                 local chat = minhaMesa.chat;
@@ -10739,7 +10838,7 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event126 = obj.rectangle100:addEventListener("onDblClick",
+    obj._e_event135 = obj.rectangle100:addEventListener("onDblClick",
         function (event)
             local minhaMesa = Firecast.getRoomOf(sheet);
                                 local chat = minhaMesa.chat;
@@ -10755,17 +10854,26 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event127 = obj.button31:addEventListener("onClick",
+    obj._e_event136 = obj.button31:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
-    obj._e_event128 = obj.button32:addEventListener("onClick",
+    obj._e_event137 = obj.button32:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
     function obj:_releaseEvents()
+        __o_rrpgObjs.removeEventListenerById(self._e_event137);
+        __o_rrpgObjs.removeEventListenerById(self._e_event136);
+        __o_rrpgObjs.removeEventListenerById(self._e_event135);
+        __o_rrpgObjs.removeEventListenerById(self._e_event134);
+        __o_rrpgObjs.removeEventListenerById(self._e_event133);
+        __o_rrpgObjs.removeEventListenerById(self._e_event132);
+        __o_rrpgObjs.removeEventListenerById(self._e_event131);
+        __o_rrpgObjs.removeEventListenerById(self._e_event130);
+        __o_rrpgObjs.removeEventListenerById(self._e_event129);
         __o_rrpgObjs.removeEventListenerById(self._e_event128);
         __o_rrpgObjs.removeEventListenerById(self._e_event127);
         __o_rrpgObjs.removeEventListenerById(self._e_event126);
@@ -10961,8 +11069,9 @@ local function constructNew_HarryFicha()
         if self.layout59 ~= nil then self.layout59:destroy(); self.layout59 = nil; end;
         if self.label69 ~= nil then self.label69:destroy(); self.label69 = nil; end;
         if self.edit60 ~= nil then self.edit60:destroy(); self.edit60 = nil; end;
-        if self.tab14 ~= nil then self.tab14:destroy(); self.tab14 = nil; end;
+        if self.dataLink5 ~= nil then self.dataLink5:destroy(); self.dataLink5 = nil; end;
         if self.DEFE_QUAD ~= nil then self.DEFE_QUAD:destroy(); self.DEFE_QUAD = nil; end;
+        if self.tab14 ~= nil then self.tab14:destroy(); self.tab14 = nil; end;
         if self.ANTE_QUAD ~= nil then self.ANTE_QUAD:destroy(); self.ANTE_QUAD = nil; end;
         if self.edit171 ~= nil then self.edit171:destroy(); self.edit171 = nil; end;
         if self.rectangle38 ~= nil then self.rectangle38:destroy(); self.rectangle38 = nil; end;
@@ -11059,6 +11168,7 @@ local function constructNew_HarryFicha()
         if self.edit78 ~= nil then self.edit78:destroy(); self.edit78 = nil; end;
         if self.layout99 ~= nil then self.layout99:destroy(); self.layout99 = nil; end;
         if self.layout101 ~= nil then self.layout101:destroy(); self.layout101 = nil; end;
+        if self.dataLink12 ~= nil then self.dataLink12:destroy(); self.dataLink12 = nil; end;
         if self.edit203 ~= nil then self.edit203:destroy(); self.edit203 = nil; end;
         if self.edit213 ~= nil then self.edit213:destroy(); self.edit213 = nil; end;
         if self.edit114 ~= nil then self.edit114:destroy(); self.edit114 = nil; end;
@@ -11107,6 +11217,7 @@ local function constructNew_HarryFicha()
         if self.edit174 ~= nil then self.edit174:destroy(); self.edit174 = nil; end;
         if self.button31 ~= nil then self.button31:destroy(); self.button31 = nil; end;
         if self.form1 ~= nil then self.form1:destroy(); self.form1 = nil; end;
+        if self.dataLink7 ~= nil then self.dataLink7:destroy(); self.dataLink7 = nil; end;
         if self.Grad ~= nil then self.Grad:destroy(); self.Grad = nil; end;
         if self.rectangle100 ~= nil then self.rectangle100:destroy(); self.rectangle100 = nil; end;
         if self.tab2 ~= nil then self.tab2:destroy(); self.tab2 = nil; end;
@@ -11129,6 +11240,7 @@ local function constructNew_HarryFicha()
         if self.edit39 ~= nil then self.edit39:destroy(); self.edit39 = nil; end;
         if self.PASS_QUAD ~= nil then self.PASS_QUAD:destroy(); self.PASS_QUAD = nil; end;
         if self.layout69 ~= nil then self.layout69:destroy(); self.layout69 = nil; end;
+        if self.dataLink9 ~= nil then self.dataLink9:destroy(); self.dataLink9 = nil; end;
         if self.edit128 ~= nil then self.edit128:destroy(); self.edit128 = nil; end;
         if self.rectangle61 ~= nil then self.rectangle61:destroy(); self.rectangle61 = nil; end;
         if self.layout13 ~= nil then self.layout13:destroy(); self.layout13 = nil; end;
@@ -11354,10 +11466,11 @@ local function constructNew_HarryFicha()
         if self.label76 ~= nil then self.label76:destroy(); self.label76 = nil; end;
         if self.rectangle59 ~= nil then self.rectangle59:destroy(); self.rectangle59 = nil; end;
         if self.popUp ~= nil then self.popUp:destroy(); self.popUp = nil; end;
-        if self.label142 ~= nil then self.label142:destroy(); self.label142 = nil; end;
+        if self.dataLink11 ~= nil then self.dataLink11:destroy(); self.dataLink11 = nil; end;
         if self.layout98 ~= nil then self.layout98:destroy(); self.layout98 = nil; end;
         if self.layout100 ~= nil then self.layout100:destroy(); self.layout100 = nil; end;
         if self.edit212 ~= nil then self.edit212:destroy(); self.edit212 = nil; end;
+        if self.label142 ~= nil then self.label142:destroy(); self.label142 = nil; end;
         if self.edit115 ~= nil then self.edit115:destroy(); self.edit115 = nil; end;
         if self.rectangle23 ~= nil then self.rectangle23:destroy(); self.rectangle23 = nil; end;
         if self.rectangle13 ~= nil then self.rectangle13:destroy(); self.rectangle13 = nil; end;
@@ -11410,6 +11523,7 @@ local function constructNew_HarryFicha()
         if self.edit175 ~= nil then self.edit175:destroy(); self.edit175 = nil; end;
         if self.label68 ~= nil then self.label68:destroy(); self.label68 = nil; end;
         if self.button30 ~= nil then self.button30:destroy(); self.button30 = nil; end;
+        if self.dataLink4 ~= nil then self.dataLink4:destroy(); self.dataLink4 = nil; end;
         if self.rectangle101 ~= nil then self.rectangle101:destroy(); self.rectangle101 = nil; end;
         if self.edit170 ~= nil then self.edit170:destroy(); self.edit170 = nil; end;
         if self.layout53 ~= nil then self.layout53:destroy(); self.layout53 = nil; end;
@@ -11552,6 +11666,7 @@ local function constructNew_HarryFicha()
         if self.edit1 ~= nil then self.edit1:destroy(); self.edit1 = nil; end;
         if self.edit100 ~= nil then self.edit100:destroy(); self.edit100 = nil; end;
         if self.button32 ~= nil then self.button32:destroy(); self.button32 = nil; end;
+        if self.dataLink6 ~= nil then self.dataLink6:destroy(); self.dataLink6 = nil; end;
         if self.rectangle103 ~= nil then self.rectangle103:destroy(); self.rectangle103 = nil; end;
         if self.label47 ~= nil then self.label47:destroy(); self.label47 = nil; end;
         if self.tab3 ~= nil then self.tab3:destroy(); self.tab3 = nil; end;
@@ -11568,6 +11683,7 @@ local function constructNew_HarryFicha()
         if self.label31 ~= nil then self.label31:destroy(); self.label31 = nil; end;
         if self.layout17 ~= nil then self.layout17:destroy(); self.layout17 = nil; end;
         if self.layout68 ~= nil then self.layout68:destroy(); self.layout68 = nil; end;
+        if self.dataLink8 ~= nil then self.dataLink8:destroy(); self.dataLink8 = nil; end;
         if self.layout9 ~= nil then self.layout9:destroy(); self.layout9 = nil; end;
         if self.AreaGradBadge ~= nil then self.AreaGradBadge:destroy(); self.AreaGradBadge = nil; end;
         if self.boxDetalhesDoItem ~= nil then self.boxDetalhesDoItem:destroy(); self.boxDetalhesDoItem = nil; end;
@@ -11641,8 +11757,9 @@ local function constructNew_HarryFicha()
         if self.label75 ~= nil then self.label75:destroy(); self.label75 = nil; end;
         if self.rectangle56 ~= nil then self.rectangle56:destroy(); self.rectangle56 = nil; end;
         if self.edit138 ~= nil then self.edit138:destroy(); self.edit138 = nil; end;
-        if self.label145 ~= nil then self.label145:destroy(); self.label145 = nil; end;
+        if self.dataLink10 ~= nil then self.dataLink10:destroy(); self.dataLink10 = nil; end;
         if self.layout103 ~= nil then self.layout103:destroy(); self.layout103 = nil; end;
+        if self.label145 ~= nil then self.label145:destroy(); self.label145 = nil; end;
         if self.GOL_QUAD ~= nil then self.GOL_QUAD:destroy(); self.GOL_QUAD = nil; end;
         if self.edit112 ~= nil then self.edit112:destroy(); self.edit112 = nil; end;
         if self.rectangle22 ~= nil then self.rectangle22:destroy(); self.rectangle22 = nil; end;
