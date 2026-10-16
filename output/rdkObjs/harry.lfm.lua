@@ -33,37 +33,6 @@ local function constructNew_HarryFicha()
     obj:setTitle("Ficha Harry Potter Nova!");
     obj:setName("HarryFicha");
 
-
-          local function TotalPericia(ATR, MOD, OUT)
-          local total = 0
-
-          total = ATR + MOD + OUT
-
-          return total
-          end
-
-     
-
-
-
-          local function cadaDez(numero)
-               local result = -1
-
-               while numero >= 0 do
-                    result = result + 1
-                    numero = numero - 10
-               end
-
-               return result
-          end
-     
-
-
-
-
-     
-
-
     obj.dataLink1 = GUI.fromHandle(_obj_newObject("dataLink"));
     obj.dataLink1:setParent(obj);
     obj.dataLink1:setFields({'AGI','DES', 'FOR','LUT','VIG','INTE','PRE','SAB','ACR_Grad','ACR_Out','ATL_Grad',
@@ -275,7 +244,7 @@ local function constructNew_HarryFicha()
     obj.checkBox1:setParent(obj.rectangle4);
     obj.checkBox1:setAlign("left");
     obj.checkBox1:setWidth(20);
-    obj.checkBox1:setText("Caixa de marcação");
+    obj.checkBox1:setText("Caixa de marcacao");
     obj.checkBox1:setField("Fadigado");
     obj.checkBox1:setName("checkBox1");
 
@@ -298,7 +267,7 @@ local function constructNew_HarryFicha()
     obj.checkBox2:setParent(obj.rectangle5);
     obj.checkBox2:setAlign("left");
     obj.checkBox2:setWidth(20);
-    obj.checkBox2:setText("Caixa de marcação");
+    obj.checkBox2:setText("Caixa de marcacao");
     obj.checkBox2:setField("Exausto");
     obj.checkBox2:setName("checkBox2");
 
@@ -321,7 +290,7 @@ local function constructNew_HarryFicha()
     obj.checkBox3:setParent(obj.rectangle6);
     obj.checkBox3:setAlign("left");
     obj.checkBox3:setWidth(20);
-    obj.checkBox3:setText("Caixa de marcação");
+    obj.checkBox3:setText("Caixa de marcacao");
     obj.checkBox3:setField("Frustrado");
     obj.checkBox3:setName("checkBox3");
 
@@ -344,7 +313,7 @@ local function constructNew_HarryFicha()
     obj.checkBox4:setParent(obj.rectangle7);
     obj.checkBox4:setAlign("left");
     obj.checkBox4:setWidth(20);
-    obj.checkBox4:setText("Caixa de marcação");
+    obj.checkBox4:setText("Caixa de marcacao");
     obj.checkBox4:setField("Tiltado");
     obj.checkBox4:setName("checkBox4");
 
@@ -2631,87 +2600,241 @@ local function constructNew_HarryFicha()
     obj.tab6:setName("tab6");
 
 
-        function testeResistenciaDanoDialog()
-            local resistencia = tonumber(sheet and sheet.RES_Total)
-            if not resistencia then
-                showMessage("RES_Total ausente na ficha.")
-                return
+    function testeResistenciaDanoDialog()
+    local nodeRoot = NDB.getRoot(sheet)
+
+    if nodeRoot.ferimentos == nil then
+        nodeRoot.ferimentos = 0
+    end
+
+    local base = tonumber(sheet.RES_Total)
+
+    if not base then
+        showMessage("RES_Total ausente na ficha.")
+        return
+    end
+
+    local popup = GUI.newPopupForm()
+    popup.width = 430
+    popup.height = 220
+    popup.placement = "center"
+    popup.drawContainer = true
+
+    local root = GUI.newLayout()
+    root.parent = popup
+    root.align = "client"
+    root.margins = {
+        left = 12,
+        right = 12,
+        top = 12,
+        bottom = 12
+    }
+
+    local title = GUI.newLabel()
+    title.parent = root
+    title.align = "top"
+    title.height = 30
+    title.text = "Teste de Resistência"
+    title.horzTextAlign = "center"
+    title.fontSize = 20
+
+    local row = GUI.newLayout()
+    row.parent = root
+    row.align = "top"
+    row.height = 65
+
+    local edits = {}
+
+    local function addField(label, value, color, usarFerimentos)
+        local box = GUI.newLayout()
+        box.parent = row
+        box.align = "left"
+        box.width = 130
+        box.margins = {
+            right = 6
+        }
+
+        local l = GUI.newLabel()
+        l.parent = box
+        l.align = "top"
+        l.height = 22
+        l.text = label
+        l.horzTextAlign = "center"
+
+        local e = GUI.newEdit()
+        e.parent = box
+        e.align = "client"
+        e.horzTextAlign = "center"
+        e.borderColor = color
+        e.strokeColor = color
+        e.borderWidth = 2
+        e.text = tostring(value or 0)
+
+        if usarFerimentos then
+            e.onChange = function()
+                local valor = tonumber(e.text) or 0
+
+                if valor < 0 then
+                    valor = 0
+                    e.text = "0"
+                end
+
+                nodeRoot.ferimentos = valor
             end
-
-            Dialogs.inputQuery("Dano", "Informe o DANO:", "",
-                function(txt)
-                local danoBase = tonumber(txt)
-                if not danoBase then
-                    showMessage("Valor inválido. Digite um número.")
-                    return
-                end
-
-                local cd = 15 + danoBase
-                local mesa = rrpg.getMesaDe(sheet)
-                if not mesa or not mesa.chat then
-                    showMessage("Chat indisponível.")
-                    return
-                end
-                local chat = mesa.chat
-
-                local titulo = (sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") .. string.format( "Teste de Resistência ([§K1]CD [§K4] %d[§K14] | [§K1]SAVE [§K9] %d)", cd, resistencia)
-                local rolagem = rrpg.interpretarRolagem("1d20+" .. resistencia)
-
-                chat:rolarDados(rolagem, titulo, function(rolado)
-                    -- extrair total com tolerância
-                    local total = nil
-                    if rolado and rolado.resultado then
-                    total = tonumber(rolado.resultado)
-                    end
-                    if not total and rolado and rolado.somatoria then
-                    total = tonumber(rolado.somatoria)
-                    end
-                    if not total and rolado and rolado.total then
-                    total = tonumber(rolado.total)
-                    end
-                    if not total then total = 0 end
-
-                    local margem = total - cd
-
-                    local function estagiosDe5(m)
-                    if m >= 0 then
-                        return math.min(4, math.floor(m / 5) + 1), "sucesso"
-                    else
-                        return math.min(4, math.floor((-m) / 5) + 1), "falha"
-                    end
-                    end
-
-                    local estagios, tipo = estagiosDe5(margem)
-                    local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
-                                                total,
-                                                margem >= 0 and ("+" .. margem) or tostring(margem),
-                                                estagios, tipo)
-
-                    if tipo == "sucesso" then
-                    chat:enviarMensagem("[§K1]O personagem Ignorou o Dano.")
-                    chat:enviarMensagem(detalhe)
-                    return
-                    end
-
-                    if estagios == 1 then
-                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento.")
-                    elseif estagios == 2 then
-                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento e foi Atordoado.")
-                    elseif estagios == 3 then
-                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento, foi Atordoado e está Abatido.")
-                    else -- 4
-                    chat:enviarMensagem("[§K1]O personagem caiu Inconsciente.")
-                    end
-
-                    chat:enviarMensagem(detalhe)
-                end)
-                end,
-                function()
-                showMessage("Operação cancelada.")
-                end
-            )
         end
 
+        edits[#edits + 1] = e
+    end
+
+    addField(
+        "Resistência",
+        base,
+        "#2ecc71",
+        false
+    )
+
+    addField(
+        "Outro",
+        0,
+        "#2ecc71",
+        false
+    )
+
+    addField(
+        "Ferimento",
+        tonumber(nodeRoot.ferimentos) or 0,
+        "#e74c3c",
+        true
+    )
+
+    local result = GUI.newLabel()
+    result.parent = root
+    result.align = "top"
+    result.height = 25
+    result.horzTextAlign = "center"
+
+    local buttons = GUI.newLayout()
+    buttons.parent = root
+    buttons.align = "bottom"
+    buttons.height = 34
+
+    local cancel = GUI.newButton()
+    cancel.parent = buttons
+    cancel.align = "right"
+    cancel.width = 100
+    cancel.text = "Cancelar"
+
+    cancel.onClick = function()
+        popup:close()
+    end
+
+    local roll = GUI.newButton()
+    roll.parent = buttons
+    roll.align = "right"
+    roll.width = 100
+    roll.text = "Rolar"
+
+    roll.onClick = function()
+        local r = tonumber(edits[1].text)
+        local o = tonumber(edits[2].text) or 0
+        local f = tonumber(nodeRoot.ferimentos) or 0
+
+        if f < 0 then
+            f = 0
+            nodeRoot.ferimentos = 0
+        end
+
+        if not r then
+            showMessage("Valor inválido.")
+            return
+        end
+
+        local total = r + o - f
+
+        result.text = string.format(
+            "Resistência %d + Outro %d - Ferimento %d = %d",
+            r,
+            o,
+            f,
+            total
+        )
+
+        local mesa = rrpg.getMesaDe(sheet)
+
+        if not mesa or not mesa.chat then
+            showMessage("Chat indisponível.")
+            return
+        end
+
+        popup:close()
+
+        local chat = mesa.chat
+
+        chat:rolarDados(
+            rrpg.interpretarRolagem(
+                "1d20" ..
+                (total >= 0 and "+" or "") ..
+                total
+            ),
+            "Teste de Resistência - CD 15",
+            function(rolado)
+                local d = tonumber(
+                    rolado and (
+                        rolado.resultado or
+                        rolado.somatoria or
+                        rolado.total
+                    )
+                ) or 0
+
+                local m = d - 15
+
+                local g =
+                    m >= 0
+                    and math.min(
+                        4,
+                        math.floor(m / 5) + 1
+                    )
+                    or math.min(
+                        4,
+                        math.floor((-m) / 5) + 1
+                    )
+
+                if m >= 0 then
+                    chat:enviarMensagem(
+                        "O personagem ignorou o dano."
+                    )
+                elseif g == 1 then
+                    chat:enviarMensagem(
+                        "O personagem recebeu um ferimento."
+                    )
+                elseif g == 2 then
+                    chat:enviarMensagem(
+                        "O personagem recebeu um ferimento e foi Atordoado."
+                    )
+                elseif g == 3 then
+                    chat:enviarMensagem(
+                        "O personagem recebeu um ferimento, foi Atordoado e está Abatido."
+                    )
+                else
+                    chat:enviarMensagem(
+                        "O personagem caiu inconsciente."
+                    )
+                end
+
+                chat:enviarMensagem(
+                    string.format(
+                        "Resultado: %d | Margem: %d | Graus: %d",
+                        d,
+                        m,
+                        g
+                    )
+                )
+            end
+        )
+    end
+
+    popup:show()
+end
 
         function testeResistenciaEfeitoDialog()
         
@@ -2733,7 +2856,7 @@ local function constructNew_HarryFicha()
 
         Dialogs.choose("Tipo de Efeito", {"Fortitude", "Reflexos", "Vontade"}, function(selected, selectedIndex, tipo)
             if not tipo then
-            showMessage("Operação cancelada.")
+            showMessage("OperaÃ§Ã£o cancelada.")
             return
             end
 
@@ -2747,23 +2870,23 @@ local function constructNew_HarryFicha()
             function(txt)
                 local mod = tonumber(txt)
                 if not mod then
-                showMessage("Valor inválido. Digite um número.")
+                showMessage("Valor invÃ¡lido. Digite um nÃºmero.")
                 return
                 end
 
                 local cd = 10 + mod
                 local mesa = rrpg.getMesaDe(sheet)
                 if not mesa or not mesa.chat then
-                showMessage("Chat indisponível.")
+                showMessage("Chat indisponÃ­vel.")
                 return
                 end
                 local chat = mesa.chat
 
-                local titulo = string.format((sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") ..  "Teste de Efeito (%s)  [§K2]CD %d[§K7] | SAVE %d", tipo, cd, save)
+                local titulo = string.format((sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") ..  "Teste de Efeito (%s)  [Â§K2]CD %d[Â§K7] | SAVE %d", tipo, cd, save)
                 local rolagem = rrpg.interpretarRolagem("1d20+" .. save)
 
                 chat:rolarDados(rolagem, titulo, function(rolado)
-                -- extrai total compatível com diferentes versões
+                -- extrai total compatÃ­vel com diferentes versÃµes
                 local total = nil
                 if rolado and rolado.resultado then total = tonumber(rolado.resultado) end
                 if not total and rolado and rolado.somatoria then total = tonumber(rolado.somatoria) end
@@ -2780,16 +2903,16 @@ local function constructNew_HarryFicha()
                 end
 
                 local estagios, tipoRes = estagiosDe5(margem)
-                local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
+                local detalhe = string.format("Resultado: %d | Margem: %s | EstÃ¡gios: %d (%s)",
                                                 total,
                                                 margem >= 0 and ("+" .. margem) or tostring(margem),
                                                 estagios, tipoRes)
 
                 if tipoRes == "sucesso" then
                     if estagios >= 4 then
-                    chat:enviarMensagem("[§K1]O personagem Ignorou o Efeito.")
+                    chat:enviarMensagem("[Â§K1]O personagem Ignorou o Efeito.")
                     else
-                    chat:enviarMensagem(string.format("[§K1]Sucesso em %d Estágio(s). Efeito reduzido.", estagios))
+                    chat:enviarMensagem(string.format("[Â§K1]Sucesso em %d EstÃ¡gio(s). Efeito reduzido.", estagios))
                     end
                     chat:enviarMensagem(detalhe)
                     return
@@ -2797,19 +2920,19 @@ local function constructNew_HarryFicha()
 
                 -- falhas graduais
                 if estagios == 1 then
-                    chat:enviarMensagem("[§K1]Falha em 1 Estágio. Efeito parcial.")
+                    chat:enviarMensagem("[Â§K1]Falha em 1 EstÃ¡gio. Efeito parcial.")
                 elseif estagios == 2 then
-                    chat:enviarMensagem("[§K1]Falha em 2 Estágios. Efeito agravado.")
+                    chat:enviarMensagem("[Â§K1]Falha em 2 EstÃ¡gios. Efeito agravado.")
                 elseif estagios == 3 then
-                    chat:enviarMensagem("[§K1]Falha em 3 Estágios. Efeito severo.")
+                    chat:enviarMensagem("[Â§K1]Falha em 3 EstÃ¡gios. Efeito severo.")
                 else -- 4
-                    chat:enviarMensagem("[§K1]Falha em 4 Estágios. Efeito extremo.")
+                    chat:enviarMensagem("[Â§K1]Falha em 4 EstÃ¡gios. Efeito extremo.")
                 end
 
                 chat:enviarMensagem(detalhe)
                 end)
             end,
-            function() showMessage("Operação cancelada.") end
+            function() showMessage("OperaÃ§Ã£o cancelada.") end
             )
         end)
         end
@@ -3237,7 +3360,7 @@ local function constructNew_HarryFicha()
     obj.button2:setParent(obj.tab6);
     obj.button2:setAlign("top");
     obj.button2:setHeight(30);
-    obj.button2:setText("Teste de Resistência");
+    obj.button2:setText("Teste de Resistencia a Dano");
     obj.button2:setMargins({left=20, right=20});
     obj.button2:setName("button2");
 
@@ -3254,178 +3377,6 @@ local function constructNew_HarryFicha()
     obj.tab7:setTitle("Treinos e Tarefas");
     obj.tab7:setWidth(220);
     obj.tab7:setName("tab7");
-
-
-
-      local function condition(tipo)
-
-    if tipo == "fisico" then
-
-    if sheet.Exausto then
-    return -5
-    end
-
-    if sheet.Fadigado then
-    return -2
-    end
-
-    elseif tipo == "mental" then
-
-    if sheet.Tiltado then
-    return -5
-    end
-
-    if sheet.Frustrado then
-    return -2
-    end
-
-    end
-
-    return nil
-    end
-
-      local function ListaDeFeiticoParaTreino(str)
-        require("utils.lua");
-
-        local Raiz = NDB.load("listfetico.xml");
-        local Filho = NDB.getChildNodes(Raiz);
-        local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-        local chat = mesaDoPersonagem.chat
-
-        ListaFeiticos = {} -- new array
-        ListaNomesFeitico = {} -- new array
-
-        for i = 1, #Filho, 1 do
-        ListaFeiticos[i] = Raiz["f" .. i]
-        ListaNomesFeitico[i] = Raiz["f" .. i].nome
-        end
-
-        table.sort(ListaNomesFeitico)
-
-        Dialogs.choose("Selecione uma das opções", ListaNomesFeitico,
-        function(selected, selectedIndex, selectedText)
-
-        if selected then
-
-        for k = 1, #Filho, 1 do
-
-        if tostring(selectedText) == ListaFeiticos[k].nome then
-
-          sheet.treinoCD = math.floor(totable(ListaFeiticos[k].cdfArray)[1] / 2  + 5)
-
-          if str == "Praticar Feitiços" then
-            chat:rolarDados("1d20+" .. (sheet.VIG or 0), "Prática Feitiço: " .. ListaFeiticos[k].nome .. " ( CD " .. sheet.treinoCD .. " )" .. (condition("fisico") and " Fisico " .. (-condition("fisico") or "") .. " = " .. (-condition("fisico") or "") + sheet.treinoCD or ""))
-          else
-            chat:rolarDados("1d20+" .. (sheet.INTE or 0), "Estudo Feitiço: " .. ListaFeiticos[k].nome .. " ( CD " .. sheet.treinoCD .. " )" .. (condition("mental") and " Mental " .. (-condition("mental") or "") .. " = " .. (-condition("mental") or "") + sheet.treinoCD or ""))
-          end
-
-        end
-
-        end
-
-        else
-
-        end;
-
-        end)
-
-        end
-
-      local function treinar()
-
-        local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-        local chat = mesaDoPersonagem.chat
-        local node = NDB.getRoot(sheet)
-
-        Dialogs.choose("Escolha o tipo de treino:", {"Atributo", "Estudar", "Estudar Feitiços", "Praticar", "Praticar Feitiços"},
-        function(selected, selectedIndex, selectedText)
-        
-          if selectedText == "Atributo" then
-
-            local atributos = {
-                ["Força"]       = "FOR",
-                ["Destreza"]    = "DES",
-                ["Vigor"]       = "VIG",
-                ["Inteligencia"]= "INTE",
-                ["Sabedoria"]   = "SAB",
-                ["Presença"]    = "PRE",
-            }
-
-            Dialogs.choose("Escolha o atributo para treinar:", {"Força", "Destreza", "Vigor", "Inteligencia", "Sabedoria", "Presença"},
-            function(selectedAttr, selectedAttrIndex, selectedAttrText)
-
-              local atributo = atributos[selectedAttrText]
-              local cd = tonumber(sheet[atributo] and sheet[atributo]) + 10
-              showMessage(sheet[atributo])
-
-              if selectedAttrText == "Força" or selectedAttrText == "Destreza" or selectedAttrText == "Vigor" then
-                chat:rolarDados("1d20+" .. (sheet.VIG or 0), "Treino de " .. selectedAttrText .. " (CD " .. cd .. ")")
-              else
-                chat:rolarDados("1d20+" .. (sheet.INTE or 0), "Treino de " .. selectedAttrText .. " (CD " .. cd .. ")")
-              end
-
-            end)
-
-          elseif selectedText == "Estudar" then
-            Dialogs.inputQuery("Cadastro", "Informe Seu Nome", "",
-            function (valorPreenchido)
-              sheet.treinoCD = tonumber(valorPreenchido)
-              if sheet.treinoCD == nil then
-                showMessage("Valor inválido. Por favor, insira um número.");
-                return;
-              end
-              local cd = tonumber(valorPreenchido)
-              if not cd then
-                showMessage("Valor inválido. Por favor, insira um número.")
-                return
-              end
-
-              sheet.treinoCD = cd
-              chat:rolarDados(
-                "1d20+" .. (tonumber(sheet.VIG) or 0),
-                "Estudo (CD " .. cd .. ") " .. (condition("mental") and "Mental " .. (-condition("mental") or "") .. " = " .. (-condition("mental") or "") + cd)
-              )
-            end,       
-
-            function()
-              showMessage("O usuário cancelou");
-            end);
-            
-          elseif selectedText == "Praticar" then
-           Dialogs.inputQuery("Cadastro", "Informe a CD do treino", "",
-            function (valorPreenchido)
-              local cd = tonumber(valorPreenchido)
-              if not cd then
-                showMessage("Valor inválido. Por favor, insira um número.")
-                return
-              end
-
-              sheet.treinoCD = cd
-              chat:rolarDados(
-                "1d20+" .. (tonumber(sheet.VIG) or 0),
-                "Pratica (CD " .. cd .. ") " .. (condition("fisico") and "Fisico " .. (-condition("fisico") or "") .. " = " .. (-condition("fisico") or "") + cd)
-              )
-            end,
-            function()
-              showMessage("O usuário cancelou")
-            end
-          )
-
-          elseif selectedText == "Estudar Feitiços" then
-            ListaDeFeiticoParaTreino(selectedText)
-          elseif selectedText == "Praticar Feitiços" then
-            ListaDeFeiticoParaTreino(selectedText)
-          end
-
-        end)
-
-      end
-
-
-        
-
-    
-
 
     obj.layout48 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout48:setParent(obj.tab7);
@@ -4307,55 +4258,6 @@ local function constructNew_HarryFicha()
     obj.tab9:setParent(obj.tabControl1);
     obj.tab9:setTitle("Feitiços");
     obj.tab9:setName("tab9");
-
-
-    local feiticoScript = require("feitico_script.lua");
-
-    function abrirPopUp()
-      return feiticoScript.abrirPopUp(self, sheet)
-    end
-
-    function condition(tipo)
-      return feiticoScript.condition(sheet, tipo)
-    end
-
-    function testezz()
-      return feiticoScript.testezz(sheet)
-    end
-
-    function tocarAudio()
-      return feiticoScript.tocarAudio(sheet)
-    end
-
-    function Aceitar()
-      return feiticoScript.Aceitar(self)
-    end
-
-    function definirEscola()
-      return feiticoScript.definirEscola(self, sheet)
-    end
-
-    function stats()
-      return feiticoScript.stats(self)
-    end
-
-    function rolarFeitico(onFinish)
-      return feiticoScript.rolarFeitico(self, sheet, onFinish)
-    end
-
-    function abrirPopupFeitico()
-      return feiticoScript.abrirPopupFeitico(self, sheet)
-    end
-
-    function ListaDeFeitico()
-      return feiticoScript.ListaDeFeitico(self, sheet)
-    end
-
-    function adicionarFeitico()
-      return feiticoScript.adicionarFeitico(self)
-    end
-  
-
 
     obj.scrollBox3 = GUI.fromHandle(_obj_newObject("scrollBox"));
     obj.scrollBox3:setParent(obj.tab9);
@@ -6649,2121 +6551,202 @@ local function constructNew_HarryFicha()
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
         function ()
-            local campos =
-                      {"DES","adivinhacao","azaracao","contraFeitico","encantamento","feitico","transmutacao","arteDasTrevas","fisico","mental","concentracao","acerto"}
-                      for x = 1, #campos, 1 do
-            
-                      if sheet[campos[x]] == nil then
-                      sheet[campos[x]] = 0
-                      end
-            
-                      end
+            require("harry_script.lua").onNodeReady(sheet)
         end);
 
     obj._e_event1 = obj.dataLink1:addEventListener("onChange",
         function (field, oldValue, newValue)
-            -- CORPO
-            
-                           sheet.ACR_Total = (tonumber(sheet.ACR_Grad) or 0) +
-                           (tonumber(sheet.AGI) or 0) +
-                           (tonumber(sheet.ACR_Out) or 0)
-            
-                           sheet.ATL_Total = (tonumber(sheet.ATL_Grad) or 0) +
-                           (tonumber(sheet.FOR) or 0) +
-                           (tonumber(sheet.ATL_Out) or 0)
-            
-                           sheet.COR_Total = (tonumber(sheet.COR_Grad) or 0) +
-                           (tonumber(sheet.LUT) or 0) +
-                           (tonumber(sheet.COR_Out) or 0)
-            
-                           sheet.FUR_Total = (tonumber(sheet.FUR_Grad) or 0) +
-                           (tonumber(sheet.AGI) or 0) +
-                           (tonumber(sheet.FUR_Out) or 0)
-            
-                           sheet.PRE_Total = (tonumber(sheet.PRE_Grad) or 0) +
-                           (tonumber(sheet.DES) or 0) +
-                           (tonumber(sheet.PRE_Out) or 0)
-            
-                           sheet.VEI_Total = (tonumber(sheet.VEI_Grad) or 0) +
-                           (tonumber(sheet.AGI) or 0) +
-                           (tonumber(sheet.VEI_Out) or 0)
-            
-                           -- MENTE
-            
-                           sheet.CON_Total = (tonumber(sheet.CON_Grad) or 0) +
-                           (tonumber(sheet.SAB) or 0) +
-                           (tonumber(sheet.CON_Out) or 0)
-            
-                           sheet.ENG_Total = (tonumber(sheet.ENG_Grad) or 0) +
-                           (tonumber(sheet.PRE) or 0) +
-                           (tonumber(sheet.ENG_Out) or 0)
-            
-                           sheet.INT_Total = (tonumber(sheet.INT_Grad) or 0) +
-                           (tonumber(sheet.PRE) or 0) +
-                           (tonumber(sheet.INT_Out) or 0)
-            
-                           sheet.INTU_Total = (tonumber(sheet.INTU_Grad) or 0) +
-                           (tonumber(sheet.SAB) or 0) +
-                           (tonumber(sheet.INTU_Out) or 0)
-            
-                           sheet.INV_Total = (tonumber(sheet.INV_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.INV_Out) or 0)
-            
-                           sheet.PERC_Total = (tonumber(sheet.PERC_Grad) or 0) +
-                           (tonumber(sheet.SAB) or 0) +
-                           (tonumber(sheet.PERC_Out) or 0)
-            
-                           sheet.PERS_Total = (tonumber(sheet.PERS_Grad) or 0) +
-                           (tonumber(sheet.PRE) or 0) +
-                           (tonumber(sheet.PERS_Out) or 0)
-            
-                           sheet.TRA_Total = (tonumber(sheet.TRA_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.TRA_Out) or 0)
-            
-                           -- CONHECIMENTOS
-            
-                           sheet.ATU_Total = (tonumber(sheet.ATU_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.ATU_Out) or 0)
-            
-                           sheet.C_ADI_Total = (tonumber(sheet.C_ADI_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_ADI_Out) or 0)
-            
-                           sheet.C_AZA_Total = (tonumber(sheet.C_AZA_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_AZA_Out) or 0)
-            
-                           sheet.C_CON_Total = (tonumber(sheet.C_CON_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_CON_Out) or 0)
-            
-                           sheet.C_CRI_Total = (tonumber(sheet.C_CRI_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_CRI_Out) or 0)
-            
-                           sheet.C_ENC_Total = (tonumber(sheet.C_ENC_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_ENC_Out) or 0)
-            
-                           sheet.C_FEI_Total = (tonumber(sheet.C_FEI_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_FEI_Out) or 0)
-            
-                           sheet.C_HER_Total = (tonumber(sheet.C_HER_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_HER_Out) or 0)
-            
-                           sheet.C_MAL_Total = (tonumber(sheet.C_MAL_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_MAL_Out) or 0)
-            
-                           sheet.C_POC_Total = (tonumber(sheet.C_POC_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_POC_Out) or 0)
-            
-                           sheet.C_RUN_Total = (tonumber(sheet.C_RUN_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_RUN_Out) or 0)
-            
-                           sheet.C_TRA_Total = (tonumber(sheet.C_TRA_Grad) or 0) +
-                           (tonumber(sheet.INTE) or 0) +
-                           (tonumber(sheet.C_TRA_Out) or 0)
-            
-                           -- DEFESAS
-            
-                           sheet.INI_Total = (tonumber(sheet.INI_Grad) or 0) +
-                           (tonumber(sheet.AGI) or 0) +
-                           (tonumber(sheet.INI_OUT) or 0)
-            
-                           sheet.APA_Total = (tonumber(sheet.APA_Grad) or 0) +
-                           (tonumber(sheet.LUT) or 0) +
-                           (tonumber(sheet.APA_Out) or 0)
-            
-                           sheet.FORT_Total = (tonumber(sheet.FORT_Grad) or 0) +
-                           (tonumber(sheet.VIG) or 0) +
-                           (tonumber(sheet.FORT_Out) or 0)
-            
-                           sheet.REF_Total = (tonumber(sheet.REF_Grad) or 0) +
-                           (tonumber(sheet.AGI) or 0) +
-                           (tonumber(sheet.REF_Out) or 0)
-            
-                           sheet.RES_Total = (tonumber(sheet.RES_Grad) or 0) +
-                           (tonumber(sheet.VIG) or 0) +
-                           (tonumber(sheet.RES_Out) or 0)
-            
-                           sheet.VON_Total = (tonumber(sheet.VON_Grad) or 0) +
-                           (tonumber(sheet.SAB) or 0) +
-                           (tonumber(sheet.VON_Out) or 0)
-            
-                           -- QUADRIBOL
-            
-                           sheet.ANTE_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.SAB) or 0)
-                           +
-                           (tonumber(sheet.ANTE_QUAD_OUT) or 0)
-            
-                           sheet.APAN_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.DES) or 0)
-                           +
-                           (tonumber(sheet.APAN_QUAD_OUT) or 0)
-            
-                           sheet.ATRA_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.INTE) or 0)
-                           +
-                           (tonumber(sheet.ATRA_QUAD_OUT) or 0)
-            
-                           sheet.DRI_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.AGI) or 0)
-                           +
-                           (tonumber(sheet.DRI_QUAD_OUT) or 0)
-            
-                           sheet.GOL_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.FOR) or 0)
-                           +
-                           (tonumber(sheet.GOL_QUAD_OUT) or 0)
-            
-                           sheet.FALTA_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.PRE) or 0)
-                           +
-                           (tonumber(sheet.FALTA_QUAD_OUT) or 0)
-            
-                           sheet.PASS_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.FOR) or 0)
-                           +
-                           (tonumber(sheet.PASS_QUAD_OUT) or 0)
-            
-                           sheet.REBA_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.FOR) or 0)
-                           +
-                           (tonumber(sheet.REBA_QUAD_OUT) or 0)
-            
-                           sheet.ROU_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.LUT) or 0)
-                           +
-                           (tonumber(sheet.ROU_QUAD_OUT) or 0)
-            
-                           sheet.VEL_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.AGI) or 0)
-                           +
-                           (tonumber(sheet.VEL_QUAD_OUT) or 0)
-            
-                           sheet.DEFE_QUAD_TOTAL = (tonumber(sheet.VEI_Grad) or 0) + (tonumber(sheet.AGI) or 0)
-                           +
-                           (tonumber(sheet.DEFE_QUAD_OUT) or 0)
-            
-                           sheet.GOL_MOD = cadaDez(sheet.GOL_QUAD_TOTAL + 10) .. "q"
-                           sheet.PAS_MOD = cadaDez(sheet.PASS_QUAD_TOTAL + 10) .. "q"
-                           sheet.REB_MOD = cadaDez(sheet.REBA_QUAD_TOTAL + 10) .. "q"
-                           sheet.VEL_MOD = cadaDez(sheet.VEL_QUAD_TOTAL + 10) .. "q"
-            
-                           local function pontos()
-            
-                           local corpo = tonumber(sheet.ACR_Grad or 0) + tonumber(sheet.ATL_Grad or 0)
-                           + tonumber(sheet.VEI_Grad or 0) + tonumber(sheet.FUR_Grad or 0)
-                           + tonumber(sheet.PRE_Grad or 0)
-            
-                           local mente = tonumber(sheet.ENG_Grad or 0) + tonumber(sheet.INTU_Grad or 0) +
-                           tonumber(sheet.INV_Grad or 0) + tonumber(sheet.PERC_Grad or 0) +
-                           tonumber(sheet.PERS_Grad or 0) + tonumber(sheet.TRA_Grad or 0) +
-                           tonumber(sheet.INT_Grad or 0) + tonumber(sheet.CON_Grad or 0)
-            
-                           local conhecimentos = tonumber(sheet.ATU_Grad or 0) + tonumber(sheet.C_ADI_Grad or 0)
-                           + tonumber(sheet.C_AZA_Grad or 0) +
-                           tonumber(sheet.C_CON_Grad or 0) + tonumber(sheet.C_CRI_Grad or 0) +
-                           tonumber(sheet.C_ENC_Grad or 0) + tonumber(sheet.C_FEI_Grad or 0) +
-                           tonumber(sheet.C_HER_Grad or 0) + tonumber(sheet.C_MAL_Grad or 0) +
-                           tonumber(sheet.C_POC_Grad or 0) + tonumber(sheet.C_RUN_Grad or 0) +
-                           tonumber(sheet.C_TRA_Grad or 0)
-            
-                           local feiticosCadastrados = NDB.getChildNodes(sheet.magias)
-                           local totalFeiticos = 0
-            
-                           for x = 1, #feiticosCadastrados, 1 do
-                           totalFeiticos = totalFeiticos + tonumber(feiticosCadastrados[x].GRAD or 0) 
-                           end
-            
-                           local feiticos = tonumber(sheet.ACR_Grad or 0) + tonumber(sheet.ATL_Grad or 0)
-                           + tonumber(sheet.VEI_Grad or 0) + tonumber(sheet.FUR_Grad or 0)
-                           + tonumber(sheet.PRE_Grad or 0)
-            
-                           local atributos = tonumber(sheet.AGI or 0) + tonumber(sheet.DES or 0) +
-                           tonumber(sheet.FOR or 0) + tonumber(sheet.LUT or 0) + tonumber(sheet.VIG or 0) +
-                           tonumber(sheet.INTE or 0) + tonumber(sheet.PRE or 0) + tonumber(sheet.SAB or 0)
-            
-                           local defesas = tonumber(sheet.INI_Grad or 0) + tonumber(sheet.APA_Grad or 0) +
-                           tonumber(sheet.FORT_Grad or 0) + tonumber(sheet.REF_Grad or 0) +
-                           tonumber(sheet.RES_Grad or 0) + tonumber(sheet.VON_Grad or 0)
-            
-                           sheet.pontosDefesas = "Defesas - " .. defesas
-                           sheet.pontosAtributos = "Atributos - " .. atributos * 2
-                           sheet.pontosPericias = "Pericias - " .. ((corpo + mente + conhecimentos) / 2)
-                           sheet.pontosFeiticos = "Feiticos - " .. totalFeiticos
-                           end
-            
-                           pontos()
+            require("harry_script.lua").onSheetChange(sheet)
         end);
 
     obj._e_event2 = obj.checkBox1:addEventListener("onChange",
         function ()
-            local mesaDoPersonagem = Firecast.getRoomOf(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local jogador = mesaDoPersonagem.meuJogador
-                                local root = NDB.getRoot(sheet)
-                                local nick = root.nomePersonagem or jogador.nick
-            
-                                if sheet.Fadigado then
-            
-                                    if self.Fadigado.text == "Exausto" and sheet.Fadigado then
-            
-                                        sheet.Fadigado = nil
-                                        chat:enviarMensagem(nick .. " estava Fatigado agora está " ..
-                                        self.Fadigado.text)
-            
-                                    elseif self.Fadigado.text == "Fadigado" and sheet.Exausto  then
-            
-                                        sheet.Exausto = nil
-                                        chat:enviarMensagem(nick .. " estava Exausto agora está " ..
-                                        self.Fadigado.text)
-            
-                                    elseif self.Fadigado.text == "Tiltado" and sheet.Frustrado  then
-            
-                                        sheet.Frustrado = nil
-                                        chat:enviarMensagem(nick .. " estava Frustrado agora está " ..
-                                        self.Fadigado.text)
-            
-                                    elseif self.Fadigado.text == "Frustrado" and sheet.Tiltado  then
-            
-                                        sheet.Tiltado = nil
-                                        chat:enviarMensagem(nick .. " estava Tiltado agora está " ..
-                                        self.Fadigado.text)
-                                        
-                                    else
-                                        chat:enviarMensagem(nick .. " está " .. self.Fadigado.text)
-            
-                                    end
-            
-                                else
-                                    chat:enviarMensagem(nick .. " não está mais " .. self.Fadigado.text)
-                                end
+            require("templates_script.lua").checkConditionChanged(self, sheet, "Fadigado")
         end);
 
     obj._e_event3 = obj.checkBox2:addEventListener("onChange",
         function ()
-            local mesaDoPersonagem = Firecast.getRoomOf(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local jogador = mesaDoPersonagem.meuJogador
-                                local root = NDB.getRoot(sheet)
-                                local nick = root.nomePersonagem or jogador.nick
-            
-                                if sheet.Exausto then
-            
-                                    if self.Exausto.text == "Exausto" and sheet.Fadigado then
-            
-                                        sheet.Fadigado = nil
-                                        chat:enviarMensagem(nick .. " estava Fatigado agora está " ..
-                                        self.Exausto.text)
-            
-                                    elseif self.Exausto.text == "Fadigado" and sheet.Exausto  then
-            
-                                        sheet.Exausto = nil
-                                        chat:enviarMensagem(nick .. " estava Exausto agora está " ..
-                                        self.Exausto.text)
-            
-                                    elseif self.Exausto.text == "Tiltado" and sheet.Frustrado  then
-            
-                                        sheet.Frustrado = nil
-                                        chat:enviarMensagem(nick .. " estava Frustrado agora está " ..
-                                        self.Exausto.text)
-            
-                                    elseif self.Exausto.text == "Frustrado" and sheet.Tiltado  then
-            
-                                        sheet.Tiltado = nil
-                                        chat:enviarMensagem(nick .. " estava Tiltado agora está " ..
-                                        self.Exausto.text)
-                                        
-                                    else
-                                        chat:enviarMensagem(nick .. " está " .. self.Exausto.text)
-            
-                                    end
-            
-                                else
-                                    chat:enviarMensagem(nick .. " não está mais " .. self.Exausto.text)
-                                end
+            require("templates_script.lua").checkConditionChanged(self, sheet, "Exausto")
         end);
 
     obj._e_event4 = obj.checkBox3:addEventListener("onChange",
         function ()
-            local mesaDoPersonagem = Firecast.getRoomOf(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local jogador = mesaDoPersonagem.meuJogador
-                                local root = NDB.getRoot(sheet)
-                                local nick = root.nomePersonagem or jogador.nick
-            
-                                if sheet.Frustrado then
-            
-                                    if self.Frustrado.text == "Exausto" and sheet.Fadigado then
-            
-                                        sheet.Fadigado = nil
-                                        chat:enviarMensagem(nick .. " estava Fatigado agora está " ..
-                                        self.Frustrado.text)
-            
-                                    elseif self.Frustrado.text == "Fadigado" and sheet.Exausto  then
-            
-                                        sheet.Exausto = nil
-                                        chat:enviarMensagem(nick .. " estava Exausto agora está " ..
-                                        self.Frustrado.text)
-            
-                                    elseif self.Frustrado.text == "Tiltado" and sheet.Frustrado  then
-            
-                                        sheet.Frustrado = nil
-                                        chat:enviarMensagem(nick .. " estava Frustrado agora está " ..
-                                        self.Frustrado.text)
-            
-                                    elseif self.Frustrado.text == "Frustrado" and sheet.Tiltado  then
-            
-                                        sheet.Tiltado = nil
-                                        chat:enviarMensagem(nick .. " estava Tiltado agora está " ..
-                                        self.Frustrado.text)
-                                        
-                                    else
-                                        chat:enviarMensagem(nick .. " está " .. self.Frustrado.text)
-            
-                                    end
-            
-                                else
-                                    chat:enviarMensagem(nick .. " não está mais " .. self.Frustrado.text)
-                                end
+            require("templates_script.lua").checkConditionChanged(self, sheet, "Frustrado")
         end);
 
     obj._e_event5 = obj.checkBox4:addEventListener("onChange",
         function ()
-            local mesaDoPersonagem = Firecast.getRoomOf(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local jogador = mesaDoPersonagem.meuJogador
-                                local root = NDB.getRoot(sheet)
-                                local nick = root.nomePersonagem or jogador.nick
-            
-                                if sheet.Tiltado then
-            
-                                    if self.Tiltado.text == "Exausto" and sheet.Fadigado then
-            
-                                        sheet.Fadigado = nil
-                                        chat:enviarMensagem(nick .. " estava Fatigado agora está " ..
-                                        self.Tiltado.text)
-            
-                                    elseif self.Tiltado.text == "Fadigado" and sheet.Exausto  then
-            
-                                        sheet.Exausto = nil
-                                        chat:enviarMensagem(nick .. " estava Exausto agora está " ..
-                                        self.Tiltado.text)
-            
-                                    elseif self.Tiltado.text == "Tiltado" and sheet.Frustrado  then
-            
-                                        sheet.Frustrado = nil
-                                        chat:enviarMensagem(nick .. " estava Frustrado agora está " ..
-                                        self.Tiltado.text)
-            
-                                    elseif self.Tiltado.text == "Frustrado" and sheet.Tiltado  then
-            
-                                        sheet.Tiltado = nil
-                                        chat:enviarMensagem(nick .. " estava Tiltado agora está " ..
-                                        self.Tiltado.text)
-                                        
-                                    else
-                                        chat:enviarMensagem(nick .. " está " .. self.Tiltado.text)
-            
-                                    end
-            
-                                else
-                                    chat:enviarMensagem(nick .. " não está mais " .. self.Tiltado.text)
-                                end
+            require("templates_script.lua").checkConditionChanged(self, sheet, "Tiltado")
         end);
 
     obj._e_event6 = obj.rectangle11:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.AGILIDADE.text == "AGILIDADE" or
-                            self.AGILIDADE.text == "DESTREZA" or
-                            self.AGILIDADE.text == "FORÇA" or
-                            self.AGILIDADE.text == "LUTA" or
-                            self.AGILIDADE.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.AGI_OUT or sheet.AGI) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.AGILIDADE.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "AGILIDADE", "AGI", "AGI_OUT")
         end);
 
     obj._e_event7 = obj.rectangle12:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.DESTREZA.text == "AGILIDADE" or
-                            self.DESTREZA.text == "DESTREZA" or
-                            self.DESTREZA.text == "FORÇA" or
-                            self.DESTREZA.text == "LUTA" or
-                            self.DESTREZA.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.DES_OUT or sheet.DES) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.DESTREZA.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "DESTREZA", "DES", "DES_OUT")
         end);
 
     obj._e_event8 = obj.rectangle13:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.FORCA.text == "AGILIDADE" or
-                            self.FORCA.text == "DESTREZA" or
-                            self.FORCA.text == "FORÇA" or
-                            self.FORCA.text == "LUTA" or
-                            self.FORCA.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.FOR_OUT or sheet.FOR) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.FORCA.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "FORCA", "FOR", "FOR_OUT")
         end);
 
     obj._e_event9 = obj.rectangle14:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.LUTA.text == "AGILIDADE" or
-                            self.LUTA.text == "DESTREZA" or
-                            self.LUTA.text == "FORÇA" or
-                            self.LUTA.text == "LUTA" or
-                            self.LUTA.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.LUT_OUT or sheet.LUT) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.LUTA.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "LUTA", "LUT", "LUT_OUT")
         end);
 
     obj._e_event10 = obj.rectangle15:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.VIGOR.text == "AGILIDADE" or
-                            self.VIGOR.text == "DESTREZA" or
-                            self.VIGOR.text == "FORÇA" or
-                            self.VIGOR.text == "LUTA" or
-                            self.VIGOR.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.VIG_OUT or sheet.VIG) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.VIGOR.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "VIGOR", "VIG", "VIG_OUT")
         end);
 
     obj._e_event11 = obj.rectangle17:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.INTELIGENCIA.text == "AGILIDADE" or
-                            self.INTELIGENCIA.text == "DESTREZA" or
-                            self.INTELIGENCIA.text == "FORÇA" or
-                            self.INTELIGENCIA.text == "LUTA" or
-                            self.INTELIGENCIA.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.INTE_OUT or sheet.INTE) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.INTELIGENCIA.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "INTELIGENCIA", "INTE", "INTE_OUT")
         end);
 
     obj._e_event12 = obj.rectangle18:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.PRESENCA.text == "AGILIDADE" or
-                            self.PRESENCA.text == "DESTREZA" or
-                            self.PRESENCA.text == "FORÇA" or
-                            self.PRESENCA.text == "LUTA" or
-                            self.PRESENCA.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.PRES_OUT or sheet.PRE) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.PRESENCA.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "PRESENCA", "PRE", "PRES_OUT")
         end);
 
     obj._e_event13 = obj.rectangle19:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-                            local nodeMain = NDB.getRoot(sheet)
-            
-                            local function condition()
-            
-                            if self.SABEDORIA.text == "AGILIDADE" or
-                            self.SABEDORIA.text == "DESTREZA" or
-                            self.SABEDORIA.text == "FORÇA" or
-                            self.SABEDORIA.text == "LUTA" or
-                            self.SABEDORIA.text == "VIGOR" then
-            
-                            if sheet.Exausto then
-                            return -5
-                            end
-            
-                            if sheet.Fadigado then
-                            return -2
-                            end
-            
-                            else
-            
-                            if sheet.Tiltado then
-                            return -5
-                            end
-            
-                            if sheet.Frustrado then
-                            return -2
-                            end
-            
-                            end
-            
-                            return nil
-                            end
-            
-            
-                            chat:rolarDados("1d20 + " .. (sheet.SAB_OUT or sheet.SAB) .. (condition()
-                            and (condition()) or ""),
-                            (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.SABEDORIA.text,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollAtributo(self, sheet, "SABEDORIA", "SAB", "SAB_OUT")
         end);
 
     obj._e_event14 = obj.rectangle20:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Acrobacia.text == "Acrobacia" or
-                                self.Acrobacia.text == "Atletismo" or
-                                self.Acrobacia.text == "Corpo-a-Corpo" or
-                                self.Acrobacia.text == "Furtividade" or
-                                self.Acrobacia.text == "Prestidigitação" or
-                                self.Acrobacia.text == "Veiculos Mágicos" or
-                                self.Acrobacia.text == "Iniciativa" or
-                                self.Acrobacia.text == "Aparar" or
-                                self.Acrobacia.text == "Fortitude" or
-                                self.Acrobacia.text == "Reflexo" or
-                                self.Acrobacia.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.ACR_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Acrobacia.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Acrobacia", "ACR_Total")
         end);
 
     obj._e_event15 = obj.rectangle21:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Atletismo.text == "Acrobacia" or
-                                self.Atletismo.text == "Atletismo" or
-                                self.Atletismo.text == "Corpo-a-Corpo" or
-                                self.Atletismo.text == "Furtividade" or
-                                self.Atletismo.text == "Prestidigitação" or
-                                self.Atletismo.text == "Veiculos Mágicos" or
-                                self.Atletismo.text == "Iniciativa" or
-                                self.Atletismo.text == "Aparar" or
-                                self.Atletismo.text == "Fortitude" or
-                                self.Atletismo.text == "Reflexo" or
-                                self.Atletismo.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.ATL_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Atletismo.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Atletismo", "ATL_Total")
         end);
 
     obj._e_event16 = obj.rectangle22:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.CorpoACorpo.text == "Acrobacia" or
-                                self.CorpoACorpo.text == "Atletismo" or
-                                self.CorpoACorpo.text == "Corpo-a-Corpo" or
-                                self.CorpoACorpo.text == "Furtividade" or
-                                self.CorpoACorpo.text == "Prestidigitação" or
-                                self.CorpoACorpo.text == "Veiculos Mágicos" or
-                                self.CorpoACorpo.text == "Iniciativa" or
-                                self.CorpoACorpo.text == "Aparar" or
-                                self.CorpoACorpo.text == "Fortitude" or
-                                self.CorpoACorpo.text == "Reflexo" or
-                                self.CorpoACorpo.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.COR_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.CorpoACorpo.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "CorpoACorpo", "COR_Total")
         end);
 
     obj._e_event17 = obj.rectangle23:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Furtividade.text == "Acrobacia" or
-                                self.Furtividade.text == "Atletismo" or
-                                self.Furtividade.text == "Corpo-a-Corpo" or
-                                self.Furtividade.text == "Furtividade" or
-                                self.Furtividade.text == "Prestidigitação" or
-                                self.Furtividade.text == "Veiculos Mágicos" or
-                                self.Furtividade.text == "Iniciativa" or
-                                self.Furtividade.text == "Aparar" or
-                                self.Furtividade.text == "Fortitude" or
-                                self.Furtividade.text == "Reflexo" or
-                                self.Furtividade.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.FUR_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Furtividade.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Furtividade", "FUR_Total")
         end);
 
     obj._e_event18 = obj.rectangle24:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Prestidigitacao.text == "Acrobacia" or
-                                self.Prestidigitacao.text == "Atletismo" or
-                                self.Prestidigitacao.text == "Corpo-a-Corpo" or
-                                self.Prestidigitacao.text == "Furtividade" or
-                                self.Prestidigitacao.text == "Prestidigitação" or
-                                self.Prestidigitacao.text == "Veiculos Mágicos" or
-                                self.Prestidigitacao.text == "Iniciativa" or
-                                self.Prestidigitacao.text == "Aparar" or
-                                self.Prestidigitacao.text == "Fortitude" or
-                                self.Prestidigitacao.text == "Reflexo" or
-                                self.Prestidigitacao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.PRE_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Prestidigitacao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Prestidigitacao", "PRE_Total")
         end);
 
     obj._e_event19 = obj.rectangle25:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.VeiculosMagicos.text == "Acrobacia" or
-                                self.VeiculosMagicos.text == "Atletismo" or
-                                self.VeiculosMagicos.text == "Corpo-a-Corpo" or
-                                self.VeiculosMagicos.text == "Furtividade" or
-                                self.VeiculosMagicos.text == "Prestidigitação" or
-                                self.VeiculosMagicos.text == "Veiculos Mágicos" or
-                                self.VeiculosMagicos.text == "Iniciativa" or
-                                self.VeiculosMagicos.text == "Aparar" or
-                                self.VeiculosMagicos.text == "Fortitude" or
-                                self.VeiculosMagicos.text == "Reflexo" or
-                                self.VeiculosMagicos.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.VEI_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.VeiculosMagicos.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "VeiculosMagicos", "VEI_Total")
         end);
 
     obj._e_event20 = obj.rectangle26:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Concentracao.text == "Acrobacia" or
-                                self.Concentracao.text == "Atletismo" or
-                                self.Concentracao.text == "Corpo-a-Corpo" or
-                                self.Concentracao.text == "Furtividade" or
-                                self.Concentracao.text == "Prestidigitação" or
-                                self.Concentracao.text == "Veiculos Mágicos" or
-                                self.Concentracao.text == "Iniciativa" or
-                                self.Concentracao.text == "Aparar" or
-                                self.Concentracao.text == "Fortitude" or
-                                self.Concentracao.text == "Reflexo" or
-                                self.Concentracao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.CON_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Concentracao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Concentracao", "CON_Total")
         end);
 
     obj._e_event21 = obj.rectangle27:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Enganacao.text == "Acrobacia" or
-                                self.Enganacao.text == "Atletismo" or
-                                self.Enganacao.text == "Corpo-a-Corpo" or
-                                self.Enganacao.text == "Furtividade" or
-                                self.Enganacao.text == "Prestidigitação" or
-                                self.Enganacao.text == "Veiculos Mágicos" or
-                                self.Enganacao.text == "Iniciativa" or
-                                self.Enganacao.text == "Aparar" or
-                                self.Enganacao.text == "Fortitude" or
-                                self.Enganacao.text == "Reflexo" or
-                                self.Enganacao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.ENG_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Enganacao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Enganacao", "ENG_Total")
         end);
 
     obj._e_event22 = obj.rectangle28:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Intimidacao.text == "Acrobacia" or
-                                self.Intimidacao.text == "Atletismo" or
-                                self.Intimidacao.text == "Corpo-a-Corpo" or
-                                self.Intimidacao.text == "Furtividade" or
-                                self.Intimidacao.text == "Prestidigitação" or
-                                self.Intimidacao.text == "Veiculos Mágicos" or
-                                self.Intimidacao.text == "Iniciativa" or
-                                self.Intimidacao.text == "Aparar" or
-                                self.Intimidacao.text == "Fortitude" or
-                                self.Intimidacao.text == "Reflexo" or
-                                self.Intimidacao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.INT_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Intimidacao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Intimidacao", "INT_Total")
         end);
 
     obj._e_event23 = obj.rectangle29:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Intuicao.text == "Acrobacia" or
-                                self.Intuicao.text == "Atletismo" or
-                                self.Intuicao.text == "Corpo-a-Corpo" or
-                                self.Intuicao.text == "Furtividade" or
-                                self.Intuicao.text == "Prestidigitação" or
-                                self.Intuicao.text == "Veiculos Mágicos" or
-                                self.Intuicao.text == "Iniciativa" or
-                                self.Intuicao.text == "Aparar" or
-                                self.Intuicao.text == "Fortitude" or
-                                self.Intuicao.text == "Reflexo" or
-                                self.Intuicao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.INTU_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Intuicao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Intuicao", "INTU_Total")
         end);
 
     obj._e_event24 = obj.rectangle30:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Investigacao.text == "Acrobacia" or
-                                self.Investigacao.text == "Atletismo" or
-                                self.Investigacao.text == "Corpo-a-Corpo" or
-                                self.Investigacao.text == "Furtividade" or
-                                self.Investigacao.text == "Prestidigitação" or
-                                self.Investigacao.text == "Veiculos Mágicos" or
-                                self.Investigacao.text == "Iniciativa" or
-                                self.Investigacao.text == "Aparar" or
-                                self.Investigacao.text == "Fortitude" or
-                                self.Investigacao.text == "Reflexo" or
-                                self.Investigacao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.INV_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Investigacao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Investigacao", "INV_Total")
         end);
 
     obj._e_event25 = obj.rectangle31:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Percepcao.text == "Acrobacia" or
-                                self.Percepcao.text == "Atletismo" or
-                                self.Percepcao.text == "Corpo-a-Corpo" or
-                                self.Percepcao.text == "Furtividade" or
-                                self.Percepcao.text == "Prestidigitação" or
-                                self.Percepcao.text == "Veiculos Mágicos" or
-                                self.Percepcao.text == "Iniciativa" or
-                                self.Percepcao.text == "Aparar" or
-                                self.Percepcao.text == "Fortitude" or
-                                self.Percepcao.text == "Reflexo" or
-                                self.Percepcao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.PERC_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Percepcao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Percepcao", "PERC_Total")
         end);
 
     obj._e_event26 = obj.rectangle32:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Persuacao.text == "Acrobacia" or
-                                self.Persuacao.text == "Atletismo" or
-                                self.Persuacao.text == "Corpo-a-Corpo" or
-                                self.Persuacao.text == "Furtividade" or
-                                self.Persuacao.text == "Prestidigitação" or
-                                self.Persuacao.text == "Veiculos Mágicos" or
-                                self.Persuacao.text == "Iniciativa" or
-                                self.Persuacao.text == "Aparar" or
-                                self.Persuacao.text == "Fortitude" or
-                                self.Persuacao.text == "Reflexo" or
-                                self.Persuacao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.PERS_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Persuacao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Persuacao", "PERS_Total")
         end);
 
     obj._e_event27 = obj.rectangle33:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Tratamento.text == "Acrobacia" or
-                                self.Tratamento.text == "Atletismo" or
-                                self.Tratamento.text == "Corpo-a-Corpo" or
-                                self.Tratamento.text == "Furtividade" or
-                                self.Tratamento.text == "Prestidigitação" or
-                                self.Tratamento.text == "Veiculos Mágicos" or
-                                self.Tratamento.text == "Iniciativa" or
-                                self.Tratamento.text == "Aparar" or
-                                self.Tratamento.text == "Fortitude" or
-                                self.Tratamento.text == "Reflexo" or
-                                self.Tratamento.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.TRA_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Tratamento.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Tratamento", "TRA_Total")
         end);
 
     obj._e_event28 = obj.rectangle34:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Atualidades.text == "Acrobacia" or
-                                self.Atualidades.text == "Atletismo" or
-                                self.Atualidades.text == "Corpo-a-Corpo" or
-                                self.Atualidades.text == "Furtividade" or
-                                self.Atualidades.text == "Prestidigitação" or
-                                self.Atualidades.text == "Veiculos Mágicos" or
-                                self.Atualidades.text == "Iniciativa" or
-                                self.Atualidades.text == "Aparar" or
-                                self.Atualidades.text == "Fortitude" or
-                                self.Atualidades.text == "Reflexo" or
-                                self.Atualidades.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.ATU_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Atualidades.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Atualidades", "ATU_Total")
         end);
 
     obj._e_event29 = obj.rectangle35:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Adivinhacao.text == "Acrobacia" or
-                                self.Adivinhacao.text == "Atletismo" or
-                                self.Adivinhacao.text == "Corpo-a-Corpo" or
-                                self.Adivinhacao.text == "Furtividade" or
-                                self.Adivinhacao.text == "Prestidigitação" or
-                                self.Adivinhacao.text == "Veiculos Mágicos" or
-                                self.Adivinhacao.text == "Iniciativa" or
-                                self.Adivinhacao.text == "Aparar" or
-                                self.Adivinhacao.text == "Fortitude" or
-                                self.Adivinhacao.text == "Reflexo" or
-                                self.Adivinhacao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_ADI_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Adivinhacao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Adivinhacao", "C_ADI_Total")
         end);
 
     obj._e_event30 = obj.rectangle36:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Azaracao.text == "Acrobacia" or
-                                self.Azaracao.text == "Atletismo" or
-                                self.Azaracao.text == "Corpo-a-Corpo" or
-                                self.Azaracao.text == "Furtividade" or
-                                self.Azaracao.text == "Prestidigitação" or
-                                self.Azaracao.text == "Veiculos Mágicos" or
-                                self.Azaracao.text == "Iniciativa" or
-                                self.Azaracao.text == "Aparar" or
-                                self.Azaracao.text == "Fortitude" or
-                                self.Azaracao.text == "Reflexo" or
-                                self.Azaracao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_AZA_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Azaracao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Azaracao", "C_AZA_Total")
         end);
 
     obj._e_event31 = obj.rectangle37:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.ContraFeitico.text == "Acrobacia" or
-                                self.ContraFeitico.text == "Atletismo" or
-                                self.ContraFeitico.text == "Corpo-a-Corpo" or
-                                self.ContraFeitico.text == "Furtividade" or
-                                self.ContraFeitico.text == "Prestidigitação" or
-                                self.ContraFeitico.text == "Veiculos Mágicos" or
-                                self.ContraFeitico.text == "Iniciativa" or
-                                self.ContraFeitico.text == "Aparar" or
-                                self.ContraFeitico.text == "Fortitude" or
-                                self.ContraFeitico.text == "Reflexo" or
-                                self.ContraFeitico.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_CON_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.ContraFeitico.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "ContraFeitico", "C_CON_Total")
         end);
 
     obj._e_event32 = obj.rectangle38:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.CriaturasMagicas.text == "Acrobacia" or
-                                self.CriaturasMagicas.text == "Atletismo" or
-                                self.CriaturasMagicas.text == "Corpo-a-Corpo" or
-                                self.CriaturasMagicas.text == "Furtividade" or
-                                self.CriaturasMagicas.text == "Prestidigitação" or
-                                self.CriaturasMagicas.text == "Veiculos Mágicos" or
-                                self.CriaturasMagicas.text == "Iniciativa" or
-                                self.CriaturasMagicas.text == "Aparar" or
-                                self.CriaturasMagicas.text == "Fortitude" or
-                                self.CriaturasMagicas.text == "Reflexo" or
-                                self.CriaturasMagicas.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_CRI_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.CriaturasMagicas.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "CriaturasMagicas", "C_CRI_Total")
         end);
 
     obj._e_event33 = obj.rectangle39:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Encantamentos.text == "Acrobacia" or
-                                self.Encantamentos.text == "Atletismo" or
-                                self.Encantamentos.text == "Corpo-a-Corpo" or
-                                self.Encantamentos.text == "Furtividade" or
-                                self.Encantamentos.text == "Prestidigitação" or
-                                self.Encantamentos.text == "Veiculos Mágicos" or
-                                self.Encantamentos.text == "Iniciativa" or
-                                self.Encantamentos.text == "Aparar" or
-                                self.Encantamentos.text == "Fortitude" or
-                                self.Encantamentos.text == "Reflexo" or
-                                self.Encantamentos.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_ENC_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Encantamentos.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Encantamentos", "C_ENC_Total")
         end);
 
     obj._e_event34 = obj.rectangle40:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Feiticos.text == "Acrobacia" or
-                                self.Feiticos.text == "Atletismo" or
-                                self.Feiticos.text == "Corpo-a-Corpo" or
-                                self.Feiticos.text == "Furtividade" or
-                                self.Feiticos.text == "Prestidigitação" or
-                                self.Feiticos.text == "Veiculos Mágicos" or
-                                self.Feiticos.text == "Iniciativa" or
-                                self.Feiticos.text == "Aparar" or
-                                self.Feiticos.text == "Fortitude" or
-                                self.Feiticos.text == "Reflexo" or
-                                self.Feiticos.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_FEI_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Feiticos.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Feiticos", "C_FEI_Total")
         end);
 
     obj._e_event35 = obj.rectangle41:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Herbologia.text == "Acrobacia" or
-                                self.Herbologia.text == "Atletismo" or
-                                self.Herbologia.text == "Corpo-a-Corpo" or
-                                self.Herbologia.text == "Furtividade" or
-                                self.Herbologia.text == "Prestidigitação" or
-                                self.Herbologia.text == "Veiculos Mágicos" or
-                                self.Herbologia.text == "Iniciativa" or
-                                self.Herbologia.text == "Aparar" or
-                                self.Herbologia.text == "Fortitude" or
-                                self.Herbologia.text == "Reflexo" or
-                                self.Herbologia.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_HER_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Herbologia.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Herbologia", "C_HER_Total")
         end);
 
     obj._e_event36 = obj.rectangle42:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.DCAT.text == "Acrobacia" or
-                                self.DCAT.text == "Atletismo" or
-                                self.DCAT.text == "Corpo-a-Corpo" or
-                                self.DCAT.text == "Furtividade" or
-                                self.DCAT.text == "Prestidigitação" or
-                                self.DCAT.text == "Veiculos Mágicos" or
-                                self.DCAT.text == "Iniciativa" or
-                                self.DCAT.text == "Aparar" or
-                                self.DCAT.text == "Fortitude" or
-                                self.DCAT.text == "Reflexo" or
-                                self.DCAT.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_MAL_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.DCAT.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "DCAT", "C_MAL_Total")
         end);
 
     obj._e_event37 = obj.rectangle43:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Pocoes.text == "Acrobacia" or
-                                self.Pocoes.text == "Atletismo" or
-                                self.Pocoes.text == "Corpo-a-Corpo" or
-                                self.Pocoes.text == "Furtividade" or
-                                self.Pocoes.text == "Prestidigitação" or
-                                self.Pocoes.text == "Veiculos Mágicos" or
-                                self.Pocoes.text == "Iniciativa" or
-                                self.Pocoes.text == "Aparar" or
-                                self.Pocoes.text == "Fortitude" or
-                                self.Pocoes.text == "Reflexo" or
-                                self.Pocoes.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_POC_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Pocoes.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Pocoes", "C_POC_Total")
         end);
 
     obj._e_event38 = obj.rectangle44:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Runas.text == "Acrobacia" or
-                                self.Runas.text == "Atletismo" or
-                                self.Runas.text == "Corpo-a-Corpo" or
-                                self.Runas.text == "Furtividade" or
-                                self.Runas.text == "Prestidigitação" or
-                                self.Runas.text == "Veiculos Mágicos" or
-                                self.Runas.text == "Iniciativa" or
-                                self.Runas.text == "Aparar" or
-                                self.Runas.text == "Fortitude" or
-                                self.Runas.text == "Reflexo" or
-                                self.Runas.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_RUN_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Runas.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Runas", "C_RUN_Total")
         end);
 
     obj._e_event39 = obj.rectangle45:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Transmutacao.text == "Acrobacia" or
-                                self.Transmutacao.text == "Atletismo" or
-                                self.Transmutacao.text == "Corpo-a-Corpo" or
-                                self.Transmutacao.text == "Furtividade" or
-                                self.Transmutacao.text == "Prestidigitação" or
-                                self.Transmutacao.text == "Veiculos Mágicos" or
-                                self.Transmutacao.text == "Iniciativa" or
-                                self.Transmutacao.text == "Aparar" or
-                                self.Transmutacao.text == "Fortitude" or
-                                self.Transmutacao.text == "Reflexo" or
-                                self.Transmutacao.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.C_TRA_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Transmutacao.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Transmutacao", "C_TRA_Total")
         end);
 
     obj._e_event40 = obj.button1:addEventListener("onClick",
@@ -8773,308 +6756,32 @@ local function constructNew_HarryFicha()
 
     obj._e_event41 = obj.rectangle46:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Iniciativa.text == "Acrobacia" or
-                                self.Iniciativa.text == "Atletismo" or
-                                self.Iniciativa.text == "Corpo-a-Corpo" or
-                                self.Iniciativa.text == "Furtividade" or
-                                self.Iniciativa.text == "Prestidigitação" or
-                                self.Iniciativa.text == "Veiculos Mágicos" or
-                                self.Iniciativa.text == "Iniciativa" or
-                                self.Iniciativa.text == "Aparar" or
-                                self.Iniciativa.text == "Fortitude" or
-                                self.Iniciativa.text == "Reflexo" or
-                                self.Iniciativa.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.INI_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Iniciativa.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Iniciativa", "INI_Total")
         end);
 
     obj._e_event42 = obj.rectangle47:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Aparar.text == "Acrobacia" or
-                                self.Aparar.text == "Atletismo" or
-                                self.Aparar.text == "Corpo-a-Corpo" or
-                                self.Aparar.text == "Furtividade" or
-                                self.Aparar.text == "Prestidigitação" or
-                                self.Aparar.text == "Veiculos Mágicos" or
-                                self.Aparar.text == "Iniciativa" or
-                                self.Aparar.text == "Aparar" or
-                                self.Aparar.text == "Fortitude" or
-                                self.Aparar.text == "Reflexo" or
-                                self.Aparar.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.APA_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Aparar.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Aparar", "APA_Total")
         end);
 
     obj._e_event43 = obj.rectangle48:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Fortitude.text == "Acrobacia" or
-                                self.Fortitude.text == "Atletismo" or
-                                self.Fortitude.text == "Corpo-a-Corpo" or
-                                self.Fortitude.text == "Furtividade" or
-                                self.Fortitude.text == "Prestidigitação" or
-                                self.Fortitude.text == "Veiculos Mágicos" or
-                                self.Fortitude.text == "Iniciativa" or
-                                self.Fortitude.text == "Aparar" or
-                                self.Fortitude.text == "Fortitude" or
-                                self.Fortitude.text == "Reflexo" or
-                                self.Fortitude.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.FORT_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Fortitude.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Fortitude", "FORT_Total")
         end);
 
     obj._e_event44 = obj.rectangle49:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Reflexo.text == "Acrobacia" or
-                                self.Reflexo.text == "Atletismo" or
-                                self.Reflexo.text == "Corpo-a-Corpo" or
-                                self.Reflexo.text == "Furtividade" or
-                                self.Reflexo.text == "Prestidigitação" or
-                                self.Reflexo.text == "Veiculos Mágicos" or
-                                self.Reflexo.text == "Iniciativa" or
-                                self.Reflexo.text == "Aparar" or
-                                self.Reflexo.text == "Fortitude" or
-                                self.Reflexo.text == "Reflexo" or
-                                self.Reflexo.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.REF_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Reflexo.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Reflexo", "REF_Total")
         end);
 
     obj._e_event45 = obj.rectangle50:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Resistencia.text == "Acrobacia" or
-                                self.Resistencia.text == "Atletismo" or
-                                self.Resistencia.text == "Corpo-a-Corpo" or
-                                self.Resistencia.text == "Furtividade" or
-                                self.Resistencia.text == "Prestidigitação" or
-                                self.Resistencia.text == "Veiculos Mágicos" or
-                                self.Resistencia.text == "Iniciativa" or
-                                self.Resistencia.text == "Aparar" or
-                                self.Resistencia.text == "Fortitude" or
-                                self.Resistencia.text == "Reflexo" or
-                                self.Resistencia.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.RES_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Resistencia.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Resistencia", "RES_Total")
         end);
 
     obj._e_event46 = obj.rectangle51:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.Vontade.text == "Acrobacia" or
-                                self.Vontade.text == "Atletismo" or
-                                self.Vontade.text == "Corpo-a-Corpo" or
-                                self.Vontade.text == "Furtividade" or
-                                self.Vontade.text == "Prestidigitação" or
-                                self.Vontade.text == "Veiculos Mágicos" or
-                                self.Vontade.text == "Iniciativa" or
-                                self.Vontade.text == "Aparar" or
-                                self.Vontade.text == "Fortitude" or
-                                self.Vontade.text == "Reflexo" or
-                                self.Vontade.text == "Resistencia" then
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.VON_Total or 0) .. (condition()
-                                and (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.Vontade.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollLabelComEdit(self, sheet, "Vontade", "VON_Total")
         end);
 
     obj._e_event47 = obj.button2:addEventListener("onClick",
@@ -9089,7 +6796,7 @@ local function constructNew_HarryFicha()
 
     obj._e_event49 = obj.button4:addEventListener("onClick",
         function (event)
-            treinar()
+            require("tarefas_script.lua").treinar(sheet)
         end);
 
     obj._e_event50 = obj.button5:addEventListener("onClick",
@@ -9099,475 +6806,57 @@ local function constructNew_HarryFicha()
 
     obj._e_event51 = obj.rectangle56:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.ANTE_QUAD.text == "Antecipar" or
-                                self.ANTE_QUAD.text == "Atrapalhar" or
-                                self.ANTE_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.ANTE_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.ANTE_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "ANTE_QUAD", "ANTE_QUAD_TOTAL")
         end);
 
     obj._e_event52 = obj.rectangle57:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.APAN_QUAD.text == "Antecipar" or
-                                self.APAN_QUAD.text == "Atrapalhar" or
-                                self.APAN_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.APAN_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.APAN_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "APAN_QUAD", "APAN_QUAD_TOTAL")
         end);
 
     obj._e_event53 = obj.rectangle58:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.ATRA_QUAD.text == "Antecipar" or
-                                self.ATRA_QUAD.text == "Atrapalhar" or
-                                self.ATRA_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.ATRA_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.ATRA_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "ATRA_QUAD", "ATRA_QUAD_TOTAL")
         end);
 
     obj._e_event54 = obj.rectangle59:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.DEFE_QUAD.text == "Antecipar" or
-                                self.DEFE_QUAD.text == "Atrapalhar" or
-                                self.DEFE_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.DEFE_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.DEFE_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "DEFE_QUAD", "DEFE_QUAD_TOTAL")
         end);
 
     obj._e_event55 = obj.rectangle60:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.DRI_QUAD.text == "Antecipar" or
-                                self.DRI_QUAD.text == "Atrapalhar" or
-                                self.DRI_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.DRI_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.DRI_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "DRI_QUAD", "DRI_QUAD_TOTAL")
         end);
 
     obj._e_event56 = obj.rectangle61:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.GOL_QUAD.text == "Antecipar" or
-                                self.GOL_QUAD.text == "Atrapalhar" or
-                                self.GOL_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.GOL_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.GOL_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "GOL_QUAD", "GOL_QUAD_TOTAL")
         end);
 
     obj._e_event57 = obj.rectangle62:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.FALTA_QUAD.text == "Antecipar" or
-                                self.FALTA_QUAD.text == "Atrapalhar" or
-                                self.FALTA_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.FALTA_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.FALTA_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "FALTA_QUAD", "FALTA_QUAD_TOTAL")
         end);
 
     obj._e_event58 = obj.rectangle63:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.PASS_QUAD.text == "Antecipar" or
-                                self.PASS_QUAD.text == "Atrapalhar" or
-                                self.PASS_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.PASS_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.PASS_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "PASS_QUAD", "PASS_QUAD_TOTAL")
         end);
 
     obj._e_event59 = obj.rectangle64:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.REBA_QUAD.text == "Antecipar" or
-                                self.REBA_QUAD.text == "Atrapalhar" or
-                                self.REBA_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.REBA_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.REBA_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "REBA_QUAD", "REBA_QUAD_TOTAL")
         end);
 
     obj._e_event60 = obj.rectangle65:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.ROU_QUAD.text == "Antecipar" or
-                                self.ROU_QUAD.text == "Atrapalhar" or
-                                self.ROU_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.ROU_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.ROU_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "ROU_QUAD", "ROU_QUAD_TOTAL")
         end);
 
     obj._e_event61 = obj.rectangle66:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                                local chat = mesaDoPersonagem.chat
-                                local nodeMain = NDB.getRoot(sheet)
-            
-                                local function condition()
-            
-                                if self.VEL_QUAD.text == "Antecipar" or
-                                self.VEL_QUAD.text == "Atrapalhar" or
-                                self.VEL_QUAD.text == "Marcar Falta" then
-            
-                                if sheet.Tiltado then
-                                return -5
-                                end
-            
-                                if sheet.Frustrado then
-                                return -2
-                                end
-            
-                                else
-            
-                                if sheet.Exausto then
-                                return -5
-                                end
-            
-                                if sheet.Fadigado then
-                                return -2
-                                end
-            
-                                end
-            
-                                return nil
-                                end
-            
-                                chat:rolarDados("1d20 + " .. (sheet.VEL_QUAD_TOTAL or 0) .. (condition() and
-                                (condition()) or ""),
-                                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.VEL_QUAD.text,
-                                function (rolado)
-            
-                                end);
+            require("templates_script.lua").rollQuadribol(self, sheet, "VEL_QUAD", "VEL_QUAD_TOTAL")
         end);
 
     obj._e_event62 = obj.edit157:addEventListener("onUserChange",
@@ -9606,7 +6895,7 @@ local function constructNew_HarryFicha()
         function (field, oldValue, newValue)
             -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
             
-                        local minhaMesa = Firecast.getRoomOf(sheet);
+                        local minhaMesa = Firecast.getRoomOf(NDB.getRoot(sheet));
                         local chat = minhaMesa.chat;
             
                         if oldValue == nil then
@@ -9626,7 +6915,7 @@ local function constructNew_HarryFicha()
         function (field, oldValue, newValue)
             -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
             
-                        local minhaMesa = Firecast.getRoomOf(sheet);
+                        local minhaMesa = Firecast.getRoomOf(NDB.getRoot(sheet));
                         local chat = minhaMesa.chat;
             
                         if oldValue == nil then
@@ -9652,7 +6941,7 @@ local function constructNew_HarryFicha()
 
     obj._e_event74 = obj.button6:addEventListener("onClick",
         function (event)
-            adicionarFeitico()
+            require("feitico_script.lua").adicionarFeitico(self)
         end);
 
     obj._e_event75 = obj.button7:addEventListener("onClick",
@@ -9673,8 +6962,8 @@ local function constructNew_HarryFicha()
                         local feiticosCadastrados = NDB.getChildNodes(sheet.magias)
                         local falhas = ""
             
-                        ListaFeiticos = {} -- new array
-                        ListaNomesFeitico = {} -- new array
+                        local ListaFeiticos = {} -- new array
+                        local ListaNomesFeitico = {} -- new array
             
                         for i = 1, #baseDeFeiticos, 1 do
                         ListaFeiticos[i] = Raiz["f" .. i]
@@ -9699,9 +6988,9 @@ local function constructNew_HarryFicha()
             
                         feiticosCadastrados[k].escola = ListaFeiticos[i].escola
                         feiticosCadastrados[k].tipo = ListaFeiticos[i].cast
-                        feiticosCadastrados[k].Desc = ListaFeiticos[i].Desc
-                        feiticosCadastrados[k].Efeito = ListaFeiticos[i].Efeito
-                        feiticosCadastrados[k].Bonus = ListaFeiticos[i].Bonus
+                        feiticosCadastrados[k].Desc = ListaFeiticos[i].desc
+                        feiticosCadastrados[k].Efeito = ListaFeiticos[i].efeito
+                        feiticosCadastrados[k].Bonus = ListaFeiticos[i].bonus
                         feiticosCadastrados[k].defesa = ListaFeiticos[i].defesa
             
                         feiticosCadastrados[k].CD = totable(ListaFeiticos[i].cdfArray)[node.CD_grad]
@@ -9720,9 +7009,9 @@ local function constructNew_HarryFicha()
                         node.Duracao_array = ListaFeiticos[i].duracaoArray
                         node.escola = ListaFeiticos[i].escola
                         node.tipo = ListaFeiticos[i].cast
-                        node.Desc = ListaFeiticos[i].Desc
-                        node.Efeito = ListaFeiticos[i].Efeito
-                        node.Bonus = ListaFeiticos[i].Bonus
+                        node.Desc = ListaFeiticos[i].desc
+                        node.Efeito = ListaFeiticos[i].efeito
+                        node.Bonus = ListaFeiticos[i].bonus
                         node.defesa = ListaFeiticos[i].defesa
             
                         node.CD = totable(ListaFeiticos[i].cdfArray)[node.CD_grad]
@@ -9858,943 +7147,254 @@ local function constructNew_HarryFicha()
 
     obj._e_event82 = obj.edit171:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Grad_grad or 1) or 1
-                                    self.GradGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Grad", newValue)
         end);
 
     obj._e_event83 = obj.dataLink4:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Grad_grad or 1) or 1
-                                    self.GradGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Grad", newValue)
         end);
 
     obj._e_event84 = obj.Grad:addEventListener("onMouseEnter",
         function ()
-            self.Grad.hint = sheet.Grad
+            require("templates_script.lua").updateFieldHint(self, sheet, "Grad")
         end);
 
     obj._e_event85 = obj.button9:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Grad_array)
-                                    local grad = tonumber(node.Grad_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Grad_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Grad_grad = result
-                                            sheet.Grad = array[result]
-                                            node.Grad_grad = result
-                                            node.Grad = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Grad", -1)
         end);
 
     obj._e_event86 = obj.button10:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Grad_array)
-                                    local grad = tonumber(node.Grad_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Grad_grad = result
-                                            sheet.Grad = array[result]
-                                            node.Grad_grad = result
-                                            node.Grad = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Grad_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Grad_grad = result
-                                        sheet.Grad = array[result]
-                                        node.Grad_grad = result
-                                        node.Grad = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Grad", 1)
         end);
 
     obj._e_event87 = obj.edit174:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.CD_grad or 1) or 1
-                                    self.CDGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "CD", newValue)
         end);
 
     obj._e_event88 = obj.dataLink5:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.CD_grad or 1) or 1
-                                    self.CDGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "CD", newValue)
         end);
 
     obj._e_event89 = obj.CD:addEventListener("onMouseEnter",
         function ()
-            self.CD.hint = sheet.CD
+            require("templates_script.lua").updateFieldHint(self, sheet, "CD")
         end);
 
     obj._e_event90 = obj.button11:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.CD_array)
-                                    local grad = tonumber(node.CD_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.CD_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.CD_grad = result
-                                            sheet.CD = array[result]
-                                            node.CD_grad = result
-                                            node.CD = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "CD", -1)
         end);
 
     obj._e_event91 = obj.button12:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.CD_array)
-                                    local grad = tonumber(node.CD_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.CD_grad = result
-                                            sheet.CD = array[result]
-                                            node.CD_grad = result
-                                            node.CD = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.CD_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.CD_grad = result
-                                        sheet.CD = array[result]
-                                        node.CD_grad = result
-                                        node.CD = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "CD", 1)
         end);
 
     obj._e_event92 = obj.edit177:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Efeito_grad or 1) or 1
-                                    self.EfeitoGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Efeito", newValue)
         end);
 
     obj._e_event93 = obj.dataLink6:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Efeito_grad or 1) or 1
-                                    self.EfeitoGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Efeito", newValue)
         end);
 
     obj._e_event94 = obj.Efeito:addEventListener("onMouseEnter",
         function ()
-            self.Efeito.hint = sheet.Efeito
+            require("templates_script.lua").updateFieldHint(self, sheet, "Efeito")
         end);
 
     obj._e_event95 = obj.button13:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Efeito_array)
-                                    local grad = tonumber(node.Efeito_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Efeito_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Efeito_grad = result
-                                            sheet.Efeito = array[result]
-                                            node.Efeito_grad = result
-                                            node.Efeito = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Efeito", -1)
         end);
 
     obj._e_event96 = obj.button14:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Efeito_array)
-                                    local grad = tonumber(node.Efeito_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Efeito_grad = result
-                                            sheet.Efeito = array[result]
-                                            node.Efeito_grad = result
-                                            node.Efeito = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Efeito_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Efeito_grad = result
-                                        sheet.Efeito = array[result]
-                                        node.Efeito_grad = result
-                                        node.Efeito = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Efeito", 1)
         end);
 
     obj._e_event97 = obj.edit180:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Poder_grad or 1) or 1
-                                    self.PoderGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Poder", newValue)
         end);
 
     obj._e_event98 = obj.dataLink7:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Poder_grad or 1) or 1
-                                    self.PoderGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Poder", newValue)
         end);
 
     obj._e_event99 = obj.Poder:addEventListener("onMouseEnter",
         function ()
-            self.Poder.hint = sheet.Poder
+            require("templates_script.lua").updateFieldHint(self, sheet, "Poder")
         end);
 
     obj._e_event100 = obj.button15:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Poder_array)
-                                    local grad = tonumber(node.Poder_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Poder_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Poder_grad = result
-                                            sheet.Poder = array[result]
-                                            node.Poder_grad = result
-                                            node.Poder = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Poder", -1)
         end);
 
     obj._e_event101 = obj.button16:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Poder_array)
-                                    local grad = tonumber(node.Poder_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Poder_grad = result
-                                            sheet.Poder = array[result]
-                                            node.Poder_grad = result
-                                            node.Poder = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Poder_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Poder_grad = result
-                                        sheet.Poder = array[result]
-                                        node.Poder_grad = result
-                                        node.Poder = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Poder", 1)
         end);
 
     obj._e_event102 = obj.edit183:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Dano_grad or 1) or 1
-                                    self.DanoGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Dano", newValue)
         end);
 
     obj._e_event103 = obj.dataLink8:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Dano_grad or 1) or 1
-                                    self.DanoGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Dano", newValue)
         end);
 
     obj._e_event104 = obj.Dano:addEventListener("onMouseEnter",
         function ()
-            self.Dano.hint = sheet.Dano
+            require("templates_script.lua").updateFieldHint(self, sheet, "Dano")
         end);
 
     obj._e_event105 = obj.button17:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Dano_array)
-                                    local grad = tonumber(node.Dano_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Dano_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Dano_grad = result
-                                            sheet.Dano = array[result]
-                                            node.Dano_grad = result
-                                            node.Dano = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Dano", -1)
         end);
 
     obj._e_event106 = obj.button18:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Dano_array)
-                                    local grad = tonumber(node.Dano_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Dano_grad = result
-                                            sheet.Dano = array[result]
-                                            node.Dano_grad = result
-                                            node.Dano = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Dano_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Dano_grad = result
-                                        sheet.Dano = array[result]
-                                        node.Dano_grad = result
-                                        node.Dano = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Dano", 1)
         end);
 
     obj._e_event107 = obj.edit186:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Bonus_grad or 1) or 1
-                                    self.BonusGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Bonus", newValue)
         end);
 
     obj._e_event108 = obj.dataLink9:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Bonus_grad or 1) or 1
-                                    self.BonusGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Bonus", newValue)
         end);
 
     obj._e_event109 = obj.Bonus:addEventListener("onMouseEnter",
         function ()
-            self.Bonus.hint = sheet.Bonus
+            require("templates_script.lua").updateFieldHint(self, sheet, "Bonus")
         end);
 
     obj._e_event110 = obj.button19:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Bonus_array)
-                                    local grad = tonumber(node.Bonus_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Bonus_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Bonus_grad = result
-                                            sheet.Bonus = array[result]
-                                            node.Bonus_grad = result
-                                            node.Bonus = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Bonus", -1)
         end);
 
     obj._e_event111 = obj.button20:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Bonus_array)
-                                    local grad = tonumber(node.Bonus_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Bonus_grad = result
-                                            sheet.Bonus = array[result]
-                                            node.Bonus_grad = result
-                                            node.Bonus = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Bonus_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Bonus_grad = result
-                                        sheet.Bonus = array[result]
-                                        node.Bonus_grad = result
-                                        node.Bonus = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Bonus", 1)
         end);
 
     obj._e_event112 = obj.edit189:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Range_grad or 1) or 1
-                                    self.RangeGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Range", newValue)
         end);
 
     obj._e_event113 = obj.dataLink10:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Range_grad or 1) or 1
-                                    self.RangeGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Range", newValue)
         end);
 
     obj._e_event114 = obj.Range:addEventListener("onMouseEnter",
         function ()
-            self.Range.hint = sheet.Range
+            require("templates_script.lua").updateFieldHint(self, sheet, "Range")
         end);
 
     obj._e_event115 = obj.button21:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Range_array)
-                                    local grad = tonumber(node.Range_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Range_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Range_grad = result
-                                            sheet.Range = array[result]
-                                            node.Range_grad = result
-                                            node.Range = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Range", -1)
         end);
 
     obj._e_event116 = obj.button22:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Range_array)
-                                    local grad = tonumber(node.Range_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Range_grad = result
-                                            sheet.Range = array[result]
-                                            node.Range_grad = result
-                                            node.Range = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Range_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Range_grad = result
-                                        sheet.Range = array[result]
-                                        node.Range_grad = result
-                                        node.Range = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Range", 1)
         end);
 
     obj._e_event117 = obj.edit192:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Area_grad or 1) or 1
-                                    self.AreaGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Area", newValue)
         end);
 
     obj._e_event118 = obj.dataLink11:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Area_grad or 1) or 1
-                                    self.AreaGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Area", newValue)
         end);
 
     obj._e_event119 = obj.Area:addEventListener("onMouseEnter",
         function ()
-            self.Area.hint = sheet.Area
+            require("templates_script.lua").updateFieldHint(self, sheet, "Area")
         end);
 
     obj._e_event120 = obj.button23:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Area_array)
-                                    local grad = tonumber(node.Area_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Area_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Area_grad = result
-                                            sheet.Area = array[result]
-                                            node.Area_grad = result
-                                            node.Area = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Area", -1)
         end);
 
     obj._e_event121 = obj.button24:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Area_array)
-                                    local grad = tonumber(node.Area_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Area_grad = result
-                                            sheet.Area = array[result]
-                                            node.Area_grad = result
-                                            node.Area = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Area_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Area_grad = result
-                                        sheet.Area = array[result]
-                                        node.Area_grad = result
-                                        node.Area = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Area", 1)
         end);
 
     obj._e_event122 = obj.edit195:addEventListener("onChange",
         function ()
-            local grad = tonumber(newValue or sheet.Duracao_grad or 1) or 1
-                                    self.DuracaoGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Duracao", newValue)
         end);
 
     obj._e_event123 = obj.dataLink12:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local grad = tonumber(newValue or sheet.Duracao_grad or 1) or 1
-                                    self.DuracaoGradBadge.text = tostring(grad - 1)
+            require("templates_script.lua").updateGradBadge(self, sheet, "Duracao", newValue)
         end);
 
     obj._e_event124 = obj.Duracao:addEventListener("onMouseEnter",
         function ()
-            self.Duracao.hint = sheet.Duracao
+            require("templates_script.lua").updateFieldHint(self, sheet, "Duracao")
         end);
 
     obj._e_event125 = obj.button25:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Duracao_array)
-                                    local grad = tonumber(node.Duracao_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if (grad - 1) == graduacoes then
-                                        if node.Duracao_name == "Grad" then
-                                        return
-                                        end
-                                    end
-            
-                                        if grad > 1 then
-            
-                                            result = result - 1
-                                            sheet.Duracao_grad = result
-                                            sheet.Duracao = array[result]
-                                            node.Duracao_grad = result
-                                            node.Duracao = array[result]
-                                        
-                                        end
-                                    
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Duracao", -1)
         end);
 
     obj._e_event126 = obj.button26:addEventListener("onClick",
         function (event)
-            local node = self.rclMagias.selectedNode;
-                                    local array = totable(node.Duracao_array)
-                                    local grad = tonumber(node.Duracao_grad)
-                                    local result = grad
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                    (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad > graduacoes then
-            
-                                        if grad < #array then
-            
-                                            result = result + 1
-                                            sheet.Duracao_grad = result
-                                            sheet.Duracao = array[result]
-                                            node.Duracao_grad = result
-                                            node.Duracao = array[result]
-            
-                                        
-                                        end
-            
-                                    else 
-                                    
-                                    if sheet.Duracao_name == "Grad" then
-            
-                                        result = result + 1
-                                        sheet.Duracao_grad = result
-                                        sheet.Duracao = array[result]
-                                        node.Duracao_grad = result
-                                        node.Duracao = array[result]
-            
-                                    end
-                                    
-            
-                                    end
-            
-                                    local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                            (node.Area_grad - 1) + (node.Duracao_grad - 1))
-            
-                                    if node.Grad == tonumber(graduacoes) then
-                                        self.rectangle.color = "gray"
-                                    elseif node.Grad > tonumber(graduacoes) then
-                                        self.rectangle.color = "green"
-                                    elseif node.Grad < tonumber(graduacoes) then
-                                        self.rectangle.color = "red"
-                                    end
+            require("templates_script.lua").changeSpellLevel(self, sheet, "Duracao", 1)
         end);
 
     obj._e_event127 = obj.button27:addEventListener("onClick",
         function (event)
-            rolarFeitico()
+            require("feitico_script.lua").abrirPopupFeitico(self, sheet)
         end);
 
-    obj._e_event128 = obj.button27:addEventListener("onMenu",
-        function (x, y, event)
-            abrirPopupFeitico()
-        end);
-
-    obj._e_event129 = obj.button28:addEventListener("onClick",
+    obj._e_event128 = obj.button28:addEventListener("onClick",
         function (event)
-            ListaDeFeitico()
+            require("feitico_script.lua").ListaDeFeitico(self, sheet)
         end);
 
-    obj._e_event130 = obj.button29:addEventListener("onClick",
+    obj._e_event129 = obj.button29:addEventListener("onClick",
         function (event)
-            Aceitar()
+            require("feitico_script.lua").Aceitar(self)
         end);
 
-    obj._e_event131 = obj.button30:addEventListener("onClick",
+    obj._e_event130 = obj.button30:addEventListener("onClick",
         function (event)
-            abrirPopUp()
+            require("feitico_script.lua").abrirPopUp(self, sheet)
         end);
 
-    obj._e_event132 = obj.rectangle94:addEventListener("onDblClick",
+    obj._e_event131 = obj.rectangle94:addEventListener("onDblClick",
         function (event)
-            local minhaMesa = Firecast.getRoomOf(sheet);
+            local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                              local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                               local chat = minhaMesa.chat;
-                              local node = self.rclMagias.selectedNode;
                               Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                               dialogs.DT_INFORMATION,
                               {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
@@ -10806,11 +7406,11 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event133 = obj.rectangle96:addEventListener("onDblClick",
+    obj._e_event132 = obj.rectangle96:addEventListener("onDblClick",
         function (event)
-            local minhaMesa = Firecast.getRoomOf(sheet);
+            local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                              local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                               local chat = minhaMesa.chat;
-                              local node = self.rclMagias.selectedNode;
                               Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                               dialogs.DT_INFORMATION,
                               {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
@@ -10822,11 +7422,11 @@ local function constructNew_HarryFicha()
                               end)
         end);
 
-    obj._e_event134 = obj.rectangle98:addEventListener("onDblClick",
+    obj._e_event133 = obj.rectangle98:addEventListener("onDblClick",
         function (event)
-            local minhaMesa = Firecast.getRoomOf(sheet);
+            local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                                local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                                 local chat = minhaMesa.chat;
-                                local node = self.rclMagias.selectedNode;
                                 Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                                 dialogs.DT_INFORMATION,
                                 {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
@@ -10838,11 +7438,11 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event135 = obj.rectangle100:addEventListener("onDblClick",
+    obj._e_event134 = obj.rectangle100:addEventListener("onDblClick",
         function (event)
-            local minhaMesa = Firecast.getRoomOf(sheet);
+            local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                                local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                                 local chat = minhaMesa.chat;
-                                local node = self.rclMagias.selectedNode;
                                 Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                                 dialogs.DT_INFORMATION,
                                 {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
@@ -10854,18 +7454,17 @@ local function constructNew_HarryFicha()
                                 end)
         end);
 
-    obj._e_event136 = obj.button31:addEventListener("onClick",
+    obj._e_event135 = obj.button31:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
-    obj._e_event137 = obj.button32:addEventListener("onClick",
+    obj._e_event136 = obj.button32:addEventListener("onClick",
         function (event)
             self.popUp.visible = false
         end);
 
     function obj:_releaseEvents()
-        __o_rrpgObjs.removeEventListenerById(self._e_event137);
         __o_rrpgObjs.removeEventListenerById(self._e_event136);
         __o_rrpgObjs.removeEventListenerById(self._e_event135);
         __o_rrpgObjs.removeEventListenerById(self._e_event134);

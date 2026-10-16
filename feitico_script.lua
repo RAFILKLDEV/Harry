@@ -5,6 +5,31 @@ require("utils.lua")
 
 local feiticoScript = {}
 
+local function getSpellNode(self, sheet)
+    local node = nil
+
+    if self ~= nil then
+        if self.boxDetalhesDoItem ~= nil then node = self.boxDetalhesDoItem.node end
+
+        if node == nil and self.rclMagias ~= nil then
+            node = self.rclMagias.selectedNode
+        end
+    end
+
+    if node == nil and sheet ~= nil and sheet.Grad ~= nil then node = sheet end
+
+    return node
+end
+
+local function getRootSheet(self, sheet)
+    local node = getSpellNode(self, sheet)
+
+    if node ~= nil then return NDB.getRoot(node) end
+    if sheet ~= nil then return NDB.getRoot(sheet) end
+
+    return nil
+end
+
 local function condition(sheet, tipo)
     if tipo == "fisico" then
         if sheet.Exausto then return -5 end
@@ -20,73 +45,56 @@ local function condition(sheet, tipo)
 end
 
 local function definirEscola(self, sheet)
-    local node = self.rclMagias.selectedNode
+    local node = getSpellNode(self, sheet)
+    local root = getRootSheet(self, sheet)
 
-    if node == nil then return nil end
+    if node == nil or root == nil then return nil end
 
     if node.escola == "Adivinhação" then
-        return sheet.C_ADI_Total
+        return root.C_ADI_Total
     elseif node.escola == "Azaração" then
-        return sheet.C_AZA_Total
+        return root.C_AZA_Total
     elseif node.escola == "Contra-Feitiço" then
-        return sheet.C_CON_Total
+        return root.C_CON_Total
     elseif node.escola == "Encantamento" then
-        return sheet.C_ENC_Total
+        return root.C_ENC_Total
     elseif node.escola == "Feitiço" then
-        return sheet.C_FEI_Total
+        return root.C_FEI_Total
     elseif node.escola == "Transmutação" then
-        return sheet.C_TRA_Total
+        return root.C_TRA_Total
     elseif node.escola == "Maldição" then
-        return sheet.C_MAL_Total
+        return root.C_MAL_Total
     end
 
     return nil
 end
 
-local function stats(self)
-    local node = self.rclMagias.selectedNode
-    local msg = ""
-
-    if node == nil then return msg end
-
-    if node.Grad ~= "" then
-        msg = msg .. "[§K10]" .. "Grad: " .. "[§K1]" .. (node.Grad or "")
-    end
-
-    if node.CD ~= "" then
-        msg = msg .. "[§K10]" .. " CD: " .. "[§K1]" .. (node.CD or "")
-    end
-
-    if node.Dano ~= "" then
-        msg = msg .. "[§K10]" .. " Dano: " .. "[§K1]" .. (node.Dano or "")
-    end
-
-    if node.Poder ~= "" then
-        msg = msg .. "[§K10]" .. " Poder: " .. "[§K1]" .. (node.Poder or "")
-    end
-
-    if node.Range ~= "" then
-        msg = msg .. "[§K10]" .. " Range: " .. "[§K1]" .. (node.Range or "")
-    end
-
-    if node.Area ~= "" then
-        msg = msg .. "[§K10]" .. " Area: " .. "[§K1]" .. (node.Area or "")
-    end
-
-    if node.Duracao ~= "" then
-        msg = msg .. "[§K10]" .. " Duração: " .. "[§K1]" ..
-                  (node.Duracao or "")
-    end
-
-    return msg
+local function textoChat(value)
+    local texto = tostring(value or "")
+    texto = texto:gsub("&#[xX]20;", " "):gsub("&#32;", " ")
+                 :gsub("&nbsp;", " "):gsub("\\%*", "*")
+    return (texto:gsub("%s+", " "):match("^%s*(.-)%s*$"))
 end
 
-local function formatMod(v)
-    if v == nil or v == 0 then return "" end
+local function stats(self, sheet)
+    local node = getSpellNode(self, sheet)
+    local partes = {}
 
-    if v > 0 then return "+" .. v end
+    if node == nil then return "" end
 
-    return tostring(v)
+    for _, campo in ipairs({{"Grad", "Graduação"}, {"CD", "CD"},
+                            {"Dano", "Dano"}, {"Poder", "Poder"},
+                            {"Range", "Alcance"}, {"Area", "Área"},
+                            {"Duracao", "Duração"}, {"Ataque", "Ataque"}}) do
+        local valor = textoChat(node[campo[1]])
+        local obrigatorio = campo[1] == "Grad" or campo[1] == "CD"
+        if valor ~= "" and valor ~= "-" and
+            (obrigatorio or tonumber(valor) ~= 0) then
+            partes[#partes + 1] = "[§K10]" .. campo[2] .. ": [§K1]" .. valor
+        end
+    end
+
+    return table.concat(partes, " [§K8]| ")
 end
 
 local function addSignedPart(parts, value)
@@ -107,10 +115,42 @@ local function addRollDetail(details, label, value)
     if value == 0 then return end
 
     if value > 0 then
-        details[#details + 1] = "[§K8] " .. label .. " [§K1]+" .. value
+        details[#details + 1] = "[§K8]" .. label .. " [§K1]+" .. value
     else
-        details[#details + 1] = "[§K8] " .. label .. " [§K1]" .. value
+        details[#details + 1] = "[§K8]" .. label .. " [§K1]" .. value
     end
+end
+
+local function rolarLocal(chat, expressao, mensagem)
+    local rolagem = rrpg.interpretarRolagem(expressao)
+
+    rolagem:rolarLocalmente()
+
+    local termos = {}
+    for _, operacao in ipairs(rolagem.ops or {}) do
+        if operacao.tipo == "dado" then
+            for _, resultado in ipairs(operacao.resultados or {}) do
+                termos[#termos + 1] = tostring(resultado)
+            end
+        elseif operacao.tipo == "imediato" then
+            local valor = tonumber(operacao.valor) or 0
+            if valor ~= 0 then
+                termos[#termos + 1] = (valor > 0 and "+" or "-") .. math.abs(valor)
+            end
+        end
+    end
+
+    local detalhamento = table.concat(termos, " ")
+    if detalhamento == "" then detalhamento = tostring(rolagem.resultado) end
+
+    chat:enviarMensagem((mensagem or "Rolagem") .. " [§K8]| [§K1]" ..
+                            detalhamento .. " = [§K10]" .. tostring(rolagem.resultado))
+
+    return rolagem
+end
+
+local function isAttackSpell(node)
+    return node ~= nil and (node.tipo == "Ataque" or node.tipo == "Ataque Base")
 end
 
 local function calcularConc(preview)
@@ -118,7 +158,8 @@ local function calcularConc(preview)
                            (preview.Dano_grad - 1) +
                            (preview.Range_grad - 1) +
                            (preview.Area_grad - 1) +
-                           (preview.Duracao_grad - 1)
+                           (preview.Duracao_grad - 1) +
+                           ((preview.Ataque_grad or 1) - 1)
 
     local excesso = graduacoes - preview.Grad
 
@@ -130,19 +171,23 @@ end
 local function copiarEstado(node, preview)
     local original = {}
 
-    for k, _ in pairs(preview) do original[k] = node[k] end
+    for k, _ in pairs(preview) do
+        original[#original + 1] = {campo = k, valor = node[k]}
+    end
 
     return original
 end
 
 function feiticoScript.abrirPopUp(self, sheet)
     local controle = self:findControlByName("popUp")
+    local node = getSpellNode(self, sheet)
+    local root = getRootSheet(self, sheet)
 
     if controle ~= nil then controle.visible = true end
+    if node == nil or root == nil then return end
 
     local raiz = NDB.load("listfetico.xml")
     local filhos = NDB.getChildNodes(raiz)
-    local root = NDB.getRoot(sheet)
 
     local listaFeiticos = {}
     local listaNomesFeitico = {}
@@ -154,7 +199,7 @@ function feiticoScript.abrirPopUp(self, sheet)
     end
 
     for k = 1, #filhos, 1 do
-        if sheet.nome == listaFeiticos[k].nome then
+        if node.nome == listaFeiticos[k].nome then
             root.escola2 = listaFeiticos[k].escola
             root.tipo2 = listaFeiticos[k].cast
             root.Efeito2 = listaFeiticos[k].efeito
@@ -166,15 +211,15 @@ function feiticoScript.abrirPopUp(self, sheet)
             root.Area2 = totable(listaFeiticos[k].areaArray)[1]
             root.Duracao2 = totable(listaFeiticos[k].duracaoArray)[1]
 
-            root.escola = sheet.escola
-            root.tipo = sheet.tipo
-            root.Grad = sheet.Grad
-            root.CD = sheet.CD
-            root.Dano = sheet.Dano
-            root.Poder = sheet.Poder
-            root.Range = sheet.Range
-            root.Area = sheet.Area
-            root.Duracao = sheet.escola
+            root.escola = node.escola
+            root.tipo = node.tipo
+            root.Grad = node.Grad
+            root.CD = node.CD
+            root.Dano = node.Dano
+            root.Poder = node.Poder
+            root.Range = node.Range
+            root.Area = node.Area
+            root.Duracao = node.Duracao
 
             root.Desc = listaFeiticos[k].desc
             root.Efeito = listaFeiticos[k].efeito
@@ -185,27 +230,13 @@ end
 
 function feiticoScript.condition(sheet, tipo) return condition(sheet, tipo) end
 
-function feiticoScript.testezz(sheet)
-    local node = NDB.getRoot(sheet)
-    showMessage(node.soundControl)
-end
-
-function feiticoScript.tocarAudio(sheet)
-    local minhaMesa = Firecast.getRoomOf(sheet)
-    local node = NDB.getRoot(sheet)
-
-    if node.soundControl == "ligado" and sheet.Sound ~= nil then
-        local track = "/audios/" .. sheet.Sound
-        minhaMesa.audioPlayer:play(track, 0.8)
-    end
-end
-
 function feiticoScript.Aceitar(self)
     Dialogs.confirmOkCancel("Deseja Apagar esse Feitiço ?",
                             function(confirmado)
         if confirmado then
-            local node = self.boxDetalhesDoItem.node
-            NDB.deleteNode(node)
+            local node = getSpellNode(self)
+
+            if node ~= nil then NDB.deleteNode(node) end
         end
     end)
 end
@@ -214,167 +245,160 @@ function feiticoScript.definirEscola(self, sheet)
     return definirEscola(self, sheet)
 end
 
-function feiticoScript.stats(self) return stats(self) end
+function feiticoScript.stats(self, sheet) return stats(self, sheet) end
 
 function feiticoScript.rolarFeitico(self, sheet, onFinish)
-    local minhaMesa = Firecast.getRoomOf(sheet)
-    local chat = minhaMesa.chat
-    local root = NDB.getRoot(sheet)
-    local nick = root.nomePersonagem or minhaMesa.meuJogador.nick
-    local node = self.rclMagias.selectedNode
-    local defesaTipo = "Distancia"
-    local defesaValor = 0
+    local node = getSpellNode(self, sheet)
+    local root = getRootSheet(self, sheet)
 
     local function finalizarRolagem()
         if onFinish then
-            onFinish()
+            local callback = onFinish
             onFinish = nil
+            callback()
         end
     end
 
-    if node == nil then
+    if node == nil or root == nil then
         finalizarRolagem()
         return
     end
 
-    if sheet.mental == nil then sheet.mental = 0 end
+    local minhaMesa = Firecast.getRoomOf(root)
+    if minhaMesa == nil or minhaMesa.chat == nil then
+        finalizarRolagem()
+        Dialogs.showMessage("Abra a ficha em uma mesa para rolar o feitiço.")
+        return
+    end
+
+    local chat = minhaMesa.chat
+    local cd = tonumber(node.CD)
+    if cd == nil then
+        finalizarRolagem()
+        Dialogs.showMessage("Defina uma CD numérica para este feitiço antes de rolar.")
+        return
+    end
+
+    local nome = textoChat(node.nome)
+    if nome == "" then nome = "Feitiço" end
+    local nick = textoChat(root.nomePersonagem)
+    if nick == "" then
+        nick = textoChat(minhaMesa.meuJogador and minhaMesa.meuJogador.nick)
+    end
+    if nick == "" then nick = "Conjurador" end
 
     local grad = tonumber(node.Grad) or 0
-    local conc = tonumber(root.concentracao)
-    if conc == nil then conc = tonumber(sheet.concentracao) or 0 end
-    local mental = tonumber(condition(sheet, "mental") or 0) or 0
-    local escolaTotal = tonumber(definirEscola(self, sheet) or 0) or 0
+    local conc = tonumber(root.concentracao) or 0
+    local mental = condition(root, "mental") or 0
+    local escolaTotal = tonumber(definirEscola(self, sheet)) or 0
     local escola = math.floor(escolaTotal / 2)
     local partesRolagem = {"1d20"}
     local detalhesRolagem = {}
 
+    -- Concentração já é descontada do teste; a comparação usa a CD base.
     addSignedPart(partesRolagem, grad)
     addSignedPart(partesRolagem, escola)
     addSignedPart(partesRolagem, -conc)
     addSignedPart(partesRolagem, mental)
-
-    addRollDetail(detalhesRolagem, "Grad", grad)
+    addRollDetail(detalhesRolagem, "Graduação", grad)
     addRollDetail(detalhesRolagem, "Escola", escola)
     addRollDetail(detalhesRolagem, "Concentração", -conc)
     addRollDetail(detalhesRolagem, "Mental", mental)
 
-    local somatoria = table.concat(partesRolagem, "")
-    local mensagemRolagem = (node.nome or "Feitiço")
-    local resumoRolagem = table.concat(detalhesRolagem, " ")
-
-    if resumoRolagem ~= "" then
-        mensagemRolagem = mensagemRolagem .. " " .. resumoRolagem
+    local function mensagemTeste(titulo, detalhes)
+        local mensagem = "[§K10]" .. titulo
+        if #detalhes > 0 then
+            mensagem = mensagem .. " [§K8]| " .. table.concat(detalhes, " [§K8]| ")
+        end
+        return mensagem
     end
 
-    chat:enviarMensagem("----------------")
+    chat:enviarMensagem("[§K6]" .. nome .. " [§K8]| [§K1]" .. nick)
+    local rolagem = rolarLocal(chat, table.concat(partesRolagem, ""),
+                              mensagemTeste("Conjuração", detalhesRolagem))
+    local resultado = rolagem.resultado
+    if resultado < cd then
+        -- Mantém os limites de estágios usados pela ficha: 5, 10 e 15.
+        local estagios = math.min(4, math.floor((cd - resultado) / 5) + 1)
+        chat:enviarMensagem("[§K4]Falha [§K8]| [§K1]" .. resultado ..
+            " < CD " .. cd .. " [§K8]| [§K4]" .. estagios ..
+            (estagios == 1 and " estágio" or " estágios"))
+        finalizarRolagem()
+        return
+    end
 
-    chat:rolarDados(somatoria, mensagemRolagem, function(rolagem)
-        if rolagem.resultado >= tonumber(node.CD) then
-            chat:enviarMensagem("[§K10]" .. nick ..
-                                    "[§K1] esta castando [§K6]" .. node.nome ..
-                                    "[§K10] CD [§K1]" .. tonumber(node.CD + conc) .. " = [§K7]" .. (conc and node.CD .. " + [§K4]" .. conc or "" ) ..
-                                    "[§K1] =[§K9] Sucesso!")
-            chat:enviarMensagem("[§K6]" .. node.nome .. " " .. stats(self))
-            chat:enviarMensagem("[§K1] Testes: [§K10]" .. (node.defesa or ""))
+    chat:enviarMensagem("[§K9]Sucesso! [§K8]| [§K1]" .. resultado ..
+                       " >= CD " .. cd)
+    chat:enviarMensagem(stats(self, sheet))
+    local testes = textoChat(node.defesa)
+    if testes ~= "" and testes ~= "-" and testes ~= "0" then
+        chat:enviarMensagem("[§K10]Testes: [§K1]" .. testes)
+    end
 
-            if node.tipo == "Ataque" then
-                chat:rolarDados("1d20+" .. node.Grad .. "+" .. sheet.DES ..
-                                    (sheet.acerto and sheet.acerto ~= 0 and
-                                        ("-" .. sheet.acerto) or "") ..
-                                    (condition(sheet, "fisico") or ""),
+    if isAttackSpell(node) then
+        local des = tonumber(root.DES) or 0
+        local ataque = tonumber(node.Ataque) or 0
+        local acerto = tonumber(root.acerto) or 0
+        local fisico = condition(root, "fisico") or 0
+        local partesAtaque = {"1d20"}
+        local detalhesAtaque = {}
 
-                                "[§K8] Grad [§K1]" .. node.Grad ..
-                                    "[§K8] Des [§K1]" .. sheet.DES ..
-                                    (sheet.acerto and sheet.acerto ~= 0 and
-                                        ("[§K8] Acerto [§K1]-" .. sheet.acerto) or
-                                        "") .. (condition(sheet, "fisico") and
-                                    ("[§K8] Fisico [§K1]" ..
-                                        condition(sheet, "fisico")) or ""),
-                                function() finalizarRolagem() end)
+        addSignedPart(partesAtaque, grad)
+        addSignedPart(partesAtaque, des)
+        addSignedPart(partesAtaque, ataque)
+        addSignedPart(partesAtaque, -acerto)
+        addSignedPart(partesAtaque, fisico)
+        addRollDetail(detalhesAtaque, "Graduação", grad)
+        addRollDetail(detalhesAtaque, "Destreza", des)
+        addRollDetail(detalhesAtaque, "Ataque", ataque)
+        addRollDetail(detalhesAtaque, "Acerto", -acerto)
+        addRollDetail(detalhesAtaque, "Físico", fisico)
 
-            elseif node.tipo == "Ataque Base" then
-                chat:rolarDados("1d20+" .. node.Grad .. "+" .. sheet.DES ..
-                                    ((sheet.acerto ~= 0) and
-                                        ("-" .. sheet.acerto) or "") ..
-                                    (condition(sheet, "fisico") or ""),
-
-                                "[§K8] Grad [§K1]" .. node.Grad ..
-                                    "[§K8] Des [§K1]" .. sheet.DES ..
-                                    (sheet.acerto and sheet.acerto ~= 0 and
-                                        ("[§K8] Acerto [§K1]-" .. sheet.acerto) or
-                                        "") .. (condition(sheet, "fisico") and
-                                    ("[§K8] Fisico [§K1]" ..
-                                        condition(sheet, "fisico")) or ""),
-                                function() finalizarRolagem() end)
-
-            elseif node.tipo == "Defesa" then
-                Dialogs.choose("Ataque Corpo-a-Corpo ou a Distancia ?",
-                               {"Corpo-a-Corpo", "Distancia"},
-                               function(selected, selectedIndex, selectedText)
-                    if not selected then
-                        finalizarRolagem()
-                        return
-                    end
-
-                    local nodeMain = NDB.getRoot(sheet)
-
-                    if selectedText == "Corpo-a-Corpo" then
-                        defesaValor = tonumber(nodeMain.APA_Total) or 0
-                        defesaTipo = "Corpo-a-Corpo"
-                    elseif selectedText == "Distancia" then
-                        defesaValor = tonumber(nodeMain.REF_Total) or 0
-                        defesaTipo = "Distancia"
-                    end
-
-                    local mod = condition(sheet, "fisico") or 0
-
-                    chat:rolarDados(
-                        "1d8+" .. node.Poder .. "+" .. defesaValor .. "+10" ..
-                            (mod >= 0 and "+" .. mod or mod),
-                        "CA " .. node.nome .. " " .. tostring(defesaTipo),
-                        function() finalizarRolagem() end)
-                end)
-            else
+        rolarLocal(chat, table.concat(partesAtaque, ""),
+                   mensagemTeste("Ataque", detalhesAtaque))
+        finalizarRolagem()
+    elseif node.tipo == "Defesa" then
+        Dialogs.choose("Ataque corpo a corpo ou à distância?",
+                       {"Corpo-a-Corpo", "Distancia"},
+                       function(selected, selectedIndex, selectedText)
+            if not selected then
                 finalizarRolagem()
+                return
             end
 
-            chat:enviarMensagem("----------------")
+            local corpoACorpo = selectedText == "Corpo-a-Corpo"
+            local defesaValor = tonumber(corpoACorpo and root.APA_Total or root.REF_Total) or 0
+            local poder = tonumber(node.Poder) or 0
+            local mod = condition(root, "fisico") or 0
+            local partesDefesa = {"1d8"}
+            local detalhesDefesa = {}
+            addSignedPart(partesDefesa, 10)
+            addSignedPart(partesDefesa, poder)
+            addSignedPart(partesDefesa, defesaValor)
+            addSignedPart(partesDefesa, mod)
+            addRollDetail(detalhesDefesa, "Base", 10)
+            addRollDetail(detalhesDefesa, "Poder", poder)
+            addRollDetail(detalhesDefesa, corpoACorpo and "Aparar" or "Reflexos", defesaValor)
+            addRollDetail(detalhesDefesa, "Físico", mod)
 
-        elseif rolagem.resultado > tonumber(node.CD) - 5 then
-            chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome ..
-                                    "[§K1] CD [§K7]" .. node.CD ..
-                                    "[§K4] Falhou em 1 Estágio!!")
+            rolarLocal(chat, table.concat(partesDefesa, ""),
+                mensagemTeste("Defesa (CA) - " .. nome .. " - " ..
+                    (corpoACorpo and "Corpo a corpo" or "Distância"), detalhesDefesa))
             finalizarRolagem()
-
-        elseif rolagem.resultado > tonumber(node.CD) - 10 then
-            chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome ..
-                                    "[§K1] CD [§K7]" .. node.CD ..
-                                    "[§K4] Falhou em 2 Estágio!!")
-            finalizarRolagem()
-
-        elseif rolagem.resultado > tonumber(node.CD) - 15 then
-            chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome ..
-                                    "[§K1] CD [§K7]" .. node.CD ..
-                                    "[§K4] Falhou em 3 Estágio!!")
-            finalizarRolagem()
-
-        else
-            chat:enviarMensagem("[§K11]" .. nick .. " - [§K6]" .. node.nome ..
-                                    "[§K1] CD [§K7]" .. node.CD ..
-                                    "[§K4] Falhou em 4 Estágio!!")
-            finalizarRolagem()
-        end
-    end)
+        end)
+    else
+        finalizarRolagem()
+    end
 end
 
 function feiticoScript.abrirPopupFeitico(self, sheet)
-    local node = self.rclMagias.selectedNode
+    local node = getSpellNode(self, sheet)
 
     if node == nil then return end
 
     local popup = GUI.newPopupForm()
     popup.width = 320
-    popup.height = 360
+    popup.height = 400
     popup.placement = "center"
     popup.drawContainer = true
 
@@ -391,13 +415,21 @@ function feiticoScript.abrirPopupFeitico(self, sheet)
 		lblTitulo.fontSize = 24
     lblTitulo.horzTextAlign = "center"
 
-    local function valorInicialPopup(field)
+    local function valorInicialPopup(field, arrayOverride)
         local grad = tonumber(node[field .. "_grad"]) or 1
-        local array = totable(node[field .. "_array"])
+        local array = arrayOverride or totable(node[field .. "_array"])
 
         if array and array[grad] ~= nil then return array[grad] end
 
         return node[field] or 0
+    end
+
+    local ataqueArray = nil
+
+    if isAttackSpell(node) then
+        ataqueArray = {}
+
+        for i = 0, 20, 1 do ataqueArray[#ataqueArray + 1] = i end
     end
 
     local preview = {
@@ -417,6 +449,11 @@ function feiticoScript.abrirPopupFeitico(self, sheet)
         Poder_grad = tonumber(node.Poder_grad) or 1
     }
 
+    if ataqueArray ~= nil then
+        preview.Ataque = valorInicialPopup("Ataque", ataqueArray)
+        preview.Ataque_grad = tonumber(node.Ataque_grad) or 1
+    end
+
     local lblConc = GUI.newLabel()
     lblConc.parent = layout
     lblConc.align = "top"
@@ -430,7 +467,7 @@ function feiticoScript.abrirPopupFeitico(self, sheet)
         return conc
     end
 
-    local function criarCampo(nome, field)
+    local function criarCampo(nome, field, arrayOverride)
         local linha = GUI.newLayout()
         linha.parent = layout
         linha.align = "top"
@@ -467,8 +504,10 @@ function feiticoScript.abrirPopupFeitico(self, sheet)
         end
 
         btnMais.onClick = function()
-            local array = totable(node[field .. "_array"])
+            local array = arrayOverride or totable(node[field .. "_array"])
             local grad = preview[field .. "_grad"] or 1
+
+            if array == nil or #array == 0 then return end
 
             if grad < #array then
                 grad = grad + 1
@@ -481,8 +520,10 @@ function feiticoScript.abrirPopupFeitico(self, sheet)
         end
 
         btnMenos.onClick = function()
-            local array = totable(node[field .. "_array"])
+            local array = arrayOverride or totable(node[field .. "_array"])
             local grad = preview[field .. "_grad"] or 1
+
+            if array == nil or #array == 0 then return end
 
             if grad > 1 then
                 grad = grad - 1
@@ -503,6 +544,8 @@ function feiticoScript.abrirPopupFeitico(self, sheet)
         if array and #array > 1 then criarCampo(field, field) end
     end
 
+    if ataqueArray ~= nil then criarCampo("Ataque", "Ataque", ataqueArray) end
+
     atualizarConc()
 
     local btnRolar = GUI.newButton()
@@ -513,26 +556,21 @@ function feiticoScript.abrirPopupFeitico(self, sheet)
 
     btnRolar.onClick = function()
         local original = copiarEstado(node, preview)
-        local root = NDB.getRoot(sheet)
-        local concOriginal = tonumber(root.concentracao or sheet.concentracao or
-                                          0) or 0
+        local root = NDB.getRoot(node)
+        local concOriginal = root.concentracao
 
         for k, v in pairs(preview) do
             node[k] = v
-            sheet[k] = v
         end
 
         local conc = atualizarConc()
-        sheet.concentracao = conc
         root.concentracao = conc
 
         feiticoScript.rolarFeitico(self, sheet, function()
-            for k, v in pairs(original) do
-                node[k] = v
-                sheet[k] = v
+            for _, estado in ipairs(original) do
+                node[estado.campo] = estado.valor
             end
 
-            sheet.concentracao = concOriginal
             root.concentracao = concOriginal
         end)
 
@@ -545,7 +583,7 @@ end
 function feiticoScript.ListaDeFeitico(self, sheet)
     local raiz = NDB.load("listfetico.xml")
     local filhos = NDB.getChildNodes(raiz)
-    local node = self.rclMagias.selectedNode
+    local node = getSpellNode(self, sheet)
 
     local listaFeiticos = {}
     local listaNomesFeitico = {}

@@ -1,52 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tab title="Feitiços">
-  <script>
-    local feiticoScript = require("feitico_script.lua");
-
-    function abrirPopUp()
-      return feiticoScript.abrirPopUp(self, sheet)
-    end
-
-    function condition(tipo)
-      return feiticoScript.condition(sheet, tipo)
-    end
-
-    function testezz()
-      return feiticoScript.testezz(sheet)
-    end
-
-    function tocarAudio()
-      return feiticoScript.tocarAudio(sheet)
-    end
-
-    function Aceitar()
-      return feiticoScript.Aceitar(self)
-    end
-
-    function definirEscola()
-      return feiticoScript.definirEscola(self, sheet)
-    end
-
-    function stats()
-      return feiticoScript.stats(self)
-    end
-
-    function rolarFeitico(onFinish)
-      return feiticoScript.rolarFeitico(self, sheet, onFinish)
-    end
-
-    function abrirPopupFeitico()
-      return feiticoScript.abrirPopupFeitico(self, sheet)
-    end
-
-    function ListaDeFeitico()
-      return feiticoScript.ListaDeFeitico(self, sheet)
-    end
-
-    function adicionarFeitico()
-      return feiticoScript.adicionarFeitico(self)
-    end
-  </script>
   <scrollBox align="client">
     <image style="autoFit" top="0" width="1300" height="800" src="/imagens/wizard.jpg" />
     <layout align="top" height="100" padding="{top=5, left=5}">
@@ -74,21 +27,6 @@
         <label2 field="C_FEI_Total" color="DarkSlateBlue" text="Feitiço" read="true" />
         <label2 field="C_TRA_Total" color="DarkSlateBlue" text="Transmutação" read="true" />
         <label2 field="C_MAL_Total" color="DarkSlateBlue" text="Arte das Trevas" read="true" />
-        <!-- <button align="left" text="kek">
-            <event name="onClick">
-               require("ndb.lua");
-               local minhaMesa = Firecast.getRoomOf(sheet);
-               local chat = minhaMesa.chat;
-
-               local track = "/audios/estupefaca.wav"
-               minhaMesa.audioPlayer:play(track,0.2)
-
-               chat:enviarMensagem("Audio Por Ficha 🔇")
-
-               showMessage(nick)
-               showMessage(tableToStr(Child[1].nome))
-            </event>
-         </button> -->
       </layout>
 
     </layout>
@@ -104,7 +42,7 @@
 
             -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
 
-            local minhaMesa = Firecast.getRoomOf(sheet);
+            local minhaMesa = Firecast.getRoomOf(NDB.getRoot(sheet));
             local chat = minhaMesa.chat;
 
             if oldValue == nil then
@@ -131,7 +69,7 @@
 
             -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
 
-            local minhaMesa = Firecast.getRoomOf(sheet);
+            local minhaMesa = Firecast.getRoomOf(NDB.getRoot(sheet));
             local chat = minhaMesa.chat;
 
             if oldValue == nil then
@@ -155,7 +93,11 @@
     <layout name="aqui" align="top" height="600" padding="{top=5, left=5}">
       <layout left="20" top="15" width="600" height="35">
         <button align="left" margins="{left=20}" height="25" text="Novo Feitiço" width="100"
-          onClick="adicionarFeitico()" />
+          >
+          <event name="onClick">
+            require("feitico_script.lua").adicionarFeitico(self)
+          </event>
+        </button>
         <button align="left" height="25" text="Ordenar" width="100" margins="{left=20}"
           onClick="self.rclMagias:sort();" />
         <button align="left" text="Atualizar Feitiços" width="120" margins="{left=20}">
@@ -171,8 +113,8 @@
             local feiticosCadastrados = NDB.getChildNodes(sheet.magias)
             local falhas = ""
 
-            ListaFeiticos = {} -- new array
-            ListaNomesFeitico = {} -- new array
+            local ListaFeiticos = {} -- new array
+            local ListaNomesFeitico = {} -- new array
 
             for i = 1, #baseDeFeiticos, 1 do
             ListaFeiticos[i] = Raiz["f" .. i]
@@ -197,9 +139,9 @@
 
             feiticosCadastrados[k].escola = ListaFeiticos[i].escola
             feiticosCadastrados[k].tipo = ListaFeiticos[i].cast
-            feiticosCadastrados[k].Desc = ListaFeiticos[i].Desc
-            feiticosCadastrados[k].Efeito = ListaFeiticos[i].Efeito
-            feiticosCadastrados[k].Bonus = ListaFeiticos[i].Bonus
+            feiticosCadastrados[k].Desc = ListaFeiticos[i].desc
+            feiticosCadastrados[k].Efeito = ListaFeiticos[i].efeito
+            feiticosCadastrados[k].Bonus = ListaFeiticos[i].bonus
             feiticosCadastrados[k].defesa = ListaFeiticos[i].defesa
 
             feiticosCadastrados[k].CD = totable(ListaFeiticos[i].cdfArray)[node.CD_grad]
@@ -218,9 +160,9 @@
             node.Duracao_array = ListaFeiticos[i].duracaoArray
             node.escola = ListaFeiticos[i].escola
             node.tipo = ListaFeiticos[i].cast
-            node.Desc = ListaFeiticos[i].Desc
-            node.Efeito = ListaFeiticos[i].Efeito
-            node.Bonus = ListaFeiticos[i].Bonus
+            node.Desc = ListaFeiticos[i].desc
+            node.Efeito = ListaFeiticos[i].efeito
+            node.Bonus = ListaFeiticos[i].bonus
             node.defesa = ListaFeiticos[i].defesa
 
             node.CD = totable(ListaFeiticos[i].cdfArray)[node.CD_grad]
@@ -419,12 +361,28 @@
 
             <layout width="100" align="left">
               <button align="top" text="Rolar" height="35" margins="{bottom=5}"
-                onClick="rolarFeitico()" onMenu="abrirPopupFeitico()" />
+                >
+                <event name="onClick">
+                  require("feitico_script.lua").abrirPopupFeitico(self, sheet)
+                </event>
+              </button>
               <button align="top" text="Importar" height="35" margins="{bottom=5}"
-                onClick="ListaDeFeitico()" />
+                >
+                <event name="onClick">
+                  require("feitico_script.lua").ListaDeFeitico(self, sheet)
+                </event>
+              </button>
               <button align="top" text="Apagar" height="35" margins="{bottom=5}"
-                onClick="Aceitar()" />
-              <button align="top" text="Comparar" height="35" onClick="abrirPopUp()" />
+                >
+                <event name="onClick">
+                  require("feitico_script.lua").Aceitar(self)
+                </event>
+              </button>
+              <button align="top" text="Comparar" height="35">
+                <event name="onClick">
+                  require("feitico_script.lua").abrirPopUp(self, sheet)
+                </event>
+              </button>
             </layout>
           </layout>
 
@@ -442,9 +400,9 @@
 
                 </label>
                 <event name="onDblClick">
-                  local minhaMesa = Firecast.getRoomOf(sheet);
+                  local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                  local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                   local chat = minhaMesa.chat;
-                  local node = self.rclMagias.selectedNode;
                   Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                   dialogs.DT_INFORMATION,
                   {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
@@ -467,9 +425,9 @@
                 <label align="client" field="Efeito" margins="{top=5,left=5,right=5}"
                   horzTextAlign="center" vertTextAlign="leading" />
                 <event name="onDblClick">
-                  local minhaMesa = Firecast.getRoomOf(sheet);
+                  local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                  local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                   local chat = minhaMesa.chat;
-                  local node = self.rclMagias.selectedNode;
                   Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                   dialogs.DT_INFORMATION,
                   {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
@@ -493,9 +451,9 @@
                   <label align="client" field="defesa" margins="{top=5,left=5,right=5}"
                     horzTextAlign="center" vertTextAlign="leading" />
                   <event name="onDblClick">
-                    local minhaMesa = Firecast.getRoomOf(sheet);
+                    local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                    local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                     local chat = minhaMesa.chat;
-                    local node = self.rclMagias.selectedNode;
                     Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                     dialogs.DT_INFORMATION,
                     {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
@@ -518,9 +476,9 @@
                   <label align="client" field="Bonus" margins="{top=5,left=5,right=5}"
                     horzTextAlign="center" vertTextAlign="leading" />
                   <event name="onDblClick">
-                    local minhaMesa = Firecast.getRoomOf(sheet);
+                    local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
+                    local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
                     local chat = minhaMesa.chat;
-                    local node = self.rclMagias.selectedNode;
                     Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
                     dialogs.DT_INFORMATION,
                     {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)

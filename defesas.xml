@@ -1,87 +1,241 @@
-<tab title="Defesas" width="220">
+﻿<tab title="Defesas" width="220">
 
     <script>
-        function testeResistenciaDanoDialog()
-            local resistencia = tonumber(sheet and sheet.RES_Total)
-            if not resistencia then
-                showMessage("RES_Total ausente na ficha.")
-                return
+    function testeResistenciaDanoDialog()
+    local nodeRoot = NDB.getRoot(sheet)
+
+    if nodeRoot.ferimentos == nil then
+        nodeRoot.ferimentos = 0
+    end
+
+    local base = tonumber(sheet.RES_Total)
+
+    if not base then
+        showMessage("RES_Total ausente na ficha.")
+        return
+    end
+
+    local popup = GUI.newPopupForm()
+    popup.width = 430
+    popup.height = 220
+    popup.placement = "center"
+    popup.drawContainer = true
+
+    local root = GUI.newLayout()
+    root.parent = popup
+    root.align = "client"
+    root.margins = {
+        left = 12,
+        right = 12,
+        top = 12,
+        bottom = 12
+    }
+
+    local title = GUI.newLabel()
+    title.parent = root
+    title.align = "top"
+    title.height = 30
+    title.text = "Teste de Resistência"
+    title.horzTextAlign = "center"
+    title.fontSize = 20
+
+    local row = GUI.newLayout()
+    row.parent = root
+    row.align = "top"
+    row.height = 65
+
+    local edits = {}
+
+    local function addField(label, value, color, usarFerimentos)
+        local box = GUI.newLayout()
+        box.parent = row
+        box.align = "left"
+        box.width = 130
+        box.margins = {
+            right = 6
+        }
+
+        local l = GUI.newLabel()
+        l.parent = box
+        l.align = "top"
+        l.height = 22
+        l.text = label
+        l.horzTextAlign = "center"
+
+        local e = GUI.newEdit()
+        e.parent = box
+        e.align = "client"
+        e.horzTextAlign = "center"
+        e.borderColor = color
+        e.strokeColor = color
+        e.borderWidth = 2
+        e.text = tostring(value or 0)
+
+        if usarFerimentos then
+            e.onChange = function()
+                local valor = tonumber(e.text) or 0
+
+                if valor &lt; 0 then
+                    valor = 0
+                    e.text = "0"
+                end
+
+                nodeRoot.ferimentos = valor
             end
-
-            Dialogs.inputQuery("Dano", "Informe o DANO:", "",
-                function(txt)
-                local danoBase = tonumber(txt)
-                if not danoBase then
-                    showMessage("Valor inválido. Digite um número.")
-                    return
-                end
-
-                local cd = 15 + danoBase
-                local mesa = rrpg.getMesaDe(sheet)
-                if not mesa or not mesa.chat then
-                    showMessage("Chat indisponível.")
-                    return
-                end
-                local chat = mesa.chat
-
-                local titulo = (sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") .. string.format( "Teste de Resistência ([§K1]CD [§K4] %d[§K14] | [§K1]SAVE [§K9] %d)", cd, resistencia)
-                local rolagem = rrpg.interpretarRolagem("1d20+" .. resistencia)
-
-                chat:rolarDados(rolagem, titulo, function(rolado)
-                    -- extrair total com tolerância
-                    local total = nil
-                    if rolado and rolado.resultado then
-                    total = tonumber(rolado.resultado)
-                    end
-                    if not total and rolado and rolado.somatoria then
-                    total = tonumber(rolado.somatoria)
-                    end
-                    if not total and rolado and rolado.total then
-                    total = tonumber(rolado.total)
-                    end
-                    if not total then total = 0 end
-
-                    local margem = total - cd
-
-                    local function estagiosDe5(m)
-                    if m >= 0 then
-                        return math.min(4, math.floor(m / 5) + 1), "sucesso"
-                    else
-                        return math.min(4, math.floor((-m) / 5) + 1), "falha"
-                    end
-                    end
-
-                    local estagios, tipo = estagiosDe5(margem)
-                    local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
-                                                total,
-                                                margem >= 0 and ("+" .. margem) or tostring(margem),
-                                                estagios, tipo)
-
-                    if tipo == "sucesso" then
-                    chat:enviarMensagem("[§K1]O personagem Ignorou o Dano.")
-                    chat:enviarMensagem(detalhe)
-                    return
-                    end
-
-                    if estagios == 1 then
-                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento.")
-                    elseif estagios == 2 then
-                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento e foi Atordoado.")
-                    elseif estagios == 3 then
-                    chat:enviarMensagem("[§K1]O personagem recebeu um ferimento, foi Atordoado e está Abatido.")
-                    else -- 4
-                    chat:enviarMensagem("[§K1]O personagem caiu Inconsciente.")
-                    end
-
-                    chat:enviarMensagem(detalhe)
-                end)
-                end,
-                function()
-                showMessage("Operação cancelada.")
-                end
-            )
         end
 
+        edits[#edits + 1] = e
+    end
+
+    addField(
+        "Resistência",
+        base,
+        "#2ecc71",
+        false
+    )
+
+    addField(
+        "Outro",
+        0,
+        "#2ecc71",
+        false
+    )
+
+    addField(
+        "Ferimento",
+        tonumber(nodeRoot.ferimentos) or 0,
+        "#e74c3c",
+        true
+    )
+
+    local result = GUI.newLabel()
+    result.parent = root
+    result.align = "top"
+    result.height = 25
+    result.horzTextAlign = "center"
+
+    local buttons = GUI.newLayout()
+    buttons.parent = root
+    buttons.align = "bottom"
+    buttons.height = 34
+
+    local cancel = GUI.newButton()
+    cancel.parent = buttons
+    cancel.align = "right"
+    cancel.width = 100
+    cancel.text = "Cancelar"
+
+    cancel.onClick = function()
+        popup:close()
+    end
+
+    local roll = GUI.newButton()
+    roll.parent = buttons
+    roll.align = "right"
+    roll.width = 100
+    roll.text = "Rolar"
+
+    roll.onClick = function()
+        local r = tonumber(edits[1].text)
+        local o = tonumber(edits[2].text) or 0
+        local f = tonumber(nodeRoot.ferimentos) or 0
+
+        if f &lt; 0 then
+            f = 0
+            nodeRoot.ferimentos = 0
+        end
+
+        if not r then
+            showMessage("Valor inválido.")
+            return
+        end
+
+        local total = r + o - f
+
+        result.text = string.format(
+            "Resistência %d + Outro %d - Ferimento %d = %d",
+            r,
+            o,
+            f,
+            total
+        )
+
+        local mesa = rrpg.getMesaDe(sheet)
+
+        if not mesa or not mesa.chat then
+            showMessage("Chat indisponível.")
+            return
+        end
+
+        popup:close()
+
+        local chat = mesa.chat
+
+        chat:rolarDados(
+            rrpg.interpretarRolagem(
+                "1d20" ..
+                (total &gt;= 0 and "+" or "") ..
+                total
+            ),
+            "Teste de Resistência - CD 15",
+            function(rolado)
+                local d = tonumber(
+                    rolado and (
+                        rolado.resultado or
+                        rolado.somatoria or
+                        rolado.total
+                    )
+                ) or 0
+
+                local m = d - 15
+
+                local g =
+                    m &gt;= 0
+                    and math.min(
+                        4,
+                        math.floor(m / 5) + 1
+                    )
+                    or math.min(
+                        4,
+                        math.floor((-m) / 5) + 1
+                    )
+
+                if m &gt;= 0 then
+                    chat:enviarMensagem(
+                        "O personagem ignorou o dano."
+                    )
+                elseif g == 1 then
+                    chat:enviarMensagem(
+                        "O personagem recebeu um ferimento."
+                    )
+                elseif g == 2 then
+                    chat:enviarMensagem(
+                        "O personagem recebeu um ferimento e foi Atordoado."
+                    )
+                elseif g == 3 then
+                    chat:enviarMensagem(
+                        "O personagem recebeu um ferimento, foi Atordoado e está Abatido."
+                    )
+                else
+                    chat:enviarMensagem(
+                        "O personagem caiu inconsciente."
+                    )
+                end
+
+                chat:enviarMensagem(
+                    string.format(
+                        "Resultado: %d | Margem: %d | Graus: %d",
+                        d,
+                        m,
+                        g
+                    )
+                )
+            end
+        )
+    end
+
+    popup:show()
+end
 
         function testeResistenciaEfeitoDialog()
         
@@ -103,7 +257,7 @@
 
         Dialogs.choose("Tipo de Efeito", {"Fortitude", "Reflexos", "Vontade"}, function(selected, selectedIndex, tipo)
             if not tipo then
-            showMessage("Operação cancelada.")
+            showMessage("OperaÃ§Ã£o cancelada.")
             return
             end
 
@@ -117,23 +271,23 @@
             function(txt)
                 local mod = tonumber(txt)
                 if not mod then
-                showMessage("Valor inválido. Digite um número.")
+                showMessage("Valor invÃ¡lido. Digite um nÃºmero.")
                 return
                 end
 
                 local cd = 10 + mod
                 local mesa = rrpg.getMesaDe(sheet)
                 if not mesa or not mesa.chat then
-                showMessage("Chat indisponível.")
+                showMessage("Chat indisponÃ­vel.")
                 return
                 end
                 local chat = mesa.chat
 
-                local titulo = string.format((sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") ..  "Teste de Efeito (%s)  [§K2]CD %d[§K7] | SAVE %d", tipo, cd, save)
+                local titulo = string.format((sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") ..  "Teste de Efeito (%s)  [Â§K2]CD %d[Â§K7] | SAVE %d", tipo, cd, save)
                 local rolagem = rrpg.interpretarRolagem("1d20+" .. save)
 
                 chat:rolarDados(rolagem, titulo, function(rolado)
-                -- extrai total compatível com diferentes versões
+                -- extrai total compatÃ­vel com diferentes versÃµes
                 local total = nil
                 if rolado and rolado.resultado then total = tonumber(rolado.resultado) end
                 if not total and rolado and rolado.somatoria then total = tonumber(rolado.somatoria) end
@@ -150,16 +304,16 @@
                 end
 
                 local estagios, tipoRes = estagiosDe5(margem)
-                local detalhe = string.format("Resultado: %d | Margem: %s | Estágios: %d (%s)",
+                local detalhe = string.format("Resultado: %d | Margem: %s | EstÃ¡gios: %d (%s)",
                                                 total,
                                                 margem >= 0 and ("+" .. margem) or tostring(margem),
                                                 estagios, tipoRes)
 
                 if tipoRes == "sucesso" then
                     if estagios >= 4 then
-                    chat:enviarMensagem("[§K1]O personagem Ignorou o Efeito.")
+                    chat:enviarMensagem("[Â§K1]O personagem Ignorou o Efeito.")
                     else
-                    chat:enviarMensagem(string.format("[§K1]Sucesso em %d Estágio(s). Efeito reduzido.", estagios))
+                    chat:enviarMensagem(string.format("[Â§K1]Sucesso em %d EstÃ¡gio(s). Efeito reduzido.", estagios))
                     end
                     chat:enviarMensagem(detalhe)
                     return
@@ -167,19 +321,19 @@
 
                 -- falhas graduais
                 if estagios == 1 then
-                    chat:enviarMensagem("[§K1]Falha em 1 Estágio. Efeito parcial.")
+                    chat:enviarMensagem("[Â§K1]Falha em 1 EstÃ¡gio. Efeito parcial.")
                 elseif estagios == 2 then
-                    chat:enviarMensagem("[§K1]Falha em 2 Estágios. Efeito agravado.")
+                    chat:enviarMensagem("[Â§K1]Falha em 2 EstÃ¡gios. Efeito agravado.")
                 elseif estagios == 3 then
-                    chat:enviarMensagem("[§K1]Falha em 3 Estágios. Efeito severo.")
+                    chat:enviarMensagem("[Â§K1]Falha em 3 EstÃ¡gios. Efeito severo.")
                 else -- 4
-                    chat:enviarMensagem("[§K1]Falha em 4 Estágios. Efeito extremo.")
+                    chat:enviarMensagem("[Â§K1]Falha em 4 EstÃ¡gios. Efeito extremo.")
                 end
 
                 chat:enviarMensagem(detalhe)
                 end)
             end,
-            function() showMessage("Operação cancelada.") end
+            function() showMessage("OperaÃ§Ã£o cancelada.") end
             )
         end)
         end
@@ -231,7 +385,12 @@
             height="30" />
     </layout>
 
-    <button align="top" height="30" text="Teste de Resistência"
+    <!-- <layout align="top" height="35" margins="{left=20, right=20, top=5, bottom}">
+        <label align="left" width="110" text="Ferimentos:" />
+        <edit field="ferimentos" align="client" horzTextAlign="center" hint="0" />
+    </layout> -->
+
+    <button align="top" height="30" text="Teste de Resistencia a Dano"
         margins="{left=20, right=20}"
         onClick="testeResistenciaDanoDialog()" />
     <button align="top" height="30" text="Teste de Efeito"

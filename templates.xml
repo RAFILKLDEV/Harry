@@ -9,8 +9,6 @@
     </template>
 
     <template name="levelLabel">
-        <script>
-        </script>
         <layout align="left" margins="{left=10}" width="160">
             <rectangle top="7" left="27" color="DarkSlateBlue" width="80"
                 height="20">
@@ -29,110 +27,27 @@
                 <edit top="0" width="160" height="25" field="$(field)_grad"
                     horzTextAlign="center">
                     <event name="onChange">
-                        local grad = tonumber(newValue or sheet.$(field .. "_grad") or 1) or 1
-                        self.$(field .. "GradBadge").text = tostring(grad - 1)
+                        require("templates_script.lua").updateGradBadge(self, sheet, "$(field)", newValue)
                     </event>
                 </edit>
                 <dataLink field="$(field)_grad">
                     <event name="onChange">
-                        local grad = tonumber(newValue or sheet.$(field .. "_grad") or 1) or 1
-                        self.$(field .. "GradBadge").text = tostring(grad - 1)
+                        require("templates_script.lua").updateGradBadge(self, sheet, "$(field)", newValue)
                     </event>
                 </dataLink>
                 <edit name="$(field)" top="0" width="160" height="25" field="$(field)" horzTextAlign="center" hitTest="true" hint="">
                     <event name="onMouseEnter">
-                        self.$(field).hint = sheet.$(field)
+                        require("templates_script.lua").updateFieldHint(self, sheet, "$(field)")
                     </event>
                 </edit>
                 <button text="-" align="left" width="20">
                     <event name="onClick">
-                   <![CDATA[
-
-                        local node = self.rclMagias.selectedNode;
-                        local array = totable(node.$(field .. "_array"))
-                        local grad = tonumber(node.$(field .. "_grad"))
-                        local result = grad
-                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                        (node.Area_grad - 1) + (node.Duracao_grad - 1))
-
-                        if (grad - 1) == graduacoes then
-                            if node.$(field .. "_name") == "Grad" then
-                            return
-                            end
-                        end
-
-                            if grad > 1 then
-
-                                result = result - 1
-                                sheet.$(field .. "_grad") = result
-                                sheet.$(field) = array[result]
-                                node.$(field .. "_grad") = result
-                                node.$(field) = array[result]
-                            
-                            end
-                        
-                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                (node.Area_grad - 1) + (node.Duracao_grad - 1))
-
-                        if node.Grad == tonumber(graduacoes) then
-                            self.rectangle.color = "gray"
-                        elseif node.Grad > tonumber(graduacoes) then
-                            self.rectangle.color = "green"
-                        end
-                    ]]>
-                </event>
+                        require("templates_script.lua").changeSpellLevel(self, sheet, "$(field)", -1)
+                    </event>
                 </button>
                 <button text="+" align="right" width="20">
                     <event name="onClick">
-                    <![CDATA[   
-
-                        local node = self.rclMagias.selectedNode;
-                        local array = totable(node.$(field .. "_array"))
-                        local grad = tonumber(node.$(field .. "_grad"))
-                        local result = grad
-                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                        (node.Area_grad - 1) + (node.Duracao_grad - 1))
-
-                        if node.Grad > graduacoes then
-
-                            if grad < #array then
-
-                                result = result + 1
-                                sheet.$(field .. "_grad") = result
-                                sheet.$(field) = array[result]
-                                node.$(field .. "_grad") = result
-                                node.$(field) = array[result]
-
-                            
-                            end
-
-                        else 
-                        
-                        if sheet.$(field .. "_name") == "Grad" then
-
-                            result = result + 1
-                            sheet.$(field .. "_grad") = result
-                            sheet.$(field) = array[result]
-                            node.$(field .. "_grad") = result
-                            node.$(field) = array[result]
-
-                        end
-                        
-
-                        end
-
-                        local graduacoes = tonumber((node.CD_grad - 1) + (node.Poder_grad - 1 ) + (node.Dano_grad - 1) + (node.Range_grad - 1) + 
-                                (node.Area_grad - 1) + (node.Duracao_grad - 1))
-
-                        if node.Grad == tonumber(graduacoes) then
-                            self.rectangle.color = "gray"
-                        elseif node.Grad > tonumber(graduacoes) then
-                            self.rectangle.color = "green"
-                        elseif node.Grad < tonumber(graduacoes) then
-                            self.rectangle.color = "red"
-                        end
-
-                    ]]>
+                        require("templates_script.lua").changeSpellLevel(self, sheet, "$(field)", 1)
                     </event>
                 </button>
             </layout>
@@ -151,49 +66,9 @@
 
     <template name="CheckCondition">
         <rectangle height="35" align="top" margins="{top=3}" color="$(cor)">
-            <checkBox align="left" width="20" text="Caixa de marcação" field="$(name)">
+            <checkBox align="left" width="20" text="Caixa de marcacao" field="$(name)">
                 <event name="onChange">
-                    local mesaDoPersonagem = Firecast.getRoomOf(sheet);
-                    local chat = mesaDoPersonagem.chat
-                    local jogador = mesaDoPersonagem.meuJogador
-                    local root = NDB.getRoot(sheet)
-                    local nick = root.nomePersonagem or jogador.nick
-
-                    if sheet.$(name) then
-
-                        if self.$(name).text == "Exausto" and sheet.Fadigado then
-
-                            sheet.Fadigado = nil
-                            chat:enviarMensagem(nick .. " estava Fatigado agora está " ..
-                            self.$(name).text)
-
-                        elseif self.$(name).text == "Fadigado" and sheet.Exausto  then
-
-                            sheet.Exausto = nil
-                            chat:enviarMensagem(nick .. " estava Exausto agora está " ..
-                            self.$(name).text)
-
-                        elseif self.$(name).text == "Tiltado" and sheet.Frustrado  then
-
-                            sheet.Frustrado = nil
-                            chat:enviarMensagem(nick .. " estava Frustrado agora está " ..
-                            self.$(name).text)
-
-                        elseif self.$(name).text == "Frustrado" and sheet.Tiltado  then
-
-                            sheet.Tiltado = nil
-                            chat:enviarMensagem(nick .. " estava Tiltado agora está " ..
-                            self.$(name).text)
-                            
-                        else
-                            chat:enviarMensagem(nick .. " está " .. self.$(name).text)
-
-                        end
-
-                    else
-                        chat:enviarMensagem(nick .. " não está mais " .. self.$(name).text)
-                    end
-
+                    require("templates_script.lua").checkConditionChanged(self, sheet, "$(name)")
                 </event>
             </checkBox>
             <label name="$(name)" align="left" width="80" text="$(name)" />
@@ -207,53 +82,7 @@
                     horzTextAlign="center">
                 </label>
                 <event name="onClick">
-                    local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                    local chat = mesaDoPersonagem.chat
-                    local nodeMain = NDB.getRoot(sheet)
-
-                    local function condition()
-
-                    if self.$(name).text == "Acrobacia" or
-                    self.$(name).text == "Atletismo" or
-                    self.$(name).text == "Corpo-a-Corpo" or
-                    self.$(name).text == "Furtividade" or
-                    self.$(name).text == "Prestidigitação" or
-                    self.$(name).text == "Veiculos Mágicos" or
-                    self.$(name).text == "Iniciativa" or
-                    self.$(name).text == "Aparar" or
-                    self.$(name).text == "Fortitude" or
-                    self.$(name).text == "Reflexo" or
-                    self.$(name).text == "Resistencia" then
-
-                    if sheet.Exausto then
-                    return -5
-                    end
-
-                    if sheet.Fadigado then
-                    return -2
-                    end
-
-                    else
-
-                    if sheet.Tiltado then
-                    return -5
-                    end
-
-                    if sheet.Frustrado then
-                    return -2
-                    end
-
-                    end
-
-                    return nil
-                    end
-
-                    chat:rolarDados("1d20 + " .. (sheet.$(total) or 0) .. (condition()
-                    and (condition()) or ""),
-                    (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.$(name).text,
-                    function (rolado)
-
-                    end);
+                    require("templates_script.lua").rollLabelComEdit(self, sheet, "$(name)", "$(total)")
                 </event>
             </rectangle>
 
@@ -279,45 +108,7 @@
                     horzTextAlign="center">
                 </label>
                 <event name="onClick">
-                    local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                    local chat = mesaDoPersonagem.chat
-                    local nodeMain = NDB.getRoot(sheet)
-
-                    local function condition()
-
-                    if self.$(name).text == "Antecipar" or
-                    self.$(name).text == "Atrapalhar" or
-                    self.$(name).text == "Marcar Falta" then
-
-                    if sheet.Tiltado then
-                    return -5
-                    end
-
-                    if sheet.Frustrado then
-                    return -2
-                    end
-
-                    else
-
-                    if sheet.Exausto then
-                    return -5
-                    end
-
-                    if sheet.Fadigado then
-                    return -2
-                    end
-
-                    end
-
-                    return nil
-                    end
-
-                    chat:rolarDados("1d20 + " .. (sheet.$(total) or 0) .. (condition() and
-                    (condition()) or ""),
-                    (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.$(name).text,
-                    function (rolado)
-
-                    end);
+                    require("templates_script.lua").rollQuadribol(self, sheet, "$(name)", "$(total)")
                 </event>
             </rectangle>
 
@@ -365,48 +156,7 @@
             <edit margins="{left=5}" align="left" horzTextAlign="center"
                 width="40" field="$(field2)" />
             <event name="onClick">
-                local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                local chat = mesaDoPersonagem.chat
-                local nodeMain = NDB.getRoot(sheet)
-
-                local function condition()
-
-                if self.$(name).text == "AGILIDADE" or
-                self.$(name).text == "DESTREZA" or
-                self.$(name).text == "FORÇA" or
-                self.$(name).text == "LUTA" or
-                self.$(name).text == "VIGOR" then
-
-                if sheet.Exausto then
-                return -5
-                end
-
-                if sheet.Fadigado then
-                return -2
-                end
-
-                else
-
-                if sheet.Tiltado then
-                return -5
-                end
-
-                if sheet.Frustrado then
-                return -2
-                end
-
-                end
-
-                return nil
-                end
-
-
-                chat:rolarDados("1d20 + " .. (sheet.$(field2) or sheet.$(field1)) .. (condition()
-                and (condition()) or ""),
-                (nodeMain.nomePersonagem and nodeMain.nomePersonagem .. " - " or "") .. self.$(name).text,
-                function (rolado)
-
-                end);
+                require("templates_script.lua").rollAtributo(self, sheet, "$(name)", "$(field1)", "$(field2)")
             </event>
         </rectangle>
     </template>
