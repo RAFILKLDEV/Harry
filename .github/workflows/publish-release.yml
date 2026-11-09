@@ -1,0 +1,72 @@
+name: Publicar versão do plugin
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Obter fontes e pacote compilado
+        uses: actions/checkout@v4
+
+      - name: Validar pacote e versão da release
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = $env:GITHUB_REF_NAME
+          $module = [xml](Get-Content -LiteralPath 'module.xml' -Raw -Encoding UTF8)
+          $version = [string]$module.module.version
+          if ($version -notmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$') {
+            throw "Versão inválida em module.xml: $version"
+          }
+          if ($tag -ne "v$version") {
+            throw "A tag $tag deve corresponder à versão $version de module.xml."
+          }
+
+          $packagePath = (Resolve-Path -LiteralPath 'output\Harry.rpk').Path
+          Add-Type -AssemblyName System.IO.Compression.FileSystem
+          $archive = [IO.Compression.ZipFile]::OpenRead($packagePath)
+          try {
+            $entry = $archive.GetEntry('module.xml')
+            if ($null -eq $entry) { throw 'O pacote não contém module.xml.' }
+            $reader = [IO.StreamReader]::new($entry.Open(), [Text.Encoding]::UTF8)
+            try { $packageModule = [xml]$reader.ReadToEnd() }
+            finally { $reader.Dispose() }
+            if ($null -eq $archive.GetEntry('updater.lua')) {
+              throw 'O pacote não contém updater.lua; compile-o novamente com o SDK do Firecast.'
+            }
+          } finally {
+            $archive.Dispose()
+          }
+
+          if ([string]$packageModule.module.id -ne [string]$module.module.id) {
+            throw 'O moduleId do .rpk não corresponde ao module.xml do código-fonte.'
+          }
+          if ([string]$packageModule.module.version -ne $version) {
+            throw 'A versão compilada no .rpk não corresponde à versão de module.xml.'
+          }
+
+      - name: Criar release ou atualizar seus arquivos
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $tag = $env:GITHUB_REF_NAME
+          $files = @('output\Harry.rpk')
+          gh release view $tag --repo $env:GITHUB_REPOSITORY 2>$null
+          $viewExitCode = $LASTEXITCODE
+          if ($viewExitCode -eq 0) {
+            gh release upload $tag @files --clobber --repo $env:GITHUB_REPOSITORY
+          } elseif ($viewExitCode -eq 1) {
+            gh release create $tag @files --title "Harry $tag" --generate-notes --verify-tag --repo $env:GITHUB_REPOSITORY
+          } else {
+            throw "Não foi possível consultar a release $tag (gh exit code $viewExitCode)."
+          }
+          if ($LASTEXITCODE -ne 0) { throw "Falha ao publicar a release $tag." }

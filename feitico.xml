@@ -31,66 +31,7 @@
 
     </layout>
 
-    <layout align="top" height="80" margins="{top=0, left=0}">
-      <layout align="left" margins="{left=20}" width="120" height="80">
-        <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-          <label align="client" text="Fisico" horzTextAlign="center" />
-        </rectangle>
-        <edit top="30" width="120" field="fisico" horzTextAlign="center" type="float" />
-        <dataLink field="fisico">
-          <event name="onChange">
-
-            -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
-
-            local minhaMesa = Firecast.getRoomOf(NDB.getRoot(sheet));
-            local chat = minhaMesa.chat;
-
-            if oldValue == nil then
-            return
-            end
-
-            local novoValor = math.abs(newValue or 0)
-            local antigoValor = math.abs(oldValue or 0)
-
-            chat:enviarAcao("Estava com penalidade de Fisica de " .. antigoValor ..
-            " e agora esta com " .. novoValor)
-
-            sheet.fisico = novoValor
-          </event>
-        </dataLink>
-      </layout>
-      <layout align="left" margins="{left=20}" width="120" height="80">
-        <rectangle top="5" left="10" color="#6B8E23" width="90" height="25">
-          <label align="client" text="Mental" horzTextAlign="center" />
-        </rectangle>
-        <edit top="30" width="120" field="mental" horzTextAlign="center" type="float" />
-        <dataLink field="mental">
-          <event name="onChange">
-
-            -- CUIDADO COM A ORGANIZAÇÃO DESSE CODIGO COM XML PODE DAR ERRO
-
-            local minhaMesa = Firecast.getRoomOf(NDB.getRoot(sheet));
-            local chat = minhaMesa.chat;
-
-            if oldValue == nil then
-            return
-            end
-
-            local novoValor = math.abs(newValue or 0)
-            local antigoValor = math.abs(oldValue or 0)
-
-            chat:enviarAcao("Estava com penalidade de Mente de " .. antigoValor ..
-            " e agora esta com " .. novoValor)
-
-            sheet.mental = novoValor
-          </event>
-        </dataLink>
-      </layout>
-      <label2 field="concentracao" color="purple" text="Concentração" read="false" />
-      <label2 field="acerto" color="purple" text="Acerto" read="false" />
-    </layout>
-
-    <layout name="aqui" align="top" height="600" padding="{top=5, left=5}">
+    <layout name="aqui" align="top" height="850" padding="{top=5, left=5}">
       <layout left="20" top="15" width="600" height="35">
         <button align="left" margins="{left=20}" height="25" text="Novo Feitiço" width="100"
           >
@@ -209,7 +150,7 @@
       </layout>
 
 
-      <layout left="20" top="60" height="310" width="1200">
+      <layout name="painelFeiticos" left="20" top="60" height="700" width="1200">
         <rectangle color="#444444" width="200" align="left" strokeColor="#333333" strokeSize="2">
           <recordList name="rclMagias" field="magias" itemHeight="45" templateForm="feiticos"
             align="left" width="200" visible="true" autoHeight="false" selectable="true">
@@ -265,8 +206,8 @@
         </rectangle>
         <dataScopeBox name="boxDetalhesDoItem" visible="false" align="left"
           width="1000" margins="{left=4, right=4}">
-          <rectangle name="rectangle" color="darkGrey" opacity="0.35" width="1020" height="170" />
-          <layout align="top" height="170">
+          <rectangle name="rectangle" color="darkGrey" opacity="0.35" width="1020" height="210" />
+          <layout name="cabecalhoFeitico" align="top" height="210">
             <layout align="left" margins="{left=10}" width="180">
               <rectangle align="top" color="DarkSlateBlue" margins="{left=60,right=60,top=5}"
                 height="20">
@@ -335,12 +276,12 @@
               <layout align="top" height="55">
                 <levelLabel name="Grad" field="Grad" text="Grad" />
                 <levelLabel name="CD" field="CD" text="CD" />
-                <levelLabel name="Efeito" field="Efeito" text="Efeito" />
+                <labelFeitico name="Efeito" field="Efeito" text="Efeito" />
               </layout>
               <layout align="top" height="55">
                 <levelLabel name="Poder" field="Poder" text="Poder" />
                 <levelLabel name="Dano" field="Dano" text="Dano" />
-                <levelLabel name="Bonus" field="Bonus" text="Bonus" />
+                <labelFeitico name="Bonus" field="Bonus" text="Bônus" />
               </layout>
               <layout align="top" height="55">
                 <levelLabel name="Range" field="Range" text="Range" />
@@ -366,6 +307,11 @@
                   require("feitico_script.lua").abrirPopupFeitico(self, sheet)
                 </event>
               </button>
+              <button align="top" text="Talentos" height="35" margins="{bottom=5}">
+                <event name="onClick">
+                  require("feitico_script.lua").abrirTalentos(self, sheet)
+                </event>
+              </button>
               <button align="top" text="Importar" height="35" margins="{bottom=5}"
                 >
                 <event name="onClick">
@@ -386,109 +332,60 @@
             </layout>
           </layout>
 
-          <layout align="top" height="170">
-            <layout align="left" width="300" margins="{right=5}">
-              <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                height="20">
+          <label name="resumoTalentos" align="top" height="40" fontSize="12" wordWrap="true" />
+          <dataLink fields="{'talentoMaestria','talentoMaestriaSuperior','talentoMenteCalma','talentoSilencioso','talentoCritico','talentoAtaquePoderoso','talentoFeiticoPoderoso','Dano','Poder','nome'}">
+            <event name="onChange">
+              require("feitico_script.lua").atualizarResumoTalentos(self, sheet)
+            </event>
+          </dataLink>
+          <layout name="paineisTextoFeitico" align="top" height="360">
+            <layout name="colunaDescricao" align="left" width="300" margins="{right=5}">
+              <rectangle align="top" color="DarkSlateBlue" height="25">
+                <button align="right" width="55" text="Enviar" hint="Envia somente a descrição completa.">
+                  <event name="onClick">require("feitico_script.lua").enviarCampoNaMesa(self, sheet, "Desc")</event>
+                </button>
                 <label align="client" text="Descrição" horzTextAlign="center" />
               </rectangle>
-              <rectangle align="top" color="#333333" margins="{top=5}"
-                height="150">
-                <label align="client" field="Desc" margins="{top=5,left=5,right=5}"
-                  horzTextAlign="center"
-                  vertTextAlign="leading">
-
-                </label>
-                <event name="onDblClick">
-                  local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
-                  local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
-                  local chat = minhaMesa.chat;
-                  Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
-                  dialogs.DT_INFORMATION,
-                  {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
-
-                  if escolha == dialogs.DB_YES then
-                  chat:enviarMensagem("Descrição do " .. node.nome .. ":\n" .. node.Desc)
-                  end
-
-                  end)
-                </event>
+              <rectangle align="client" color="#333333" margins="{top=5}">
+                <textEditor name="descricaoFeitico" align="client" field="Desc" readOnly="true"
+                  wordWrap="true" transparent="true" margins="{left=5,right=5,top=5,bottom=5}" />
               </rectangle>
             </layout>
-            <layout align="left" width="300" margins="{right=5}">
-              <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                height="20">
+            <layout name="colunaEfeito" align="left" width="300" margins="{right=5}">
+              <rectangle align="top" color="DarkSlateBlue" height="25">
+                <button align="right" width="55" text="Enviar" hint="Envia somente o efeito.">
+                  <event name="onClick">require("feitico_script.lua").enviarCampoNaMesa(self, sheet, "Efeito")</event>
+                </button>
                 <label align="client" text="Efeito" horzTextAlign="center" />
               </rectangle>
-              <rectangle align="top" color="#333333" margins="{top=5}"
-                height="150">
-                <label align="client" field="Efeito" margins="{top=5,left=5,right=5}"
-                  horzTextAlign="center" vertTextAlign="leading" />
-                <event name="onDblClick">
-                  local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
-                  local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
-                  local chat = minhaMesa.chat;
-                  Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
-                  dialogs.DT_INFORMATION,
-                  {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
-
-                  if escolha == dialogs.DB_YES then
-                  chat:enviarMensagem("Efeito do " .. node.nome .. ":\n" .. node.Efeito)
-                  end
-
-                  end)
-                </event>
+              <rectangle align="client" color="#333333" margins="{top=5}">
+                <textEditor name="efeitoFeitico" align="client" field="Efeito" readOnly="true"
+                  wordWrap="true" transparent="true" margins="{left=5,right=5,top=5,bottom=5}" />
               </rectangle>
             </layout>
-            <layout align="left" width="300" margins="{right=5}">
-              <layout align="top" height="70">
-                <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                  height="20">
+            <layout name="colunaTestesBonus" align="left" width="300" margins="{right=5}">
+              <layout name="painelTestesFeitico" align="top" height="175">
+                <rectangle align="top" color="DarkSlateBlue" height="25">
+                  <button align="right" width="55" text="Enviar" hint="Envia somente os testes.">
+                    <event name="onClick">require("feitico_script.lua").enviarCampoNaMesa(self, sheet, "defesa")</event>
+                  </button>
                   <label align="client" text="Testes" horzTextAlign="center" />
                 </rectangle>
-                <rectangle align="top" color="#333333" margins="{top=5}"
-                  height="150">
-                  <label align="client" field="defesa" margins="{top=5,left=5,right=5}"
-                    horzTextAlign="center" vertTextAlign="leading" />
-                  <event name="onDblClick">
-                    local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
-                    local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
-                    local chat = minhaMesa.chat;
-                    Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
-                    dialogs.DT_INFORMATION,
-                    {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
-
-                    if escolha == dialogs.DB_YES then
-                    chat:enviarMensagem("Testes do " .. node.nome .. ":\n" .. (node.defesa or ""))
-                    end
-
-                    end)
-                  </event>
+                <rectangle align="client" color="#333333" margins="{top=5}">
+                  <textEditor name="testesFeitico" align="client" field="defesa" readOnly="true"
+                    wordWrap="true" transparent="true" margins="{left=5,right=5,top=5,bottom=5}" />
                 </rectangle>
               </layout>
-              <layout align="top" height="85">
-                <rectangle align="top" color="DarkSlateBlue" margins="{top=5}"
-                  height="20">
-                  <label align="client" text="Bonus" horzTextAlign="center" />
+              <layout name="painelBonusFeitico" align="client" margins="{top=10}">
+                <rectangle align="top" color="DarkSlateBlue" height="25">
+                  <button align="right" width="55" text="Enviar" hint="Envia somente os bônus.">
+                    <event name="onClick">require("feitico_script.lua").enviarCampoNaMesa(self, sheet, "Bonus")</event>
+                  </button>
+                  <label align="client" text="Bônus" horzTextAlign="center" />
                 </rectangle>
-                <rectangle align="top" color="#333333" margins="{top=5}"
-                  height="150">
-                  <label align="client" field="Bonus" margins="{top=5,left=5,right=5}"
-                    horzTextAlign="center" vertTextAlign="leading" />
-                  <event name="onDblClick">
-                    local node = self.boxDetalhesDoItem.node or self.rclMagias.selectedNode;
-                    local minhaMesa = Firecast.getRoomOf(NDB.getRoot(node or sheet));
-                    local chat = minhaMesa.chat;
-                    Dialogs.showMessageDlg("Deseja Enviar na mesa ?",
-                    dialogs.DT_INFORMATION,
-                    {dialogs.DB_YES, dialogs.DB_NO}, function (escolha)
-
-                    if escolha == dialogs.DB_YES then
-                    chat:enviarMensagem("Bonus do " .. node.nome .. ":\n" .. node.Bonus)
-                    end
-
-                    end)
-                  </event>
+                <rectangle align="client" color="#333333" margins="{top=5}">
+                  <textEditor name="bonusFeitico" align="client" field="Bonus" readOnly="true"
+                    wordWrap="true" transparent="true" margins="{left=5,right=5,top=5,bottom=5}" />
                 </rectangle>
               </layout>
             </layout>
@@ -570,7 +467,11 @@
       </layout>
       <layout align="bottom" margins="{top=10}">
         <button align="top" onClick="self.popUp.visible = false" text="Fechar" />
-        <button align="top" onClick="self.popUp.visible = false" text="Enviar na Mesa" />
+        <button align="top" text="Enviar Resumo" hint="Envia atributos, testes e bônus. Os textos completos podem ser enviados pelos seus próprios painéis.">
+          <event name="onClick">
+            require("feitico_script.lua").enviarFeiticoNaMesa(self, sheet)
+          </event>
+        </button>
       </layout>
     </popup>
   </scrollBox>

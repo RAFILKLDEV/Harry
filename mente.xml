@@ -48,7 +48,7 @@
                grad="PERC_Grad" out="PERC_Out" align="top"
                height="30" />
           <LabelComEdit wid="120" margins="{top=5}"
-               nome="Persuação"
+               nome="Persuasão"
                name="Persuacao"
                atr="PRE"
                total="PERS_Total"

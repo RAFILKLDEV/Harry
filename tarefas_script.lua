@@ -1,35 +1,27 @@
 require("utils.lua")
+local condicoes = require("condicoes.lua")
+local Dialogs = require("dialogs.lua")
+local NDB = require("ndb.lua")
 
 local tarefasScript = {}
 
-local function condition(sheet, tipo)
-    if tipo == "fisico" then
-        if sheet.Exausto then return -5 end
-        if sheet.Fadigado then return -2 end
-    elseif tipo == "mental" then
-        if sheet.Tiltado then return -5 end
-        if sheet.Frustrado then return -2 end
-    end
-
-    return nil
-end
-
-local function buildTreinoTexto(prefixo, nome, cd, penalidadeNome, penalidade)
-    local texto = prefixo .. ": " .. nome .. " ( CD " .. cd .. " )"
-
-    if penalidade then
-        texto = texto .. " " .. penalidadeNome .. " " .. (-penalidade) ..
-                    " = " .. ((-penalidade) + cd)
-    end
-
-    return texto
+local function rolarTreino(sheet, chat, atributo, tipo, titulo, cd)
+    local campo = tipo == "fisico" and "Físico" or "Mental"
+    local treino = condicoes.penalidadeDeTreino(sheet, tipo)
+    local estado = condicoes.penalidade(sheet, tipo)
+    local texto = titulo .. " (CD " .. cd .. ")"
+    if treino ~= 0 then texto = texto .. " | " .. campo .. " (treino/estudo) " .. treino end
+    if estado ~= 0 then texto = texto .. " | Condição " .. campo .. " " .. estado end
+    chat:rolarDados("1d20" .. condicoes.termo(sheet[atributo]) ..
+                    condicoes.termo(treino) .. condicoes.termo(estado), texto)
 end
 
 local function listaDeFeiticoParaTreino(sheet, str)
     local raiz = NDB.load("listfetico.xml")
     local filhos = NDB.getChildNodes(raiz)
     local mesaDoPersonagem = rrpg.getMesaDe(sheet)
-    local chat = mesaDoPersonagem.chat
+    local chat = mesaDoPersonagem and mesaDoPersonagem.chat
+    if chat == nil then return end
     local listaFeiticos = {}
     local listaNomesFeitico = {}
 
@@ -50,19 +42,11 @@ local function listaDeFeiticoParaTreino(sheet, str)
                     math.floor(totable(listaFeiticos[k].cdfArray)[1] / 2 + 5)
 
                 if str == "Praticar Feitiços" then
-                    local penalidade = condition(sheet, "fisico")
-                    chat:rolarDados("1d20+" .. (sheet.VIG or 0),
-                                    buildTreinoTexto("Prática Feitiço",
-                                                     listaFeiticos[k].nome,
-                                                     sheet.treinoCD, "Fisico",
-                                                     penalidade))
+                    rolarTreino(sheet, chat, "VIG", "fisico",
+                                "Prática Feitiço: " .. listaFeiticos[k].nome, sheet.treinoCD)
                 else
-                    local penalidade = condition(sheet, "mental")
-                    chat:rolarDados("1d20+" .. (sheet.INTE or 0),
-                                    buildTreinoTexto("Estudo Feitiço",
-                                                     listaFeiticos[k].nome,
-                                                     sheet.treinoCD, "Mental",
-                                                     penalidade))
+                    rolarTreino(sheet, chat, "INTE", "mental",
+                                "Estudo Feitiço: " .. listaFeiticos[k].nome, sheet.treinoCD)
                 end
 
                 return
@@ -72,8 +56,10 @@ local function listaDeFeiticoParaTreino(sheet, str)
 end
 
 function tarefasScript.treinar(sheet)
+    if sheet == nil then return end
     local mesaDoPersonagem = rrpg.getMesaDe(sheet)
-    local chat = mesaDoPersonagem.chat
+    local chat = mesaDoPersonagem and mesaDoPersonagem.chat
+    if chat == nil then return end
 
     Dialogs.choose("Escolha o tipo de treino:",
                    {"Atributo", "Estudar", "Estudar Feitiços", "Praticar",
@@ -99,24 +85,18 @@ function tarefasScript.treinar(sheet)
                 if not selectedAttr or selectedAttrText == nil then return end
 
                 local atributo = atributos[selectedAttrText]
-                local cd = tonumber(sheet[atributo] and sheet[atributo]) + 10
+                local cd = (tonumber(sheet[atributo]) or 0) + 10
 
                 if selectedAttrText == "Força" or
                     selectedAttrText == "Destreza" or
                     selectedAttrText == "Vigor" then
-                    chat:rolarDados(
-                        "1d20+" .. (sheet.VIG or 0),
-                        "Treino de " .. selectedAttrText .. " (CD " .. cd ..
-                            ")")
+                    rolarTreino(sheet, chat, "VIG", "fisico", "Treino de " .. selectedAttrText, cd)
                 else
-                    chat:rolarDados(
-                        "1d20+" .. (sheet.INTE or 0),
-                        "Treino de " .. selectedAttrText .. " (CD " .. cd ..
-                            ")")
+                    rolarTreino(sheet, chat, "INTE", "mental", "Treino de " .. selectedAttrText, cd)
                 end
             end)
         elseif selectedText == "Estudar" then
-            Dialogs.inputQuery("Cadastro", "Informe Seu Nome", "",
+            Dialogs.inputQuery("Estudar", "Informe a CD do estudo", "",
                                function(valorPreenchido)
                 local cd = tonumber(valorPreenchido)
 
@@ -128,13 +108,7 @@ function tarefasScript.treinar(sheet)
 
                 sheet.treinoCD = cd
 
-                chat:rolarDados(
-                    "1d20+" .. (tonumber(sheet.VIG) or 0),
-                    "Estudo (CD " .. cd .. ") " ..
-                        (condition(sheet, "mental") and
-                            "Mental " .. (-condition(sheet, "mental")) ..
-                            " = " .. ((-condition(sheet, "mental")) + cd) or
-                            ""))
+                rolarTreino(sheet, chat, "INTE", "mental", "Estudo", cd)
             end, function() showMessage("O usuário cancelou") end)
         elseif selectedText == "Praticar" then
             Dialogs.inputQuery("Cadastro", "Informe a CD do treino", "",
@@ -148,13 +122,7 @@ function tarefasScript.treinar(sheet)
                 end
 
                 sheet.treinoCD = cd
-                chat:rolarDados(
-                    "1d20+" .. (tonumber(sheet.VIG) or 0),
-                    "Pratica (CD " .. cd .. ") " ..
-                        (condition(sheet, "fisico") and
-                            "Fisico " .. (-condition(sheet, "fisico")) ..
-                            " = " .. ((-condition(sheet, "fisico")) + cd) or
-                            ""))
+                rolarTreino(sheet, chat, "VIG", "fisico", "Prática", cd)
             end, function() showMessage("O usuário cancelou") end)
         elseif selectedText == "Estudar Feitiços" then
             listaDeFeiticoParaTreino(sheet, selectedText)
@@ -162,6 +130,19 @@ function tarefasScript.treinar(sheet)
             listaDeFeiticoParaTreino(sheet, selectedText)
         end
     end)
+end
+
+function tarefasScript.trainingModifierChanged(sheet, campo, oldValue, newValue)
+    if sheet == nil or (campo ~= "fisico" and campo ~= "mental") then return end
+    local root = NDB.getRoot(sheet) or sheet
+    local novo = math.abs(tonumber(newValue) or 0)
+    local antigo = math.abs(tonumber(oldValue) or 0)
+    if root[campo] ~= novo then root[campo] = novo end
+    if oldValue == nil or antigo == novo then return end
+    local mesa = rrpg.getMesaDe(root)
+    if mesa == nil or mesa.chat == nil then return end
+    mesa.chat:enviarAcao("Penalidade de " .. (campo == "fisico" and "Físico" or "Mental") ..
+                       " para treino/estudo: " .. antigo .. " → " .. novo)
 end
 
 return tarefasScript

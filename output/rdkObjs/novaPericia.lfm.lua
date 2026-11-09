@@ -33,7 +33,7 @@ local function constructNew_outrasPericias()
     obj.DATALINK = GUI.fromHandle(_obj_newObject("dataLink"));
     obj.DATALINK:setParent(obj);
     obj.DATALINK:setName("DATALINK");
-    obj.DATALINK:setFields({'ATR','OUT','GRAD','ATRIBUTO','AGI'});
+    obj.DATALINK:setFields({'OUT','GRAD','ATRIBUTO'});
 
     obj.layout1 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout1:setParent(obj);
@@ -114,95 +114,32 @@ local function constructNew_outrasPericias()
 
     obj._e_event0 = obj:addEventListener("onNodeReady",
         function ()
+            require("harry_script.lua").updateOtherSkill(sheet)
         end);
 
     obj._e_event1 = obj.DATALINK:addEventListener("onChange",
         function (field, oldValue, newValue)
-            local node = NDB.getRoot(sheet)
-                        if sheet.ATRIBUTO == "AGI" then
-                        sheet.TOTAL = (node.AGI or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        elseif sheet.ATRIBUTO == "DES" then
-                        sheet.TOTAL = (node.DES or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        elseif sheet.ATRIBUTO == "FOR" then
-                        sheet.TOTAL = (node.FOR or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        elseif sheet.ATRIBUTO == "LUT" then
-                        sheet.TOTAL = (node.LUT or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        elseif sheet.ATRIBUTO == "VIG" then
-                        sheet.TOTAL = (node.VIG or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        elseif sheet.ATRIBUTO == "INTE" then
-                        sheet.TOTAL = (node.INTE or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        elseif sheet.ATRIBUTO == "PRE" then
-                        sheet.TOTAL = (node.PRE or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        elseif sheet.ATRIBUTO == "SAB" then
-                        sheet.TOTAL = (node.SAB or 0) + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        else
-                        sheet.TOTAL = 0 + (sheet.GRAD or 0) + (sheet.OUT or 0)
-                        end
+            require("harry_script.lua").updateOtherSkill(sheet)
         end);
 
     obj._e_event2 = obj.button1:addEventListener("onClick",
         function (event)
-            local mesaDoPersonagem = rrpg.getMesaDe(sheet);
-                            local chat = mesaDoPersonagem.chat
-            
-                            chat:rolarDados("1d20 + " .. (sheet.TOTAL or 0),
-                            sheet.NOME,
-                            function (rolado)
-            
-                            end);
+            require("templates_script.lua").rollOtherSkill(self, sheet)
         end);
 
     obj._e_event3 = obj.ATR:addEventListener("onClick",
         function (event)
             Dialogs.choose("Selecione o Atributo", {"Agilidade", "Destreza", "Força",
-                            "Luta", "Vigor", "Inteligência", "Presença", "Destreza"},
+                            "Luta", "Vigor", "Inteligência", "Presença", "Sabedoria"},
                             function(selected, selectedIndex, selectedText)
+                            if not selected then return end
             
-                            local node = NDB.getRoot(sheet)
+                            local atributos = {"AGI", "DES", "FOR", "LUT", "VIG", "INTE", "PRE", "SAB"}
+                            local atributo = atributos[selectedIndex]
+                            if atributo == nil then return end
             
-                            if selectedIndex == 1 then
-            
-                            sheet.ATRIBUTO = "AGI"
-                            sheet.ATR = node.AGI
-            
-                            elseif selectedIndex == 2 then
-            
-                            sheet.ATRIBUTO = "DES"
-                            sheet.ATR = node.DES
-            
-                            elseif selectedIndex == 3 then
-            
-                            sheet.ATRIBUTO = "FOR"
-                            sheet.ATR = node.FOR
-            
-                            elseif selectedIndex == 4 then
-            
-                            sheet.ATRIBUTO = "LUT"
-                            sheet.ATR = node.LUT
-            
-                            elseif selectedIndex == 5 then
-            
-                            sheet.ATRIBUTO = "VIG"
-                            sheet.ATR = node.VIG
-            
-                            elseif selectedIndex == 6 then
-            
-                            sheet.ATRIBUTO = "INTE"
-                            sheet.ATR = node.INTE
-            
-                            elseif selectedIndex == 7 then
-            
-                            sheet.ATRIBUTO = "PRE"
-                            sheet.ATR = node.PRE
-            
-                            elseif selectedIndex == 8 then
-            
-                            sheet.ATRIBUTO = "SAB"
-                            sheet.ATR = node.SAB
-            
-                            else
-            
-                            end;
+                            sheet.ATRIBUTO = atributo
+                            require("harry_script.lua").updateOtherSkill(sheet)
             
                             end)
         end);

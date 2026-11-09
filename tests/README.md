@@ -1,0 +1,28 @@
+Execute os testes na raiz do projeto usando o Lua 5.4 que já acompanha o SDK do Firecast:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\tests\run.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 -Lint
+```
+
+Os testes usam mesas, chat e diálogos simulados; não se conectam ao Firecast e não alteram fichas salvas. Cobrem atributos, perícias, quadribol, perícias personalizadas, conjuração, ataque, defesas, resistência e os caminhos de treino e estudo.
+
+A janela de lançamento abre sempre com concentração temporária C0. Cada aumento de uma graduação custa C2 e o conjunto de melhorias tem limite C4, elevado a C10 pelo talento **Feitiço Poderoso**. Reduzir apenas desfaz aumentos feitos naquela abertura, sem baixar do valor salvo nem liberar crédito pela base do feitiço. Os valores temporários são usados na rolagem sem escrever no nodo do feitiço ou em `sheet.concentracao`; fechar, cancelar ou falhar não deixa alterações salvas. A formatação remove `.0` de inteiros e mantém frações reais, tanto na janela quanto nas mensagens de lançamento.
+
+O botão **Talentos**, ao lado de **Rolar**, abre sete escolhas persistentes em cada feitiço, com as horas informadas pelo mestre. Feitiço Poderoso não mostra um tempo de aprendizagem porque esse custo não foi informado. Treino e Combo Pessoal não estão nessa lista. Maestria limita falhas de conjuração ao estágio 1. Maestria Superior anuncia sempre o mínimo de ataque `10 + DES + GRAD`, aplica os demais bônus/penalidades depois e mostra o resultado ajustado quando necessário. Crítico Aprimorado muda a margem de 20 natural para 19–20, sem usar o total modificado ou o mínimo da maestria como dado natural.
+
+Ataque Poderoso acrescenta +1 aos componentes numéricos de Dano/Poder existentes em todas as exibições e rolagens, sem modificar a base salva nem somar repetidamente ao reabrir. Componentes ausentes (tabela apenas zero) não ganham dano novo. O resumo do feitiço mostra os valores efetivos com o talento.
+
+Mente Calma habilita uma opção temporária para reduzir CDF em 3 (mínimo zero); funciona em feitiços sem ataque, inclusive Defesa. Não funciona em Ataque/Ataque Base. Lançar silenciosamente também é uma opção por lançamento: penalidade −5 normalmente, reduzida para −2 com Feitiço Silencioso. As opções temporárias reabrem desmarcadas, não gastam concentração nem alteram os dados persistidos do feitiço. As marcações de talentos aprendidos permanecem salvas.
+
+Os campos `fisico` e `mental` continuam com os mesmos nomes e valores salvos, agora na aba **Treinos e Tarefas**. São penalidades exclusivas dos treinos e estudos de seu grupo. Prática física usa VIG; estudo usa INTE. As condições da ficha são independentes: Fatigado −2/Exausto −5 nos testes físicos; Frustrado −2/Tiltado −5 nos mentais. Apenas a pior condição do mesmo grupo é aplicada. Uma condição e uma penalidade numérica de treino podem atuar juntas, cada uma uma única vez.
+
+O campo legado `Fadigado` é preservado para manter as fichas existentes; seu rótulo visível é **Fatigado**. Os totais base não recebem as penalidades, evitando reaplicá-las na conjuração e nas demais rolagens derivadas.
+
+As rolagens enviam primeiro uma mensagem separada com `------------------------------------`, seguida de um bloco com até quatro linhas: magia, personagem e sucesso/falha; soma da conjuração e CD; soma do ataque/defesa, quando houver; detalhes e testes de resistência aplicáveis. O separador é enviado uma vez por lançamento, inclusive em falhas e em defesas canceladas após o Cast, usando a mesma fila de envio do chat. Descrição e texto de efeito não são enviados automaticamente. Cada bônus e penalidade da expressão original aparece separado, sem nome de atributo. Quando Maestria Superior eleva o total, a soma original vem antes de `→ resultado`. O mínimo continua identificável mesmo quando não foi aplicado ou quando o Cast falhou. Falhas preservam o estágio; críticos continuam usando o dado natural.
+
+O módulo `mensagens_magia.lua` apenas formata resultados já calculados; não rola dados, não cria interface e não altera os valores. A paleta usa RGB hexadecimal nativo `[§K#RRGGBB]`: branco `#F8FAFC` para dado/base, ciano `#67E8F9` para parcelas positivas, vermelho `#FF6B7A` para penalidades/falha, amarelo `#FFE066` para resultado, verde `#6EE7A0` para sucesso e rosa `#F9A8D4` para personagem. Referência de sintaxe: [macro do repositório Firecast](https://github.com/rrpgfirecast/firecast/blob/master/Macros/Storytelling/v5.lua). Não há HTML nem Markdown nas mensagens geradas.
+
+**Enviar Resumo** reúne atributos, testes e bônus em duas linhas, sem copiar descrição ou efeito. Os painéis Descrição, Efeito, Testes e Bônus têm texto com rolagem e botões para enviar cada campo completo separadamente. O teste `powershell -File .\tests\layout_test.ps1`, também executado no build, verifica que os painéis cabem em seus contêineres e que os quatro textos possuem rolagem e quebra de linha.
+
+O build cria uma pasta temporária contendo somente fontes e recursos da ficha, compila e valida o conteúdo antes de atualizar `output/Harry.rpk` e `output/Harry-corrigido.rpk`. Ambos têm conteúdo idêntico. Os testes não entram na compilação nem nos pacotes; sua suíte usa a extensão `.testlua` para também evitar carregamento automático em builds diretos com o RDK. O script verifica ID, versão, nome e tipo de dados contra os arquivos originais e recusa pacotes com testes ou fontes desatualizadas.

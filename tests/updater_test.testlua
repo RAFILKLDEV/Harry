@@ -1,0 +1,110 @@
+package.preload["internet.lua"] = function() return {} end
+package.preload["plugins.lua"] = function() return {} end
+package.preload["dialogs.lua"] = function() return {} end
+package.preload["gui.lua"] = function() return {} end
+
+local updater = dofile("updater.lua")
+
+assert(updater.compareVersions("1.0.0", "1.0.1") == -1)
+assert(updater.compareVersions("2.1.0", "2.0.9") == 1)
+assert(updater.compareVersions("2.0", "2.0.0") == 0)
+assert(updater.compareVersions("02.0.0", "2.0.0") == nil)
+
+local function runScenario(latestVersion, installedVersion, packageModuleId, installResult, responseStatus)
+    local counts = {
+        requests = 0,
+        downloads = 0,
+        prompts = 0,
+        installs = 0,
+        errors = 0,
+        successMessages = 0,
+        manualOpens = 0
+    }
+
+    Internet = {
+        newHTTPRequest = function(method, url)
+            assert(method == "GET")
+            assert(url == "https://api.github.com/repos/RAFILKLDEV/Harry/releases/latest")
+            counts.requests = counts.requests + 1
+            local request = {listeners = {}}
+            function request:setRequestHeader() end
+            function request:addEventListener(name, callback)
+                self.listeners[name] = callback
+            end
+            function request:send()
+                self.status = responseStatus or 200
+                self.responseText = latestVersion and ('{"tag_name":"v' .. latestVersion .. '"}') or ""
+                self.listeners.onResponse()
+            end
+            return request
+        end,
+        download = function(url, finished)
+            assert(url:match("/releases/latest/download/Harry%.rpk$"))
+            counts.downloads = counts.downloads + 1
+            finished({
+                size = 100,
+                position = 100,
+                details = {moduleId = packageModuleId, version = latestVersion}
+            }, "application/octet-stream")
+        end
+    }
+
+    Firecast = {
+        Plugins = {
+            getInstalledPlugins = function()
+                return {{moduleId = "HarryPotter_Ficha", version = installedVersion}}
+            end,
+            getRPKDetails = function(stream) return stream.details end,
+            installPlugin = function()
+                counts.installs = counts.installs + 1
+                return installResult, "instalação recusada"
+            end
+        }
+    }
+    Dialogs = {
+        confirmOkCancel = function(_, callback)
+            counts.prompts = counts.prompts + 1
+            callback(true)
+        end,
+        confirmYesNo = function(_, callback) callback(true) end,
+        showErrorMessage = function() counts.errors = counts.errors + 1 end,
+        showMessage = function() counts.successMessages = counts.successMessages + 1 end
+    }
+    GUI = {
+        openInBrowser = function(url)
+            assert(url:match("/releases/latest/download/Harry%.rpk$"))
+            counts.manualOpens = counts.manualOpens + 1
+        end
+    }
+
+    local checker = dofile("updater.lua")
+    checker.check()
+    checker.check()
+    assert(counts.requests == 1, "a verificação deve ocorrer uma única vez por inicialização")
+    return counts
+end
+
+local updated = runScenario("2.0.1", "2.0.0", "HarryPotter_Ficha", true)
+assert(updated.prompts == 1 and updated.downloads == 1 and updated.installs == 1)
+assert(updated.successMessages == 1 and updated.errors == 0)
+
+local upgradedLegacyVersion = runScenario("2.0.1", "2.0", "HarryPotter_Ficha", true)
+assert(upgradedLegacyVersion.prompts == 1 and upgradedLegacyVersion.installs == 1)
+
+local current = runScenario("2.0.0", "2.0.0", "HarryPotter_Ficha", true)
+assert(current.prompts == 0 and current.downloads == 0 and current.installs == 0)
+assert(current.successMessages == 0 and current.errors == 0)
+
+local noRelease = runScenario(nil, "2.0.0", "HarryPotter_Ficha", true, 404)
+assert(noRelease.prompts == 0 and noRelease.downloads == 0 and noRelease.installs == 0)
+assert(noRelease.successMessages == 0 and noRelease.errors == 0)
+
+local wrongModule = runScenario("2.0.1", "2.0.0", "OutroModulo", true)
+assert(wrongModule.prompts == 1 and wrongModule.downloads == 1 and wrongModule.installs == 0)
+assert(wrongModule.errors == 1)
+
+local blockedInstall = runScenario("2.0.1", "2.0.0", "HarryPotter_Ficha", false)
+assert(blockedInstall.installs == 1 and blockedInstall.manualOpens == 1)
+assert(blockedInstall.successMessages == 0 and blockedInstall.errors == 0)
+
+print("OK: comparação semântica, detecção, validação de moduleId, instalação e fallback manual.")

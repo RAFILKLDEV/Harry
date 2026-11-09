@@ -1,40 +1,64 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tab title="Anotações">
      <scrollBox align="client">
-          <tabControl align="client">
-               <tab title="Primeira Aba">
+          <tabControl name="abasAnotacoes" align="client">
+               <tab name="abaAnotacao1" title="Primeira Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao1")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt1" />
                </tab>
 
-               <tab title="Segunda Aba">
+               <tab name="abaAnotacao2" title="Segunda Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao2")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt2" />
                </tab>
-               <tab title="Terceira Aba">
+               <tab name="abaAnotacao3" title="Terceira Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao3")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt3" />
                </tab>
 
-               <tab title="Quarta Aba">
+               <tab name="abaAnotacao4" title="Quarta Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao4")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt4" />
                </tab>
-               <tab title="Quinta Aba">
+               <tab name="abaAnotacao5" title="Quinta Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao5")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt5" />
                </tab>
 
-               <tab title="Sexta Aba">
+               <tab name="abaAnotacao6" title="Sexta Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao6")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt6" />
                </tab>
-               <tab title="Setima Aba">
+               <tab name="abaAnotacao7" title="Setima Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao7")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt7" />
                </tab>
 
-               <tab title="Oitava Aba">
+               <tab name="abaAnotacao8" title="Oitava Aba">
+                    <event name="onMenu">
+                         require("anotacoes_script.lua").renomearAba(self, sheet, "tituloAnotacao8")
+                    </event>
                     <richEdit align="client" backgroundColor="black" defaultFontColor="white"
                          field="txt8" />
                </tab>

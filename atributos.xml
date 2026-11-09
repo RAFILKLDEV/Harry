@@ -14,18 +14,18 @@
           <edit field="nomePersonagem" left="120" top="35" width="225" height="25" />
           <edit field="casa" left="52" top="65" width="293" height="25" />
           <edit field="continente" left="75" top="95" width="270" height="25" />
-          <edit left="45" top="125" width="80" height="25" />
-          <edit left="165" top="125" width="50" height="25" />
-          <edit left="245" top="125" width="100" height="25" />
+          <edit field="classe" left="45" top="125" width="80" height="25" />
+          <edit field="level" left="165" top="125" width="50" height="25" />
+          <edit field="xp" left="245" top="125" width="100" height="25" />
 
           <rectangle left="355" top="0" width="80" height="155" color="black">
-               <CheckCondition name="Fadigado" cor="#0000FF4D" horzTextAlign="center"
+               <CheckCondition name="Fadigado" texto="Fatigado" cor="#0000FF4D" horzTextAlign="center"
                     margins="{left=5,top=5}" />
-               <CheckCondition name="Exausto" cor="#0000FF4D" horzTextAlign="center"
+               <CheckCondition name="Exausto" texto="Exausto" cor="#0000FF4D" horzTextAlign="center"
                     margins="{left=5,top=5}" />
-               <CheckCondition name="Frustrado" cor="#00FF004D" horzTextAlign="center"
+               <CheckCondition name="Frustrado" texto="Frustrado" cor="#00FF004D" horzTextAlign="center"
                     margins="{left=5,top=5}" />
-               <CheckCondition name="Tiltado" cor="#00FF004D" horzTextAlign="center"
+               <CheckCondition name="Tiltado" texto="Tiltado" cor="#00FF004D" horzTextAlign="center"
                     margins="{left=5,top=5}" />
           </rectangle>
 
@@ -49,7 +49,8 @@
                <label margins="{left=5}" horzTextAlign="center" align="left"
                     width="40" text="MOD" />
                <label margins="{left=5}" horzTextAlign="center" align="left"
-                    width="40" text="OUT" />
+                    width="40" text="ALT" hitTest="true"
+                    hint="Alternativa: substitui o MOD na rolagem do atributo. Deixe em branco para usar o MOD; zero também substitui." />
           </rectangle>
           <Atributo name="AGILIDADE" text1="AGILIDADE" field1="AGI" field2="AGI_OUT" />
           <Atributo name="DESTREZA" text1="DESTREZA" field1="DES" field2="DES_OUT" />
@@ -63,7 +64,8 @@
                <label margins="{left=5}" horzTextAlign="center" align="left"
                     width="40" text="MOD" />
                <label margins="{left=5}" horzTextAlign="center" align="left"
-                    width="40" text="OUT" />
+                    width="40" text="ALT" hitTest="true"
+                    hint="Alternativa: substitui o MOD na rolagem do atributo. Deixe em branco para usar o MOD; zero também substitui." />
           </rectangle>
 
           <Atributo name="INTELIGENCIA" text1="INTELIGÊNCIA" field1="INTE" field2="INTE_OUT" />

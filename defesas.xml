@@ -150,13 +150,15 @@
             return
         end
 
-        local total = r + o - f
+        local penalidade = require("condicoes.lua").penalidade(nodeRoot, "fisico")
+        local total = r + o - f + penalidade
 
         result.text = string.format(
-            "Resistência %d + Outro %d - Ferimento %d = %d",
+            "Resistência %d + Outro %d - Ferimento %d + Condição %d = %d",
             r,
             o,
             f,
+            penalidade,
             total
         )
 
@@ -284,7 +286,10 @@ end
                 local chat = mesa.chat
 
                 local titulo = string.format((sheet.nomePersonagem and sheet.nomePersonagem .. " - " or "") ..  "Teste de Efeito (%s)  [Â§K2]CD %d[Â§K7] | SAVE %d", tipo, cd, save)
-                local rolagem = rrpg.interpretarRolagem("1d20+" .. save)
+                local condicoes = require("condicoes.lua")
+                local penalidade = condicoes.penalidade(sheet, tipo == "Vontade" and "mental" or "fisico")
+                if penalidade ~= 0 then titulo = titulo .. " | Condição " .. penalidade end
+                local rolagem = rrpg.interpretarRolagem("1d20" .. condicoes.termo(save) .. condicoes.termo(penalidade))
 
                 chat:rolarDados(rolagem, titulo, function(rolado)
                 -- extrai total compatÃ­vel com diferentes versÃµes

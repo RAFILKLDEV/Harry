@@ -11,8 +11,29 @@ local function cadaDez(numero)
     return result
 end
 
+function harryScript.updateOtherSkill(sheet)
+    if sheet == nil then return end
+
+    local root = NDB.getRoot(sheet)
+    if root == nil then return end
+
+    local atributo = 0
+    if sheet.ATRIBUTO ~= nil then
+        atributo = tonumber(root[sheet.ATRIBUTO]) or 0
+    end
+
+    local total = atributo + (tonumber(sheet.GRAD) or 0) + (tonumber(sheet.OUT) or 0)
+
+    if sheet.ATR ~= atributo then sheet.ATR = atributo end
+    if sheet.TOTAL ~= total then sheet.TOTAL = total end
+end
+
 function harryScript.onSheetChange(sheet)
     if sheet == nil then return end
+
+    for _, pericia in ipairs(NDB.getChildNodes(sheet.outrasPericias)) do
+        harryScript.updateOtherSkill(pericia)
+    end
 
     sheet.ACR_Total = (tonumber(sheet.ACR_Grad) or 0) +
                           (tonumber(sheet.AGI) or 0) +
@@ -250,12 +271,18 @@ function harryScript.onNodeReady(sheet)
     local campos = {
         "DES", "adivinhacao", "azaracao", "contraFeitico", "encantamento",
         "feitico", "transmutacao", "arteDasTrevas", "fisico", "mental",
-        "concentracao", "acerto", "ferimentos"
+        "concentracao", "acerto", "ferimentos",
+        "tituloAnotacao1", "tituloAnotacao2", "tituloAnotacao3", "tituloAnotacao4",
+        "tituloAnotacao5", "tituloAnotacao6", "tituloAnotacao7", "tituloAnotacao8"
     }
 
     for x = 1, #campos, 1 do
-        if sheet[campos[x]] == nil then sheet[campos[x]] = 0 end
+        if sheet[campos[x]] == nil then
+            sheet[campos[x]] = campos[x]:find("^tituloAnotacao") and "" or 0
+        end
     end
+    require("anotacoes_script.lua").aplicarTitulos(self, sheet)
+    require("updater.lua").check()
 end
 
 return harryScript

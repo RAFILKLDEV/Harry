@@ -1,0 +1,999 @@
+-- Suíte executada somente pelo runner externo; extensão não carregada pelo Firecast.
+-- O Firecast aceita require com a extensão .lua, diferente do loader padrão.
+table.insert(package.searchers, 2, function(name)
+    if name:match("%.lua$") then
+        local loader, reason = loadfile(name)
+        return loader or reason
+    end
+    return "\n\tfora do loader de arquivos Firecast"
+end)
+local rolls, parsed, messages, actions, controls = {}, {}, {}, {}, {}
+local sentMessages = {}
+local choices, inputs, room = {}, {}, nil
+local dice = {}
+local function evaluate(expression)
+    local value = expression:gsub("1d20", "20"):gsub("1d8", "8")
+    assert(value:match("^[%d%+%-%s%.]+$"), expression)
+    return assert(load("return " .. value))()
+end
+local chat = {}
+function chat:rolarDados(expression, message, callback)
+    expression = type(expression) == "table" and expression.expression or expression
+    local result = evaluate(expression)
+    rolls[#rolls + 1] = {expression = expression, message = message, result = result}
+    if callback then callback({resultado = result}) end
+end
+function chat:enviarMensagem(message)
+    sentMessages[#sentMessages + 1] = message
+    -- Os testes de conteúdo analisam o bloco; os testes de envio verificam
+    -- separadamente a ordem de todas as mensagens, incluindo o separador.
+    if message ~= "------------------------------------" then messages[#messages + 1] = message end
+end
+function chat:enviarAcao(message) actions[#actions + 1] = message end
+rrpg = {
+    getMesaDe = function() return room end,
+    interpretarRolagem = function(expression)
+        parsed[#parsed + 1] = expression
+        return {expression = expression, ops = {}, rolarLocalmente = function(self)
+            local face = expression:find("1d8", 1, true) and 8 or 20
+            local natural = table.remove(dice, 1) or face
+            local bonus = evaluate(expression) - face
+            self.resultado = natural + bonus
+            self.ops = {{tipo = "dado", face = face, resultados = {natural}}, {tipo = "imediato", valor = bonus}}
+        end}
+    end
+}
+Firecast = {getRoomOf = function() return room end}
+NDB = {
+    getRoot = function(node) return node and (node._root or node) end,
+    load = function() return {f1 = {nome = "Feitiço de teste", cdfArray = {10}}} end,
+    getChildNodes = function(node) return node.f1 and {node.f1} or {} end
+}
+Dialogs = {
+    choose = function(_, options, callback)
+        local text = table.remove(choices, 1)
+        if text == false then return callback(false) end
+        for index, option in ipairs(options) do
+            if option == text then return callback(true, index, text) end
+        end
+        error("Escolha inesperada: " .. tostring(text))
+    end,
+    inputQuery = function(_, _, _, callback) callback(table.remove(inputs, 1)) end,
+    showMessage = function(message) messages[#messages + 1] = message end
+}
+showMessage = Dialogs.showMessage
+local function control(kind)
+    local item = {kind = kind}
+    function item:close() self.closed = true end
+    function item:show() self.shown = true end
+    controls[#controls + 1] = item
+    return item
+end
+GUI = {}
+for _, kind in ipairs({"PopupForm", "Layout", "Label", "Edit", "Button", "CheckBox", "ScrollBox"}) do
+    GUI["new" .. kind] = function() return control(kind) end
+end
+package.preload["ndb.lua"] = function() return NDB end
+package.preload["dialogs.lua"] = function() return Dialogs end
+package.preload["gui.lua"] = function() return GUI end
+package.preload["utils.lua"] = function()
+    totable = function(value)
+        if type(value) == "string" then return assert(load("return " .. value))() end
+        return value
+    end
+    return true
+end
+local condicoes = require("condicoes.lua")
+local templates = require("templates_script.lua")
+local tarefas = require("tarefas_script.lua")
+local feiticos = require("feitico_script.lua")
+local lancamento = require("lancamento.lua")
+local talentos = require("talentos.lua")
+local mensagensMagia = require("mensagens_magia.lua")
+local anotacoes = require("anotacoes_script.lua")
+local function fresh(values)
+    rolls, parsed, messages, actions, controls, choices, inputs = {}, {}, {}, {}, {}, {}, {}
+    sentMessages = {}
+    dice = {}
+    room = {chat = chat, meuJogador = {nick = "Teste"}}
+    local root = {nomePersonagem = "Teste", AGI = 2, DES = 3, FOR = 4, LUT = 5, VIG = 6,
+                  INTE = 8, PRE = 1, SAB = 7, fisico = 3, mental = 4,
+                  ACR_Total = 7, CON_Total = 9, APA_Total = 9, REF_Total = 7,
+                  FORT_Total = 9, VON_Total = 8, RES_Total = 9}
+    for key, value in pairs(values or {}) do root[key] = value end
+    return root
+end
+local function equal(actual, expected)
+    assert(actual == expected, "esperado " .. tostring(expected) .. ", recebido " .. tostring(actual))
+end
+local passed, failed = 0, 0
+local function test(name, callback)
+    local ok, reason = xpcall(callback, debug.traceback)
+    if ok then passed = passed + 1; print("OK: " .. name)
+    else failed = failed + 1; print("FALHOU: " .. name .. "\n" .. reason) end
+end
+
+test("condições globais usam a raiz, mantêm os grupos separados e não acumulam graus", function()
+    local root = fresh({Fadigado = true, Exausto = true, Frustrado = true, Tiltado = true})
+    equal(condicoes.penalidade({_root = root}, "fisico"), -5)
+    equal(condicoes.penalidade({_root = root}, "mental"), -5)
+    root.Exausto, root.Tiltado = false, false
+    equal(condicoes.penalidade(root, "fisico"), -2)
+    equal(condicoes.penalidade(root, "mental"), -2)
+    root.Fadigado, root.Frustrado = false, false
+    equal(condicoes.penalidade(root, "fisico"), 0)
+    equal(condicoes.penalidade(root, "mental"), 0)
+    equal(condicoes.penalidade(nil, "fisico"), 0)
+end)
+
+test("todos os oito atributos aplicam o grupo correto e ignoram os campos de treino", function()
+    local root = fresh({Fadigado = true, Tiltado = true, fisico = 90, mental = 80})
+    for _, attribute in ipairs({"AGI", "DES", "FOR", "LUT", "VIG", "INTE", "PRE", "SAB"}) do
+        templates.rollAtributo({label = {text = attribute}}, root, "label", attribute, "alternativa")
+        local penalty = condicoes.tipoDoAtributo(attribute) == "fisico" and -2 or -5
+        equal(rolls[#rolls].result, 20 + root[attribute] + penalty)
+    end
+    root.alternativa = 0
+    templates.rollAtributo({label = {text = "Força"}}, root, "label", "FOR", "alternativa")
+    equal(rolls[#rolls].result, 18)
+end)
+
+test("perícias, defesas e quadribol aplicam apenas condições do grupo correspondente", function()
+    local root = fresh({Exausto = true, Frustrado = true, fisico = 90, mental = 80})
+    for _, name in ipairs({"Acrobacia", "Atletismo", "Corpo-a-Corpo", "Furtividade", "Prestidigitação",
+                            "Veiculos Mágicos", "Iniciativa", "Aparar", "Fortitude", "Reflexo", "Resistencia"}) do
+        templates.rollLabelComEdit({label = {text = name}}, root, "label", "ACR_Total")
+        equal(rolls[#rolls].result, 22)
+    end
+    templates.rollLabelComEdit({label = {text = "Concentração"}}, root, "label", "CON_Total")
+    equal(rolls[#rolls].result, 27)
+    root.quad = 10
+    for _, name in ipairs({"Antecipar", "Atrapalhar", "Marcar Falta", "Apanhar Pomo", "Defender", "Driblar"}) do
+        templates.rollQuadribol({label = {text = name}}, root, "label", "quad")
+        local mental = name == "Antecipar" or name == "Atrapalhar" or name == "Marcar Falta"
+        equal(rolls[#rolls].result, 30 - (mental and 2 or 5))
+    end
+end)
+
+test("perícias personalizadas consultam as condições da ficha principal", function()
+    local root = fresh({Exausto = true, Frustrado = true})
+    local child = {_root = root, ATRIBUTO = "DES", TOTAL = 11, NOME = "Perícia personalizada"}
+    templates.rollOtherSkill({}, child); equal(rolls[#rolls].result, 26)
+    child.ATRIBUTO = "INTE"
+    templates.rollOtherSkill({}, child); equal(rolls[#rolls].result, 29)
+    child.ATRIBUTO = nil
+    templates.rollOtherSkill({}, child); equal(rolls[#rolls].result, 31)
+end)
+
+test("treinos de atributos, prática e estudo somam uma vez o campo local e a condição global", function()
+    for _, scenario in ipairs({
+        {{"Atributo", "Força"}, 21}, {{"Atributo", "Destreza"}, 21}, {{"Atributo", "Vigor"}, 21},
+        {{"Atributo", "Inteligencia"}, 22}, {{"Atributo", "Sabedoria"}, 22}, {{"Atributo", "Presença"}, 22},
+        {{"Praticar"}, 21}, {{"Estudar"}, 22},
+        {{"Praticar Feitiços", "Feitiço de teste"}, 21}, {{"Estudar Feitiços", "Feitiço de teste"}, 22}
+    }) do
+        local root = fresh({Fadigado = true, Frustrado = true})
+        choices, inputs = scenario[1], {"15"}
+        tarefas.treinar(root)
+        equal(#rolls, 1); equal(rolls[1].result, scenario[2])
+        assert(rolls[1].message:find("CD "))
+        assert(not rolls[1].message:find(" = ")) -- a CD não recebe a penalidade de novo
+        equal(root.fisico, 3); equal(root.mental, 4)
+    end
+end)
+
+test("exaustão afeta treino físico e tilt afeta estudo, incluindo resultados negativos", function()
+    local root = fresh({Exausto = true, Tiltado = true})
+    choices, inputs = {"Praticar"}, {"15"}; tarefas.treinar(root)
+    equal(rolls[1].result, 18)
+    choices, inputs = {"Estudar"}, {"15"}; tarefas.treinar(root)
+    equal(rolls[2].result, 19)
+    root.fisico = 50
+    choices, inputs = {"Praticar"}, {"15"}; tarefas.treinar(root)
+    equal(rolls[3].result, -29)
+end)
+
+local function spell(root, kind)
+    return {_root = root, nome = "Teste", tipo = kind, escola = "Feitiço", Grad = 2,
+            CD = 5, Ataque = 1, Poder = 2}
+end
+test("conjuração e ataque usam condições globais sem incluir os números de treino", function()
+    local root = fresh({Exausto = true, Frustrado = true, C_FEI_Total = 8, concentracao = 1,
+                        acerto = 1, fisico = 90, mental = 80})
+    local node = spell(root, "Ataque")
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(#parsed, 2); equal(evaluate(parsed[1]), 23); equal(evaluate(parsed[2]), 20)
+    root.fisico, root.mental = 0, 0
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(evaluate(parsed[3]), 23); equal(evaluate(parsed[4]), 20)
+end)
+
+test("defesas mágicas corpo a corpo e à distância recebem a condição física", function()
+    for _, kind in ipairs({"Corpo-a-Corpo", "Distância"}) do
+        local root = fresh({Exausto = true, C_FEI_Total = 8, fisico = 90, mental = 80})
+        local node = spell(root, "Defesa")
+        choices = {kind}
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+        equal(evaluate(parsed[2]), kind == "Corpo-a-Corpo" and 24 or 22)
+    end
+end)
+
+test("defesa oferece distância primeiro e confirmar o padrão usa Reflexos", function()
+    local root = fresh({C_FEI_Total = 8, APA_Total = 40, REF_Total = 7})
+    local node = spell(root, "Defesa")
+    local originalChoose = Dialogs.choose
+    Dialogs.choose = function(_, options, callback, defaultIndex)
+        equal(options[1], "Distância"); equal(options[2], "Corpo-a-Corpo")
+        equal(defaultIndex, 1)
+        callback(true, defaultIndex, options[defaultIndex])
+    end
+    local ok, reason = pcall(function()
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+        equal(#parsed, 2); equal(evaluate(parsed[2]), 27) -- 1d8 + 10 + Poder 2 + REF 7.
+    end)
+    Dialogs.choose = originalChoose
+    assert(ok, reason)
+end)
+
+local file = assert(io.open("defesas.xml", "rb")); local xml = file:read("*a"); file:close()
+local defenseScript = assert(xml:match("<script>(.-)</script>")):gsub("&lt;", "<"):gsub("&gt;", ">")
+assert(load(defenseScript, "@defesas.xml"))()
+test("resistência a dano aplica condição física junto a ferimento e outro modificador", function()
+    for _, state in ipairs({"Fadigado", "Exausto"}) do
+        sheet = fresh({[state] = true, ferimentos = 1, fisico = 90})
+        testeResistenciaDanoDialog()
+        local edits, button = {}, nil
+        for _, item in ipairs(controls) do
+            if item.kind == "Edit" then edits[#edits + 1] = item end
+            if item.kind == "Button" and item.text == "Rolar" then button = item end
+        end
+        edits[2].text = "2"
+        assert(button).onClick()
+        equal(rolls[1].result, state == "Fadigado" and 28 or 25)
+    end
+end)
+
+test("testes de efeitos aplicam condição física ou mental conforme a defesa", function()
+    for _, kind in ipairs({"Fortitude", "Reflexos", "Vontade"}) do
+        sheet = fresh({Exausto = true, Frustrado = true, fisico = 90, mental = 80})
+        choices, inputs = {kind}, {"3"}
+        testeResistenciaEfeitoDialog()
+        equal(rolls[1].result, ({Fortitude = 24, Reflexos = 22, Vontade = 26})[kind])
+    end
+end)
+
+test("campos de treino preservam valores, normalizam o sinal e funcionam sem mesa", function()
+    local root = fresh(); room = nil
+    tarefas.trainingModifierChanged(root, "fisico", 3, -5)
+    equal(root.fisico, 5); equal(#actions, 0)
+    room = {chat = chat}
+    tarefas.trainingModifierChanged(root, "mental", 4, -6)
+    equal(root.mental, 6); equal(#actions, 1)
+    tarefas.trainingModifierChanged(root, "mental", -6, 6)
+    equal(#actions, 1)
+    equal(condicoes.penalidade(root, "fisico"), 0)
+    equal(condicoes.penalidade(root, "mental"), 0)
+end)
+
+test("cancelamento, CD inválida e ficha sem mesa não produzem rolagem", function()
+    local root = fresh()
+    choices = {false}; tarefas.treinar(root); equal(#rolls, 0)
+    choices, inputs = {"Estudar"}, {"inválida"}; tarefas.treinar(root); equal(#rolls, 0)
+    room = nil; tarefas.treinar(root); equal(#rolls, 0)
+end)
+
+test("trocar condições conserva os grupos separados e também funciona fora de uma mesa", function()
+    local root = fresh({Fadigado = true, Exausto = true, Frustrado = true})
+    room = nil
+    templates.checkConditionChanged({Fadigado = {text = "Fatigado"}}, root, "Fadigado")
+    equal(root.Exausto, nil); equal(root.Frustrado, true)
+    root.Tiltado = true
+    templates.checkConditionChanged({}, root, "Tiltado")
+    equal(root.Frustrado, nil); equal(root.Fadigado, true)
+    equal(condicoes.penalidade(root, "fisico"), -2)
+    equal(condicoes.penalidade(root, "mental"), -5)
+end)
+
+local function popupSpell(root)
+    local node = spell(root, "Ataque")
+    node.Grad, node.CD, node.Dano, node.Area, node.Range, node.Duracao, node.Poder = 3.0, 10.0, 10.0, 1.5, "4.5m", 10.0, 2.0
+    node.Dano_array, node.Area_array = {0.0, 10.0, 20.0, 30.0}, {0.0, 1.5, 3.0, 4.5}
+    node.Range_array, node.Duracao_array = {"Toque", "4.5m", "6m", "7.5m"}, {0.0, 10.0, 20.0, 30.0}
+    node.Poder_array = {1.0, 2.0, 3.0, 4.0}
+    for _, field in ipairs({"Dano", "Area", "Range", "Duracao", "Poder", "Ataque"}) do node[field .. "_grad"] = 2.0 end
+    return node
+end
+local function row(field)
+    local parent
+    for _, item in ipairs(controls) do
+        if item.kind == "Label" and item.text == field then parent = item.parent end
+    end
+    assert(parent, "Linha ausente: " .. field)
+    local result = {}
+    for _, item in ipairs(controls) do
+        if item.parent == parent then
+            if item.kind == "Button" and item.text == "+" then result.plus = item end
+            if item.kind == "Button" and item.text == "-" then result.minus = item end
+            if item.kind == "Label" and item.width == 60 then result.value = item end
+        end
+    end
+    return result
+end
+local function concentrationText()
+    for _, item in ipairs(controls) do
+        if item.kind == "Label" and item.text and item.text:find("Concentração temporária:", 1, true) then return item.text end
+    end
+    error("Concentração não exibida")
+end
+local function castButton()
+    for _, item in ipairs(controls) do if item.kind == "Button" and item.text == "ROLAR FEITIÇO" then return item end end
+    error("Botão de rolagem ausente")
+end
+
+test("números inteiros não mostram .0 e frações e textos são preservados", function()
+    equal(lancamento.formatarNumero(10.0), "10")
+    equal(lancamento.formatarNumero("-10.00"), "-10")
+    equal(lancamento.formatarNumero(-0.0), "0")
+    equal(lancamento.formatarNumero(1.5), "1.5")
+    equal(lancamento.formatarNumero("4.5m"), "4.5m")
+    equal(lancamento.formatarNumero("Cena"), "Cena")
+    equal(lancamento.formatarNumero(nil), "")
+end)
+
+test("a abertura sempre inicia C0, conserva os valores salvos e impede reduzir o original", function()
+    local root = fresh({concentracao = 18, C_FEI_Total = 8})
+    local node = popupSpell(root)
+    node.Grad = 0 -- Mesmo sem graduações disponíveis, a base não gera concentração temporária.
+    feiticos.abrirPopupFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(concentrationText(), "Concentração temporária: C0 / C4")
+    equal(row("Dano").value.text, "10"); equal(row("Area").value.text, "1.5")
+    for _, field in ipairs({"Dano", "Area", "Range", "Duracao", "Poder", "Ataque"}) do
+        equal(row(field).minus.enabled, false)
+        row(field).minus.onClick() -- O handler também recusa a ação, independente do botão desabilitado.
+    end
+    equal(concentrationText(), "Concentração temporária: C0 / C4")
+    equal(node.Dano, 10.0); equal(node.Dano_grad, 2.0); equal(root.concentracao, 18)
+end)
+
+test("o limite C4 é compartilhado por todas as melhorias e bloqueia o terceiro aumento", function()
+    local root = fresh(); local node = popupSpell(root)
+    feiticos.abrirPopupFeitico({boxDetalhesDoItem = {node = node}}, node)
+    row("Dano").plus.onClick(); equal(row("Dano").value.text, "20")
+    equal(concentrationText(), "Concentração temporária: C2 / C4")
+    row("Poder").plus.onClick(); equal(row("Poder").value.text, "3")
+    equal(concentrationText(), "Concentração temporária: C4 / C4")
+    for _, field in ipairs({"Dano", "Area", "Range", "Duracao", "Poder", "Ataque"}) do
+        equal(row(field).plus.enabled, false)
+        row(field).plus.onClick()
+    end
+    equal(row("Dano").value.text, "20"); equal(row("Poder").value.text, "3")
+    equal(row("Range").value.text, "4.5m")
+    equal(concentrationText(), "Concentração temporária: C4 / C4")
+end)
+
+test("desfazer libera só a melhoria temporária e nunca usa a base para melhorar outro campo", function()
+    local root = fresh(); local node = popupSpell(root)
+    feiticos.abrirPopupFeitico({boxDetalhesDoItem = {node = node}}, node)
+    row("Dano").plus.onClick(); row("Poder").plus.onClick()
+    row("Dano").minus.onClick()
+    equal(row("Dano").value.text, "10"); equal(row("Dano").minus.enabled, false)
+    equal(concentrationText(), "Concentração temporária: C2 / C4")
+    for _ = 1, 5 do row("Dano").minus.onClick() end
+    equal(row("Dano").value.text, "10")
+    equal(concentrationText(), "Concentração temporária: C2 / C4")
+    row("Range").plus.onClick(); equal(row("Range").value.text, "6m")
+    equal(concentrationText(), "Concentração temporária: C4 / C4")
+    row("Area").plus.onClick(); equal(row("Area").value.text, "1.5")
+end)
+
+test("rolar usa as melhorias e a concentração temporária sem escrever na ficha", function()
+    local root = fresh({concentracao = 9, C_FEI_Total = 8})
+    local node = popupSpell(root)
+    feiticos.abrirPopupFeitico({boxDetalhesDoItem = {node = node}}, node)
+    row("Dano").plus.onClick()
+    local originalSend = chat.enviarMensagem
+    chat.enviarMensagem = function(self, message)
+        equal(root.concentracao, 9); equal(node.Dano, 10.0); equal(node.Dano_grad, 2.0)
+        originalSend(self, message)
+    end
+    local ok, reason = pcall(castButton().onClick)
+    chat.enviarMensagem = originalSend
+    assert(ok, reason)
+    equal(evaluate(parsed[1]), 25) -- 20 + Grad 3 + Escola 4 - C2; ignora o 9 salvo.
+    local boosted
+    for _, message in ipairs(messages) do
+        assert(not message:match("%d+%.0"), message)
+        if message:find("Dano 20", 1, true) then boosted = true end
+    end
+    assert(boosted, "A mensagem não mostrou o dano temporário")
+    equal(node.Dano, 10.0); equal(root.concentracao, 9)
+end)
+
+test("reabrir ou cancelar descarta melhorias e a nova janela volta a C0", function()
+    local root = fresh({concentracao = 9}); local node = popupSpell(root)
+    local context = {boxDetalhesDoItem = {node = node}}
+    feiticos.abrirPopupFeitico(context, node)
+    row("Dano").plus.onClick(); row("Poder").plus.onClick()
+    for _, item in ipairs(controls) do if item.kind == "PopupForm" then item:close() end end
+    controls = {}
+    feiticos.abrirPopupFeitico(context, node)
+    equal(concentrationText(), "Concentração temporária: C0 / C4")
+    equal(row("Dano").value.text, "10"); equal(row("Poder").value.text, "2")
+    equal(root.concentracao, 9)
+end)
+
+test("defesa cancelada e erro durante o lançamento não deixam valores temporários salvos", function()
+    local root = fresh({concentracao = 9, C_FEI_Total = 8}); local node = popupSpell(root)
+    node.tipo = "Defesa"
+    feiticos.abrirPopupFeitico({boxDetalhesDoItem = {node = node}}, node)
+    row("Poder").plus.onClick(); choices = {false}; castButton().onClick()
+    equal(root.concentracao, 9); equal(node.Poder, 2.0)
+    controls = {}
+    feiticos.abrirPopupFeitico({boxDetalhesDoItem = {node = node}}, node)
+    row("Dano").plus.onClick()
+    local originalParse = rrpg.interpretarRolagem
+    rrpg.interpretarRolagem = function() error("falha simulada") end
+    local ok = pcall(castButton().onClick)
+    rrpg.interpretarRolagem = originalParse
+    equal(ok, false); equal(node.Dano, 10.0); equal(root.concentracao, 9)
+end)
+
+test("progressões são limitadas pela tabela e o ataque antigo sem índice mantém seu valor", function()
+    local root = fresh(); local node = popupSpell(root)
+    node.Ataque, node.Ataque_grad = 5.0, nil
+    node.Dano, node.Dano_grad, node.Poder_array = 30.0, 4.0, "{1, 2, 3, 4}"
+    local state = lancamento.novo(node)
+    equal(state.preview.Ataque, 5.0); equal(state:concentracao(), 0)
+    equal(state:podeAumentar("Dano"), false); equal(state:podeDiminuir("Dano"), false)
+    equal(state:aumentar("Ataque"), true); equal(state.preview.Ataque, 6)
+    equal(state:aumentar("Poder"), true); equal(state.preview.Poder, 3)
+    equal(state:concentracao(), 4)
+    equal(state:aumentar("Poder"), false)
+    equal(node.Ataque, 5.0); equal(node.Ataque_grad, nil)
+end)
+
+local function checkbox(prefix)
+    for _, item in ipairs(controls) do
+        if item.kind == "CheckBox" and item.text:sub(1, #prefix) == prefix then return item end
+    end
+    error("Caixa ausente: " .. prefix)
+end
+local function messageContains(text)
+    for _, message in ipairs(messages) do
+        if message:gsub("%[§[^%]]*%]", ""):find(text, 1, true) then return true end
+    end
+    return false
+end
+
+test("menu de sete talentos mantém escolhas por feitiço sem incluir Treino ou Combo", function()
+    local root = fresh(); local node = popupSpell(root)
+    local context = {boxDetalhesDoItem = {node = node}, resumoTalentos = {text = ""}}
+    feiticos.abrirTalentos(context, node)
+    local count = 0
+    for _, item in ipairs(controls) do
+        if item.kind == "CheckBox" then
+            count = count + 1
+            assert(not item.text:find("Treino", 1, true)); assert(not item.text:find("Combo", 1, true))
+        end
+    end
+    equal(count, 7)
+    local maestria = checkbox("Maestria em Feitiço — 10h")
+    maestria.checked = true; maestria.onChange()
+    local poderoso = checkbox("Ataque Poderoso")
+    poderoso.checked = true; poderoso.onChange()
+    equal(node.talentoMaestria, true); equal(node.talentoAtaquePoderoso, true)
+    assert(context.resumoTalentos.text:find("Dano: 11", 1, true))
+    equal(node.Dano, 10); equal(node.Poder, 2); equal(node.Grad, 3)
+    controls = {}; feiticos.abrirTalentos(context, node)
+    equal(checkbox("Maestria em Feitiço — 10h").checked, true)
+    equal(checkbox("Ataque Poderoso").checked, true)
+    local other = popupSpell(root)
+    context.boxDetalhesDoItem.node = other
+    controls = {}; feiticos.abrirTalentos(context, other)
+    equal(checkbox("Ataque Poderoso").checked, false)
+end)
+
+test("Maestria converte qualquer grau de falha de Cast em estágio 1 sem transformar em sucesso", function()
+    for _, enabled in ipairs({false, true}) do
+        local root = fresh({concentracao = 0}); local node = spell(root, "Cast")
+        node.CD, node.talentoMaestria = 100, enabled
+        dice = {1}
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+        assert(messageContains(enabled and "1 estágio" or "4 estágios"))
+        assert(not messageContains("✓ Sucesso")); equal(#parsed, 1)
+        equal(node.CD, 100)
+    end
+end)
+
+test("Maestria Superior exibe e aplica o mínimo mantendo Acerto e condição física", function()
+    local root = fresh({concentracao = 0, acerto = 1, Exausto = true})
+    local node = spell(root, "Ataque")
+    node.talentoMaestriaSuperior, node.talentoCritico = true, true
+    equal(talentos.minimoAtaque(node, root, -5), 10) -- 10 + DES 3 + GRAD 2 + Ataque 1 - Acerto 1 - Exausto 5.
+    dice = {12, 1}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    assert(messageContains("Maestria Superior (mín.)"))
+    assert(messageContains("ATAQUE: 1 +2 +3 +1 -1 -5 = 1 → 10"))
+    assert(not messageContains("Crítico!"))
+    messages, dice = {}, {20, 20}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    assert(messageContains("Maestria Superior (mín. 10)")) -- Mostra mesmo quando não precisou ajustar.
+end)
+
+test("o mínimo de Maestria Superior continua anunciado se a conjuração falhar", function()
+    local root = fresh({concentracao = 0}); local node = spell(root, "Ataque")
+    node.talentoMaestriaSuperior, node.CD = true, 100
+    dice = {1}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    assert(messageContains("Maestria Superior (mín.")); assert(messageContains("Falha"))
+    equal(#parsed, 1)
+end)
+
+test("crítico usa o D20 natural: 20 normal e 19–20 com o talento, sem críticos por bônus", function()
+    for _, scenario in ipairs({{false, 19, false}, {false, 20, true}, {true, 18, false}, {true, 19, true}, {true, 20, true}}) do
+        local root = fresh({concentracao = 0}); local node = spell(root, "Ataque")
+        node.talentoCritico = scenario[1]
+        dice = {12, scenario[2]}
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+        equal(messageContains("Crítico!"), scenario[3])
+    end
+    equal(talentos.critico({talentoCritico = true}, {resultado = 100,
+        ops = {{tipo = "dado", face = 20, resultados = {1}}}}), false)
+end)
+
+test("Ataque Poderoso permanece ativo, não acumula ao reabrir e respeita a base do popup", function()
+    local root = fresh(); local node = popupSpell(root)
+    node.talentoAtaquePoderoso = true
+    for _ = 1, 3 do
+        local state = lancamento.novo(node)
+        equal(state.preview.Dano, 11); equal(state.preview.Poder, 3); equal(state:concentracao(), 0)
+        equal(talentos.feiticoEfetivo(state.preview).Dano, 11)
+        equal(state:aumentar("Dano"), true); equal(state.preview.Dano, 21)
+        equal(state:concentracao(), 2)
+        equal(state:diminuir("Dano"), true); equal(state.preview.Dano, 11)
+        equal(state:diminuir("Dano"), false)
+        equal(node.Dano, 10); equal(node.Poder, 2)
+    end
+    local effective = talentos.feiticoEfetivo(node)
+    equal(effective.Dano, 11); equal(talentos.feiticoEfetivo(effective).Dano, 11)
+    local context = {boxDetalhesDoItem = {node = node}}
+    assert(feiticos.stats(context, node):find("Dano: [§K1]11", 1, true))
+    node.talentoAtaquePoderoso = false
+    equal(lancamento.novo(node).preview.Dano, 10)
+end)
+
+test("Ataque Poderoso melhora componentes existentes sem inventar dano em feitiços sem dano", function()
+    local node = {talentoAtaquePoderoso = true, Dano = 0, Dano_array = "{0}", Poder = 1, Poder_array = "{1,2,3}"}
+    equal(talentos.feiticoEfetivo(node).Dano, 0)
+    equal(talentos.feiticoEfetivo(node).Poder, 2)
+    node.Dano_array = "{0,1,2,3}"
+    equal(talentos.feiticoEfetivo(node).Dano, 1)
+    node.Poder = "-5 em Ataque"
+    equal(talentos.feiticoEfetivo(node).Poder, "-5 em Ataque")
+end)
+
+test("Mente Calma reduz apenas a CDF temporária e funciona em Cast e Defesa, sem ataque", function()
+    local root = fresh()
+    for _, kind in ipairs({"Cast", "Defesa", "Ataque", "Ataque Base"}) do
+        local node = popupSpell(root)
+        node.tipo, node.talentoMenteCalma = kind, true
+        local state = lancamento.novo(node)
+        equal(state.menteCalma, false); equal(state.preview.CD, 10)
+        state:definirMenteCalma(true)
+        equal(state.preview.CD, (kind == "Cast" or kind == "Defesa") and 7 or 10)
+        equal(state:concentracao(), 0); equal(node.CD, 10)
+        state:definirMenteCalma(false); equal(state.preview.CD, 10)
+    end
+    local node = popupSpell(root); node.tipo = "Cast"
+    local state = lancamento.novo(node); state:definirMenteCalma(true)
+    equal(state.preview.CD, 10) -- Não permite usar sem aprender o talento.
+end)
+
+test("silêncio é opcional por lançamento, custa −5 normalmente e −2 com o talento", function()
+    local root = fresh({concentracao = 0, C_FEI_Total = 8})
+    for _, enabled in ipairs({false, true}) do
+        local node = popupSpell(root); node.talentoSilencioso = enabled
+        local state = lancamento.novo(node)
+        equal(state:penalidadeSilenciosa(), 0)
+        state:definirSilencioso(true)
+        equal(state:penalidadeSilenciosa(), enabled and -2 or -5)
+        state:definirSilencioso(false); equal(state:penalidadeSilenciosa(), 0)
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node, nil,
+            {node = state.preview, root = root, concentracao = 0, silencioso = true})
+        equal(evaluate(parsed[#parsed - 1]), enabled and 25 or 22)
+    end
+end)
+
+test("opções temporárias são visíveis, afetam o lançamento e voltam desmarcadas ao reabrir", function()
+    local root = fresh({concentracao = 9, C_FEI_Total = 8})
+    local node = popupSpell(root)
+    node.tipo, node.talentoMenteCalma, node.talentoSilencioso = "Cast", true, true
+    local context = {boxDetalhesDoItem = {node = node}}
+    feiticos.abrirPopupFeitico(context, node)
+    local mente = checkbox("Usar Mente Calma")
+    equal(mente.enabled, true); equal(mente.checked, false)
+    mente.checked = true; mente.onChange()
+    local silencio = checkbox("Lançar silenciosamente")
+    silencio.checked = true; silencio.onChange()
+    assert(messageContains("CDF") == false)
+    castButton().onClick()
+    equal(evaluate(parsed[1]), 25)
+    assert(messageContains("| CD 7"))
+    equal(node.CD, 10); equal(root.concentracao, 9)
+    controls = {}; feiticos.abrirPopupFeitico(context, node)
+    equal(checkbox("Usar Mente Calma").checked, false)
+    equal(checkbox("Lançar silenciosamente").checked, false)
+    equal(concentrationText(), "Concentração temporária: C0 / C4")
+    node.tipo = "Ataque"
+    controls = {}; feiticos.abrirPopupFeitico(context, node)
+    equal(checkbox("Usar Mente Calma").enabled, false)
+end)
+
+test("Feitiço Poderoso permite C10 sem alterar o limite de quem não tem o talento", function()
+    local root = fresh(); local node = popupSpell(root)
+    local normal = lancamento.novo(node)
+    equal(normal:limite(), 4)
+    equal(normal:aumentar("Ataque"), true); equal(normal:aumentar("Ataque"), true)
+    equal(normal:aumentar("Ataque"), false)
+    node.talentoFeiticoPoderoso = true
+    local powerful = lancamento.novo(node)
+    equal(powerful:limite(), 10)
+    for index = 1, 5 do equal(powerful:aumentar("Ataque"), true); equal(powerful:concentracao(), index * 2) end
+    equal(powerful:aumentar("Dano"), false); equal(powerful:aumentar("Ataque"), false)
+    equal(powerful:diminuir("Ataque"), true); equal(powerful:concentracao(), 8)
+    equal(powerful:aumentar("Dano"), true); equal(powerful:concentracao(), 10)
+    equal(node.Ataque, 1); equal(node.Dano, 10)
+    equal(lancamento.novo(node):concentracao(), 0)
+    node.talentoFeiticoPoderoso, node.talentoAtaquePoderoso = false, true
+    equal(lancamento.novo(node):limite(), 4) -- Os dois talentos Poderosos são independentes.
+end)
+
+test("novo talento fica marcado e a janela mostra C10 e bloqueia o sexto aumento", function()
+    local root = fresh(); local node = popupSpell(root)
+    local context = {boxDetalhesDoItem = {node = node}, resumoTalentos = {text = ""}}
+    feiticos.abrirTalentos(context, node)
+    local check = checkbox("Feitiço Poderoso")
+    equal(check.text, "Feitiço Poderoso") -- Não inventa um custo de aprendizagem.
+    check.checked = true; check.onChange()
+    equal(node.talentoFeiticoPoderoso, true)
+    controls = {}; feiticos.abrirTalentos(context, node)
+    equal(checkbox("Feitiço Poderoso").checked, true)
+    controls = {}; feiticos.abrirPopupFeitico(context, node)
+    equal(concentrationText(), "Concentração temporária: C0 / C10")
+    for _ = 1, 5 do row("Ataque").plus.onClick() end
+    equal(concentrationText(), "Concentração temporária: C10 / C10")
+    equal(row("Ataque").plus.enabled, false); equal(row("Dano").plus.enabled, false)
+    row("Ataque").plus.onClick(); equal(row("Ataque").value.text, "6")
+    controls = {}; feiticos.abrirPopupFeitico(context, node)
+    equal(concentrationText(), "Concentração temporária: C0 / C10")
+    equal(row("Ataque").value.text, "1")
+end)
+
+test("lançamentos com talentos usam um bloco colorido de no máximo quatro linhas", function()
+    local root = fresh({concentracao = 0, C_FEI_Total = 8, Exausto = true, Frustrado = true, acerto = 1})
+    local node = popupSpell(root)
+    node.talentoMaestria, node.talentoMaestriaSuperior, node.talentoCritico = true, true, true
+    node.talentoAtaquePoderoso, node.talentoFeiticoPoderoso, node.talentoSilencioso = true, true, true
+    node.Desc, node.Efeito, node.defesa = "Texto de descrição extenso", "Texto de efeito extenso", "Fortitude"
+    local state = lancamento.novo(node)
+    for _ = 1, 5 do state:aumentar("Ataque") end
+    dice = {20, 19}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node, nil,
+        {node = state.preview, root = root, concentracao = state:concentracao(), silencioso = true})
+    equal(#messages, 1)
+    assert(messageContains("Maestria Superior (mín. 16)"))
+    assert(messageContains("Conj: 20 +3 +4 -10 -2 -2 = 13 | CD 10"))
+    assert(messageContains("ATAQUE: 19 +3 +3 +6 -1 -5 = 25 | Crítico!"))
+    assert(messageContains("Dano 11 · Poder 3"))
+    assert(messageContains("Fortitude"))
+    assert(not messageContains("Texto de descrição")); assert(not messageContains("Texto de efeito"))
+    for _, message in ipairs(messages) do
+        local plain = message:gsub("%[§[^%]]*%]", "")
+        local lineCount = 0
+        for line in plain:gmatch("[^\n]+") do lineCount = lineCount + 1; assert(#line <= 200, line) end
+        assert(lineCount <= 4)
+    end
+end)
+
+test("falha e defesa também mantêm o chat compacto sem mudar a rolagem", function()
+    local root = fresh({concentracao = 0, Exausto = true})
+    local node = spell(root, "Ataque")
+    node.CD, node.talentoMaestria, node.talentoMaestriaSuperior = 100, true, true
+    dice = {1}; feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(#messages, 1); assert(messageContains("1 estágio")); assert(messageContains("Maestria Superior (mín."))
+    messages, parsed, dice = {}, {}, {20, 8}
+    node.tipo, node.CD = "Defesa", 5
+    choices = {"Corpo-a-Corpo"}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(#messages, 1); assert(messageContains("DEFESA: 8 +10 +2 +9 -5 = 24"))
+end)
+
+test("envio do resumo tem duas linhas e textos completos continuam disponíveis por campo", function()
+    local root = fresh(); local node = popupSpell(root)
+    node.Desc = "Descrição completa\ncom várias linhas\n" .. string.rep("detalhes ", 80)
+    node.Efeito, node.defesa, node.Bonus = "Luz\nativa", "Acerto + Vontade", "+2\nno teste"
+    local context = {boxDetalhesDoItem = {node = node}, popUp = {visible = true}}
+    equal(feiticos.enviarFeiticoNaMesa(context, node), true)
+    equal(#messages, 1)
+    local _, breaks = messages[1]:gsub("\n", "")
+    equal(breaks, 1)
+    assert(not messageContains("Luz ativa")); assert(messageContains("Testes: Acerto + Vontade"))
+    assert(not messageContains("Descrição completa")); equal(context.popUp.visible, false)
+    equal(feiticos.enviarCampoNaMesa(context, node, "Desc"), true)
+    assert(messages[2]:find("Descrição completa com várias linhas", 1, true))
+    assert(messages[2]:find(string.rep("detalhes ", 75), 1, true))
+    assert(not messages[2]:find("\n", 1, true))
+    equal(feiticos.enviarCampoNaMesa(context, node, "campoDesconhecido"), false)
+    equal(#messages, 2)
+end)
+
+test("mensagem compacta ainda identifica o personagem e o feitiço", function()
+    local root = fresh({nomePersonagem = "Hermione", concentracao = 0})
+    local node = spell(root, "Cast"); node.nome = "Lumos"
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    assert(messageContains("Lumos · Hermione · ✓ Sucesso"))
+    equal(#messages, 1)
+end)
+
+local function plainMessage(value)
+    return (value:gsub("%[§[^%]]*%]", ""))
+end
+local function messageLines(value)
+    local result = {}
+    for line in value:gmatch("[^\n]+") do result[#result + 1] = line end
+    return result
+end
+
+test("Protego segue exatamente as quatro linhas e as somas do formato solicitado", function()
+    local root = fresh({nomePersonagem = "Samsara", concentracao = 0, C_FEI_Total = 6, APA_Total = 51})
+    local node = spell(root, "Defesa")
+    node.nome, node.Grad, node.CD, node.Poder = "Protego", 10.0, 11.0, 4.0
+    node.Range, node.tempo, node.Dano, node.Area, node.Duracao = "Pessoal", "Reação", 0, 0, 0
+    dice, choices = {12, 4}, {"Corpo-a-Corpo"}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(#messages, 1)
+    equal(plainMessage(messages[1]), table.concat({
+        "Protego · Samsara · ✓ Sucesso", "Conj: 12 +10 +3 = 25 | CD 11",
+        "DEFESA: 4 +10 +4 +51 = 69", "Pessoal · Reação"
+    }, "\n"))
+    equal(parsed[1], "1d20+10+3"); equal(parsed[2], "1d8+10+4+51")
+end)
+
+test("Estupefaça mostra a soma original e a seta até o mínimo real de Maestria Superior", function()
+    local root = fresh({nomePersonagem = "Samsara", concentracao = 0, C_FEI_Total = 6, DES = 5})
+    local node = spell(root, "Ataque")
+    node.nome, node.Grad, node.CD, node.Ataque, node.Dano, node.Poder = "Estupefaça", 10, 12, 2, 10, 0
+    node.Range, node.defesa, node.talentoMaestriaSuperior = "7.5m", "Fortitude", true
+    dice = {3, 1}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(plainMessage(messages[1]), table.concat({
+        "Estupefaça · Samsara · ✓ Sucesso", "Conj: 3 +10 +3 = 16 | CD 12",
+        "ATAQUE: 1 +10 +5 +2 = 18 → 27", "Maestria Superior (mín.) · Dano 10 · 7,5m · Fortitude"
+    }, "\n"))
+    equal(parsed[1], "1d20+10+3"); equal(parsed[2], "1d20+10+5+2")
+    assert(messages[1]:find(mensagensMagia.cores.branco .. " = 18 → " .. mensagensMagia.cores.amarelo .. "27", 1, true))
+    equal(node.Dano, 10); equal(node.CD, 12)
+end)
+
+test("cada parcela recebe a cor nativa correta sem agregar bônus ou penalidades", function()
+    local roll = {resultado = 14.0, ops = {{tipo = "dado", face = 20, resultados = {12.0}}}}
+    local output = mensagensMagia.calculo("Conj", roll, {10, 3, -5, -4, -2, 0})
+    equal(plainMessage(output), "Conj: 12 +10 +3 -5 -4 -2 = 14")
+    local color = mensagensMagia.cores
+    assert(output:find(color.azul .. "Conj: " .. color.branco .. "12", 1, true))
+    assert(output:find(color.ciano .. "+10 " .. color.ciano .. "+3", 1, true))
+    assert(output:find(color.vermelho .. "-5 " .. color.vermelho .. "-4 " .. color.vermelho .. "-2", 1, true))
+    assert(output:find(color.amarelo .. "14" .. color.branco, 1, true))
+    assert(not output:find("+0", 1, true))
+    local _, blocks = output:gsub("%[§K#67E8F9%]", "")
+    equal(blocks, 2)
+end)
+
+test("nome do personagem é rosa, sucesso verde e falha vermelha sem HTML ou Markdown", function()
+    local context = {nome = "Lumos", personagem = "Samsara", node = {Dano = 5, Range = "7,5m", defesa = "Fortitude"}, cd = 10,
+        conjuracao = {resultado = 15, ops = {{tipo = "dado", face = 20, resultados = {12}}}}, modificadoresConjuracao = {3}}
+    local output = mensagensMagia.formatar(context)
+    local color = mensagensMagia.cores
+    assert(output:find(color.lavanda .. "Lumos" .. color.branco, 1, true))
+    assert(output:find(color.lavanda .. "CD 10" .. color.branco, 1, true))
+    assert(output:find(color.pessego .. "Dano 5" .. color.branco, 1, true))
+    assert(output:find(color.suave .. "7,5m" .. color.branco, 1, true))
+    assert(output:find(color.lavanda .. "Fortitude" .. color.branco, 1, true))
+    assert(output:find(color.rosa .. "Samsara" .. color.branco, 1, true))
+    assert(output:find(color.verde .. "✓ Sucesso" .. color.branco, 1, true))
+    assert(not output:find("<", 1, true)); assert(not output:find("**", 1, true))
+    context.falha, context.estagios = true, 2
+    output = mensagensMagia.formatar(context)
+    assert(output:find(color.vermelho .. "✗ Falha (2 estágios)" .. color.branco, 1, true))
+    equal(#messageLines(output), 2)
+end)
+
+test("campos ausentes e efeitos de um Cast que falhou não geram linhas irrelevantes", function()
+    local context = {nome = "Teste", personagem = "Samsara", node = {Dano = 0, Poder = 0, Range = "-", Duracao = 0, defesa = ""},
+        cd = 10, conjuracao = {resultado = 2, ops = {}}, modificadoresConjuracao = {1}}
+    equal(#messageLines(mensagensMagia.formatar(context)), 2)
+    context.falha, context.estagios = true, 4
+    context.node.Dano, context.node.Range, context.node.defesa = 10, "7.5m", "Fortitude"
+    local output = plainMessage(mensagensMagia.formatar(context))
+    equal(#messageLines(output), 2)
+    assert(not output:find("Dano", 1, true)); assert(not output:find("Fortitude", 1, true))
+    context.node.talentoMaestria, context.estagios = true, 1
+    assert(plainMessage(mensagensMagia.formatar(context)):find("Maestria", 1, true))
+end)
+
+test("mínimo não aplicado não cria seta e crítico continua baseado no dado natural", function()
+    local root = fresh({nomePersonagem = "Samsara", concentracao = 0, C_FEI_Total = 6, DES = 5})
+    local node = spell(root, "Ataque")
+    node.Grad, node.CD, node.Ataque, node.talentoMaestriaSuperior, node.talentoCritico = 10, 12, 2, true, true
+    dice = {12, 19}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    assert(messageContains("ATAQUE: 19 +10 +5 +2 = 36 | Crítico!"))
+    assert(messageContains("Maestria Superior (mín. 27)"))
+    assert(not messages[1]:find("→", 1, true))
+    equal(#messageLines(messages[1]), 4)
+end)
+
+test("conjuração identifica o crítico natural em todos os tipos de feitiço", function()
+    for _, kind in ipairs({"Cast", "Ataque", "Defesa"}) do
+        for _, scenario in ipairs({{false, 19, false}, {false, 20, true}, {true, 18, false}, {true, 19, true}}) do
+            local root = fresh({C_FEI_Total = 20})
+            local node = spell(root, kind)
+            node.talentoCritico = scenario[1]
+            dice, choices = {scenario[2], kind == "Defesa" and 8 or 12}, {"Distância"}
+            feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+            local lines = messageLines(messages[1])
+            local marker = mensagensMagia.cores.dourado .. "Crítico!" .. mensagensMagia.cores.branco
+            equal(lines[2]:find(marker, 1, true) ~= nil, scenario[3])
+            equal(messageContains("Crítico!"), scenario[3])
+            equal(#parsed, kind == "Cast" and 1 or 2)
+        end
+    end
+end)
+
+test("conjuração e ataque críticos aparecem em dourado nas respectivas linhas", function()
+    local root = fresh({C_FEI_Total = 8})
+    local node = spell(root, "Ataque")
+    dice = {20, 20}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    local lines = messageLines(messages[1])
+    local marker = mensagensMagia.cores.dourado .. "Crítico!" .. mensagensMagia.cores.branco
+    assert(lines[2]:find(marker, 1, true)); assert(lines[3]:find(marker, 1, true))
+    equal(plainMessage(lines[2]), "Conj: 20 +2 +4 = 26 | CD 5 | Crítico!")
+    equal(plainMessage(lines[3]), "ATAQUE: 20 +2 +3 +1 = 26 | Crítico!")
+    equal(#parsed, 2); equal(#sentMessages, 2)
+    assert(#lines <= 4)
+end)
+
+test("Muro Fictus rola Furtividade após conjurar com sucesso usando a perícia e a condição física", function()
+    for _, scenario in ipairs({{false, 0}, {true, -5}}) do
+        local root = fresh({C_ENC_Total = 8, FUR_Total = 11, Exausto = scenario[1], Frustrado = true, fisico = 90})
+        local node = spell(root, "Cast")
+        node.nome, node.escola, node.CD, node.Poder = "Muro Fictus", "Encantamento", 18, 5
+        local state = lancamento.novo(node)
+        dice = {16, 7}
+        local finished = 0
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node, function() finished = finished + 1 end,
+            {node = state.preview, root = root, concentracao = 0})
+        equal(parsed[1], "1d20+2+4-2") -- Frustrado afeta somente a conjuração.
+        equal(parsed[2], "1d20+11" .. (scenario[2] == 0 and "" or "-5"))
+        local lines = messageLines(messages[1])
+        equal(plainMessage(lines[3]), scenario[1] and "FURTIVIDADE: 7 +11 -5 = 13" or "FURTIVIDADE: 7 +11 = 18")
+        equal(#parsed, 2); equal(#sentMessages, 2); equal(finished, 1)
+        equal(sentMessages[1], mensagensMagia.separador)
+        assert(#lines <= 4)
+        equal(node.Poder, 5); equal(root.FUR_Total, 11)
+    end
+end)
+
+test("Muro Fictus com conjuração falha e outras magias Cast não rolam Furtividade", function()
+    for _, name in ipairs({"Muro Fictus", "Lumos"}) do
+        local root = fresh({C_ENC_Total = 8, FUR_Total = 11})
+        local node = spell(root, "Cast")
+        node.nome, node.escola, node.CD = name, "Encantamento", 18
+        dice = {name == "Muro Fictus" and 1 or 20}
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+        equal(#parsed, 1); equal(#sentMessages, 2)
+        assert(not messageContains("FURTIVIDADE:"))
+        equal(messageContains("Falha"), name == "Muro Fictus")
+    end
+end)
+
+test("importação de feitiço preserva o tempo de lançamento", function()
+    local originalLoad, originalChildren, originalChoose = NDB.load, NDB.getChildNodes, Dialogs.choose
+    local catalog = {f1 = {
+        nome = "Importado", escola = "Encantamento", cast = "Cast", tempo = "Concentração",
+        defesa = "Poder", efeito = "Efeito", bonus = "0", desc = "Descrição",
+        gradArray = "{0,1}", cdfArray = "{12,11}", danoArray = "{0}",
+        poderArray = "{1,2}", rangeArray = "{'3m','6m'}", areaArray = "{0}", duracaoArray = "{0}"
+    }}
+    NDB.load = function() return catalog end
+    NDB.getChildNodes = function() return {catalog.f1} end
+    Dialogs.choose = function(_, _, callback) callback(true, 1, "Importado") end
+    local node = {nome = "Antigo", _root = fresh()}
+    local context = {boxDetalhesDoItem = {node = node}}
+    local ok, reason = pcall(function() feiticos.ListaDeFeitico(context, node) end)
+    NDB.load, NDB.getChildNodes, Dialogs.choose = originalLoad, originalChildren, originalChoose
+    assert(ok, reason)
+    equal(node.nome, "Importado"); equal(node.tempo, "Concentração"); equal(node.tipo, "Cast")
+    equal(node.Poder, 1); equal(node.Poder_array, "{1,2}")
+end)
+
+test("abas de anotações podem ser renomeadas e mantêm o título na ficha", function()
+    local root = fresh(); local aba = {title = "Primeira Aba"}
+    inputs = {"  Combate   "}
+    anotacoes.renomearAba(aba, root, "tituloAnotacao1")
+    equal(root.tituloAnotacao1, "Combate"); equal(aba.title, "Combate")
+    local controles = {abaAnotacao1 = {title = "Primeira Aba"}, abaAnotacao2 = {title = "Segunda Aba"}}
+    local form = {findControlByName = function(_, name) return controles[name] end}
+    anotacoes.aplicarTitulos(form, root)
+    equal(controles.abaAnotacao1.title, "Combate"); equal(controles.abaAnotacao2.title, "Segunda Aba")
+end)
+
+test("Avada Kedrava respeita a regra do catálogo e não pode critar", function()
+    local node = {nome = "Avada Kedrava", talentoCritico = true}
+    equal(talentos.critico(node, {ops = {{tipo = "dado", face = 20, resultados = {20}}}}), false)
+end)
+
+test("formatador aceita outros resultados já calculados, inclusive cura e frações", function()
+    fresh()
+    local context = {nome = "Cura", personagem = "Samsara", node = {Range = "Toque"}, cd = 10,
+        conjuracao = {resultado = 14, ops = {{tipo = "dado", resultados = {10}}}}, modificadoresConjuracao = {4},
+        principal = {titulo = "CURA", rolagem = {resultado = 8.5, ops = {{tipo = "dado", resultados = {4}}}},
+                     modificadores = {5, -0.5}, final = 10.5}}
+    local output = plainMessage(mensagensMagia.formatar(context))
+    assert(output:find("CURA: 4 +5 -0,5 = 8,5 → 10,5", 1, true))
+    equal(#parsed, 0); equal(#rolls, 0); equal(#controls, 0) -- Apresentação não cria rolagens nem interface.
+end)
+
+test("defesa assíncrona cancelada preserva o Cast e não inventa uma rolagem principal", function()
+    local root = fresh({concentracao = 0}); local node = spell(root, "Defesa")
+    local originalChoose, pending, finished = Dialogs.choose, nil, 0
+    Dialogs.choose = function(_, _, callback) pending = callback end
+    local ok, reason = pcall(function()
+        feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node, function() finished = finished + 1 end)
+        equal(#parsed, 1); equal(#messages, 0)
+        equal(#sentMessages, 0)
+        assert(pending); pending(false)
+    end)
+    Dialogs.choose = originalChoose
+    assert(ok, reason)
+    equal(#parsed, 1); equal(#messages, 1); equal(finished, 1)
+    equal(#sentMessages, 2)
+    equal(sentMessages[1], "------------------------------------")
+    equal(sentMessages[2], messages[1])
+    assert(messageContains("Conj:")); assert(not messageContains("DEFESA:"))
+end)
+
+test("cada rolagem envia um separador antes do bloco principal, inclusive nas falhas", function()
+    local root = fresh({nomePersonagem = "Samsara", concentracao = 0})
+    local node = spell(root, "Cast"); node.nome = "Lumos"
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    node.nome, node.CD, dice = "Nox", 100, {1}
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(#sentMessages, 4); equal(#messages, 2)
+    equal(sentMessages[1], "------------------------------------")
+    equal(sentMessages[3], "------------------------------------")
+    assert(plainMessage(sentMessages[2]):find("Lumos · Samsara · ✓ Sucesso", 1, true))
+    assert(plainMessage(sentMessages[4]):find("Nox · Samsara · ✗ Falha", 1, true))
+    equal(sentMessages[2], messages[1]); equal(sentMessages[4], messages[2])
+    assert(not messages[1]:find(mensagensMagia.separador, 1, true))
+end)
+
+test("a paleta RGB usa tags hexadecimais nativas e não altera envios que não são rolagens", function()
+    local seen = {}
+    for _, color in pairs(mensagensMagia.cores) do
+        assert(color:match("^%[§K#%x%x%x%x%x%x%]$"), color)
+        assert(not seen[color]); seen[color] = true
+    end
+    local root = fresh(); local node = popupSpell(root)
+    equal(feiticos.enviarFeiticoNaMesa({boxDetalhesDoItem = {node = node}}, node), true)
+    equal(#sentMessages, 1)
+    assert(sentMessages[1] ~= mensagensMagia.separador)
+    sentMessages, messages = {}, {}
+    node.CD = "inválida"
+    feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
+    equal(#sentMessages, 0)
+end)
+
+print(string.format("%d testes passaram; %d falharam.", passed, failed))
+if failed > 0 then os.exit(1) end
