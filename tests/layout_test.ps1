@@ -15,6 +15,7 @@ $panel = Named 'painelFeiticos'
 if ([double]$panel.top + [double]$panel.height -gt [double]$canvas.height) { throw 'Painel de feiticos ultrapassa a altura de seu pai.' }
 $header = Named 'cabecalhoFeitico'
 $summary = Named 'resumoTalentos'
+if ($summary.fontColor -ne '#B8860B') { throw 'O resumo de talentos precisa usar dourado escuro.' }
 $body = Named 'paineisTextoFeitico'
 if ([double]$header.height + [double]$summary.height + [double]$body.height -gt [double]$panel.height) {
     throw 'Cabecalho e textos sao maiores que a area de detalhes.'

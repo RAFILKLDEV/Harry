@@ -1,4 +1,5 @@
 local lancamento = require("lancamento.lua")
+local talentos = require("talentos.lua")
 local mensagens = {}
 
 -- RGB nativo: https://github.com/rrpgfirecast/firecast/blob/master/Macros/Storytelling/v5.lua
@@ -40,7 +41,7 @@ function mensagens.calculo(titulo, rolagem, modificadores, final)
     -- quando um adaptador não fornece ops; nunca faz uma nova rolagem.
     local total = tonumber(rolagem.resultado) or 0
     if not encontrouDado then base = total - somaModificadores end
-    local partes = {cor.azul .. texto(titulo) .. ": " .. cor.branco .. numero(base)}
+    local partes = {cor.azul .. texto(titulo) .. ": " .. cor.branco .. "[ " .. numero(base) .. " ]"}
     for _, value in ipairs(modificadores) do
         value = tonumber(value) or 0
         if value > 0 then partes[#partes + 1] = cor.ciano .. "+" .. numero(value)
@@ -61,7 +62,6 @@ local function extras(contexto)
         adicionar(contexto.minimoAplicado and "Maestria Superior (mín.)" or
                   "Maestria Superior (mín. " .. numero(contexto.minimoAtaque) .. ")", cor.pessego)
     end
-    if contexto.falha and node.talentoMaestria then adicionar("Maestria", cor.pessego) end
     if contexto.falha then return #partes > 0 and cor.branco .. table.concat(partes, " · ") or nil end
     for _, campo in ipairs({{"Dano", "Dano "}, {"Poder", "Poder "}}) do
         local jaMostrado = campo[1] == "Poder" and contexto.principal and contexto.principal.titulo == "DEFESA"
@@ -75,6 +75,15 @@ local function extras(contexto)
     return #partes > 0 and cor.branco .. table.concat(partes, " · ") or nil
 end
 
+local function talentosAtivos(node)
+    local ativos = {}
+    for _, talento in ipairs(talentos.lista) do
+        if node[talento.campo] then ativos[#ativos + 1] = talento.nome end
+    end
+    if #ativos == 0 then return nil end
+    return cor.dourado .. "Talentos: " .. table.concat(ativos, " · ") .. cor.branco
+end
+
 function mensagens.formatar(contexto)
     local nome = texto(contexto.nome)
     if nome == "" then nome = "Feitiço" end
@@ -84,7 +93,10 @@ function mensagens.formatar(contexto)
     if contexto.falha and contexto.estagios then
         status = status .. " (" .. numero(contexto.estagios) .. (contexto.estagios == 1 and " estágio)" or " estágios)")
     end
-    local linhas = {cor.lavanda .. nome .. cor.branco .. " · " .. cor.rosa .. personagem .. cor.branco .. " · " .. status .. cor.branco}
+    local cabecalho = cor.lavanda .. nome .. cor.branco .. " · " .. cor.rosa .. personagem .. cor.branco .. " · " .. status .. cor.branco
+    local listaTalentos = talentosAtivos(contexto.node or {})
+    if listaTalentos then cabecalho = cabecalho .. " · " .. listaTalentos end
+    local linhas = {cabecalho}
     linhas[#linhas + 1] = mensagens.calculo("Conj", contexto.conjuracao, contexto.modificadoresConjuracao) ..
                           " | " .. cor.lavanda .. "CD " .. numero(contexto.cd) .. cor.branco
     if contexto.criticoConjuracao then

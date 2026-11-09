@@ -332,7 +332,7 @@
             </layout>
           </layout>
 
-          <label name="resumoTalentos" align="top" height="40" fontSize="12" wordWrap="true" />
+          <label name="resumoTalentos" align="top" height="40" fontSize="12" fontColor="#B8860B" wordWrap="true" />
           <dataLink fields="{'talentoMaestria','talentoMaestriaSuperior','talentoMenteCalma','talentoSilencioso','talentoCritico','talentoAtaquePoderoso','talentoFeiticoPoderoso','Dano','Poder','nome'}">
             <event name="onChange">
               require("feitico_script.lua").atualizarResumoTalentos(self, sheet)

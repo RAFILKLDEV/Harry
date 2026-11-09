@@ -513,7 +513,7 @@ test("Maestria Superior exibe e aplica o mínimo mantendo Acerto e condição f�
     dice = {12, 1}
     feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
     assert(messageContains("Maestria Superior (mín.)"))
-    assert(messageContains("ATAQUE: 1 +2 +3 +1 -1 -5 = 1 → 10"))
+    assert(messageContains("ATAQUE: [ 1 ] +2 +3 +1 -1 -5 = 1 → 10"))
     assert(not messageContains("Crítico!"))
     messages, dice = {}, {20, 20}
     feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
@@ -672,8 +672,9 @@ end)
 test("lançamentos com talentos usam um bloco colorido de no máximo quatro linhas", function()
     local root = fresh({concentracao = 0, C_FEI_Total = 8, Exausto = true, Frustrado = true, acerto = 1})
     local node = popupSpell(root)
-    node.talentoMaestria, node.talentoMaestriaSuperior, node.talentoCritico = true, true, true
-    node.talentoAtaquePoderoso, node.talentoFeiticoPoderoso, node.talentoSilencioso = true, true, true
+    node.talentoMaestria, node.talentoMaestriaSuperior, node.talentoMenteCalma = true, true, true
+    node.talentoCritico, node.talentoAtaquePoderoso = true, true
+    node.talentoFeiticoPoderoso, node.talentoSilencioso = true, true
     node.Desc, node.Efeito, node.defesa = "Texto de descrição extenso", "Texto de efeito extenso", "Fortitude"
     local state = lancamento.novo(node)
     for _ = 1, 5 do state:aumentar("Ataque") end
@@ -682,8 +683,10 @@ test("lançamentos com talentos usam um bloco colorido de no máximo quatro linh
         {node = state.preview, root = root, concentracao = state:concentracao(), silencioso = true})
     equal(#messages, 1)
     assert(messageContains("Maestria Superior (mín. 16)"))
-    assert(messageContains("Conj: 20 +3 +4 -10 -2 -2 = 13 | CD 10"))
-    assert(messageContains("ATAQUE: 19 +3 +3 +6 -1 -5 = 25 | Crítico!"))
+    assert(messageContains("Maestria em Feitiço · Maestria em Feitiço Superior · Mente Calma"))
+    assert(messageContains("Feitiço Silencioso · Crítico Aprimorado · Ataque Poderoso · Feitiço Poderoso"))
+    assert(messageContains("Conj: [ 20 ] +3 +4 -10 -2 -2 = 13 | CD 10"))
+    assert(messageContains("ATAQUE: [ 19 ] +3 +3 +6 -1 -5 = 25 | Crítico!"))
     assert(messageContains("Dano 11 · Poder 3"))
     assert(messageContains("Fortitude"))
     assert(not messageContains("Texto de descrição")); assert(not messageContains("Texto de efeito"))
@@ -705,7 +708,7 @@ test("falha e defesa também mantêm o chat compacto sem mudar a rolagem", funct
     node.tipo, node.CD = "Defesa", 5
     choices = {"Corpo-a-Corpo"}
     feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
-    equal(#messages, 1); assert(messageContains("DEFESA: 8 +10 +2 +9 -5 = 24"))
+    equal(#messages, 1); assert(messageContains("DEFESA: [ 8 ] +10 +2 +9 -5 = 24"))
 end)
 
 test("envio do resumo tem duas linhas e textos completos continuam disponíveis por campo", function()
@@ -753,8 +756,8 @@ test("Protego segue exatamente as quatro linhas e as somas do formato solicitado
     feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
     equal(#messages, 1)
     equal(plainMessage(messages[1]), table.concat({
-        "Protego · Samsara · ✓ Sucesso", "Conj: 12 +10 +3 = 25 | CD 11",
-        "DEFESA: 4 +10 +4 +51 = 69", "Pessoal · Reação"
+        "Protego · Samsara · ✓ Sucesso", "Conj: [ 12 ] +10 +3 = 25 | CD 11",
+        "DEFESA: [ 4 ] +10 +4 +51 = 69", "Pessoal · Reação"
     }, "\n"))
     equal(parsed[1], "1d20+10+3"); equal(parsed[2], "1d8+10+4+51")
 end)
@@ -767,8 +770,8 @@ test("Estupefaça mostra a soma original e a seta até o mínimo real de Maestri
     dice = {3, 1}
     feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
     equal(plainMessage(messages[1]), table.concat({
-        "Estupefaça · Samsara · ✓ Sucesso", "Conj: 3 +10 +3 = 16 | CD 12",
-        "ATAQUE: 1 +10 +5 +2 = 18 → 27", "Maestria Superior (mín.) · Dano 10 · 7,5m · Fortitude"
+        "Estupefaça · Samsara · ✓ Sucesso · Talentos: Maestria em Feitiço Superior", "Conj: [ 3 ] +10 +3 = 16 | CD 12",
+        "ATAQUE: [ 1 ] +10 +5 +2 = 18 → 27", "Maestria Superior (mín.) · Dano 10 · 7,5m · Fortitude"
     }, "\n"))
     equal(parsed[1], "1d20+10+3"); equal(parsed[2], "1d20+10+5+2")
     assert(messages[1]:find(mensagensMagia.cores.branco .. " = 18 → " .. mensagensMagia.cores.amarelo .. "27", 1, true))
@@ -778,9 +781,9 @@ end)
 test("cada parcela recebe a cor nativa correta sem agregar bônus ou penalidades", function()
     local roll = {resultado = 14.0, ops = {{tipo = "dado", face = 20, resultados = {12.0}}}}
     local output = mensagensMagia.calculo("Conj", roll, {10, 3, -5, -4, -2, 0})
-    equal(plainMessage(output), "Conj: 12 +10 +3 -5 -4 -2 = 14")
+    equal(plainMessage(output), "Conj: [ 12 ] +10 +3 -5 -4 -2 = 14")
     local color = mensagensMagia.cores
-    assert(output:find(color.azul .. "Conj: " .. color.branco .. "12", 1, true))
+    assert(output:find(color.azul .. "Conj: " .. color.branco .. "[ 12 ]", 1, true))
     assert(output:find(color.ciano .. "+10 " .. color.ciano .. "+3", 1, true))
     assert(output:find(color.vermelho .. "-5 " .. color.vermelho .. "-4 " .. color.vermelho .. "-2", 1, true))
     assert(output:find(color.amarelo .. "14" .. color.branco, 1, true))
@@ -827,7 +830,7 @@ test("mínimo não aplicado não cria seta e crítico continua baseado no dado n
     node.Grad, node.CD, node.Ataque, node.talentoMaestriaSuperior, node.talentoCritico = 10, 12, 2, true, true
     dice = {12, 19}
     feiticos.rolarFeitico({boxDetalhesDoItem = {node = node}}, node)
-    assert(messageContains("ATAQUE: 19 +10 +5 +2 = 36 | Crítico!"))
+    assert(messageContains("ATAQUE: [ 19 ] +10 +5 +2 = 36 | Crítico!"))
     assert(messageContains("Maestria Superior (mín. 27)"))
     assert(not messages[1]:find("→", 1, true))
     equal(#messageLines(messages[1]), 4)
@@ -858,8 +861,8 @@ test("conjuração e ataque críticos aparecem em dourado nas respectivas linhas
     local lines = messageLines(messages[1])
     local marker = mensagensMagia.cores.dourado .. "Crítico!" .. mensagensMagia.cores.branco
     assert(lines[2]:find(marker, 1, true)); assert(lines[3]:find(marker, 1, true))
-    equal(plainMessage(lines[2]), "Conj: 20 +2 +4 = 26 | CD 5 | Crítico!")
-    equal(plainMessage(lines[3]), "ATAQUE: 20 +2 +3 +1 = 26 | Crítico!")
+    equal(plainMessage(lines[2]), "Conj: [ 20 ] +2 +4 = 26 | CD 5 | Crítico!")
+    equal(plainMessage(lines[3]), "ATAQUE: [ 20 ] +2 +3 +1 = 26 | Crítico!")
     equal(#parsed, 2); equal(#sentMessages, 2)
     assert(#lines <= 4)
 end)
@@ -877,7 +880,7 @@ test("Muro Fictus rola Furtividade após conjurar com sucesso usando a perícia 
         equal(parsed[1], "1d20+2+4-2") -- Frustrado afeta somente a conjuração.
         equal(parsed[2], "1d20+11" .. (scenario[2] == 0 and "" or "-5"))
         local lines = messageLines(messages[1])
-        equal(plainMessage(lines[3]), scenario[1] and "FURTIVIDADE: 7 +11 -5 = 13" or "FURTIVIDADE: 7 +11 = 18")
+        equal(plainMessage(lines[3]), scenario[1] and "FURTIVIDADE: [ 7 ] +11 -5 = 13" or "FURTIVIDADE: [ 7 ] +11 = 18")
         equal(#parsed, 2); equal(#sentMessages, 2); equal(finished, 1)
         equal(sentMessages[1], mensagensMagia.separador)
         assert(#lines <= 4)
@@ -941,7 +944,7 @@ test("formatador aceita outros resultados já calculados, inclusive cura e fraç
         principal = {titulo = "CURA", rolagem = {resultado = 8.5, ops = {{tipo = "dado", resultados = {4}}}},
                      modificadores = {5, -0.5}, final = 10.5}}
     local output = plainMessage(mensagensMagia.formatar(context))
-    assert(output:find("CURA: 4 +5 -0,5 = 8,5 → 10,5", 1, true))
+    assert(output:find("CURA: [ 4 ] +5 -0,5 = 8,5 → 10,5", 1, true))
     equal(#parsed, 0); equal(#rolls, 0); equal(#controls, 0) -- Apresentação não cria rolagens nem interface.
 end)
 

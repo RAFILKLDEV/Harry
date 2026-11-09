@@ -398,7 +398,7 @@ local function constructNew_HarryFicha()
     obj.version:setAlign("top");
     obj.version:setHeight(35);
     obj.version:setMargins({top=5});
-    obj.version:setText("Harry 4.0.2 - Triunfo Edition - PARTE 2");
+    obj.version:setText("Harry 4.0.3 - Triunfo Edition - PARTE 2");
 
     obj.layout3 = GUI.fromHandle(_obj_newObject("layout"));
     obj.layout3:setParent(obj.layout1);
@@ -5764,6 +5764,7 @@ end
     obj.resumoTalentos:setAlign("top");
     obj.resumoTalentos:setHeight(40);
     obj.resumoTalentos:setFontSize(12);
+    obj.resumoTalentos:setFontColor("#B8860B");
     obj.resumoTalentos:setWordWrap(true);
 
     obj.dataLink11 = GUI.fromHandle(_obj_newObject("dataLink"));
