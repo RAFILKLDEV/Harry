@@ -10,45 +10,58 @@ assert(updater.compareVersions("2.1.0", "2.0.9") == 1)
 assert(updater.compareVersions("2.0", "2.0.0") == 0)
 assert(updater.compareVersions("02.0.0", "2.0.0") == nil)
 
-local function runScenario(latestVersion, installedVersion, packageModuleId, installResult, responseStatus, requestError)
+local function runScenario(latestVersion, installedVersion, packageModuleId, installResult, responseStatus, requestError, branchVersion)
     local counts = {
         requests = 0,
+        branchRequests = 0,
         downloads = 0,
         prompts = 0,
         installs = 0,
         errors = 0,
         successMessages = 0,
-        manualOpens = 0
+        manualOpens = 0,
+        packageUrl = nil
     }
 
     Internet = {
         newHTTPRequest = function(method, url)
             assert(method == "GET")
-            assert(url == "https://api.github.com/repos/RAFILKLDEV/Harry/releases/latest")
-            counts.requests = counts.requests + 1
+            local isReleaseRequest = url == "https://api.github.com/repos/RAFILKLDEV/Harry/releases/latest"
+            local isBranchRequest = url == "https://raw.githubusercontent.com/RAFILKLDEV/Harry/master/module.xml"
+            assert(isReleaseRequest or isBranchRequest)
+            if isReleaseRequest then counts.requests = counts.requests + 1 end
+            if isBranchRequest then counts.branchRequests = counts.branchRequests + 1 end
             local request = {listeners = {}}
             function request:setRequestHeader() end
             function request:addEventListener(name, callback)
                 self.listeners[name] = callback
             end
             function request:send()
-                if requestError then
+                if requestError and isReleaseRequest then
                     self.listeners.onError(requestError)
                     return
                 end
-                self.status = responseStatus or 200
-                self.responseText = latestVersion and ('{"tag_name":"v' .. latestVersion .. '"}') or ""
+                if isReleaseRequest then
+                    self.status = responseStatus or 200
+                    self.responseText = latestVersion and ('{"tag_name":"v' .. latestVersion .. '"}') or ""
+                else
+                    self.status = 200
+                    self.responseText = '<module><id>HarryPotter_Ficha</id><version>' ..
+                        tostring(branchVersion or latestVersion or "") .. '</version></module>'
+                end
                 self.listeners.onResponse()
             end
             return request
         end,
         download = function(url, finished)
-            assert(url:match("/releases/latest/download/Harry%.rpk$"))
+            assert(url:match("/releases/latest/download/Harry%.rpk$") or
+                url:match("/master/output/Harry%.rpk$"))
+            counts.packageUrl = url
             counts.downloads = counts.downloads + 1
             finished({
                 size = 100,
                 position = 100,
-                details = {moduleId = packageModuleId, version = latestVersion}
+                details = {moduleId = packageModuleId, version = branchVersion or latestVersion}
             }, "application/octet-stream")
         end
     }
@@ -76,7 +89,8 @@ local function runScenario(latestVersion, installedVersion, packageModuleId, ins
     }
     GUI = {
         openInBrowser = function(url)
-            assert(url:match("/releases/latest/download/Harry%.rpk$"))
+            assert(url:match("/releases/latest/download/Harry%.rpk$") or
+                url:match("/master/output/Harry%.rpk$"))
             counts.manualOpens = counts.manualOpens + 1
         end
     }
@@ -84,7 +98,8 @@ local function runScenario(latestVersion, installedVersion, packageModuleId, ins
     local checker = dofile("updater.lua")
     checker.check()
     checker.check()
-    assert(counts.requests == 1, "a verificação deve ocorrer uma única vez por inicialização")
+    assert(counts.requests == 1, "a verificação da release deve ocorrer uma única vez por inicialização")
+    assert(counts.branchRequests <= 1, "a verificação do branch deve ocorrer no máximo uma vez")
     return counts
 end
 
@@ -99,9 +114,28 @@ local current = runScenario("2.0.0", "2.0.0", "HarryPotter_Ficha", true)
 assert(current.prompts == 0 and current.downloads == 0 and current.installs == 0)
 assert(current.successMessages == 0 and current.errors == 0)
 
-local noRelease = runScenario(nil, "2.0.0", "HarryPotter_Ficha", true, nil, "HTTP/1.1 404 Not Found")
-assert(noRelease.prompts == 0 and noRelease.downloads == 0 and noRelease.installs == 0)
-assert(noRelease.successMessages == 0 and noRelease.errors == 0)
+local branchUpdate = runScenario(nil, "2.0.0", "HarryPotter_Ficha", true,
+    nil, "HTTP/1.1 404 Not Found", "2.0.1")
+assert(branchUpdate.branchRequests == 1 and branchUpdate.prompts == 1)
+assert(branchUpdate.downloads == 1 and branchUpdate.installs == 1)
+assert(branchUpdate.packageUrl:match("/master/output/Harry%.rpk$"))
+assert(branchUpdate.errors == 0)
+
+local branchLegacyUpdate = runScenario(nil, "1.9.9", "HarryPotter_Ficha", true,
+    404, nil, "2.0")
+assert(branchLegacyUpdate.branchRequests == 1 and branchLegacyUpdate.prompts == 1)
+assert(branchLegacyUpdate.downloads == 1 and branchLegacyUpdate.installs == 1)
+assert(branchLegacyUpdate.errors == 0)
+
+local branchLegacyCurrent = runScenario(nil, "2.0", "HarryPotter_Ficha", true,
+    404, nil, "2.0")
+assert(branchLegacyCurrent.branchRequests == 1 and branchLegacyCurrent.prompts == 0)
+assert(branchLegacyCurrent.downloads == 0 and branchLegacyCurrent.errors == 0)
+
+local branchCurrent = runScenario(nil, "2.0.0", "HarryPotter_Ficha", true,
+    404, nil, "2.0.0")
+assert(branchCurrent.branchRequests == 1 and branchCurrent.prompts == 0)
+assert(branchCurrent.downloads == 0 and branchCurrent.errors == 0)
 
 local wrongModule = runScenario("2.0.1", "2.0.0", "OutroModulo", true)
 assert(wrongModule.prompts == 1 and wrongModule.downloads == 1 and wrongModule.installs == 0)

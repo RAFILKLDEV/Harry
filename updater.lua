@@ -8,6 +8,8 @@ local updater = {}
 local MODULE_ID = "HarryPotter_Ficha"
 local VERSION_URL = "https://api.github.com/repos/RAFILKLDEV/Harry/releases/latest"
 local PACKAGE_URL = "https://github.com/RAFILKLDEV/Harry/releases/latest/download/Harry.rpk"
+local BRANCH_VERSION_URL = "https://raw.githubusercontent.com/RAFILKLDEV/Harry/master/module.xml"
+local BRANCH_PACKAGE_URL = "https://raw.githubusercontent.com/RAFILKLDEV/Harry/master/output/Harry.rpk"
 local checkStarted = false
 
 local function parseVersion(value, allowLegacy)
@@ -41,6 +43,10 @@ local function compareParts(left, right)
     return 0
 end
 
+local function formatVersion(parts)
+    return parts.major .. "." .. parts.minor .. "." .. parts.patch
+end
+
 function updater.compareVersions(left, right)
     local leftParts = parseVersion(left, true)
     local rightParts = parseVersion(right, true)
@@ -67,7 +73,7 @@ local function showError(message)
     Dialogs.showErrorMessage("Não foi possível atualizar o plugin Harry: " .. tostring(message))
 end
 
-local function openManualDownload(errorMessage)
+local function openManualDownload(errorMessage, packageUrl)
     local reason = ""
     if errorMessage ~= nil and tostring(errorMessage) ~= "" then
         reason = "\nDetalhes: " .. tostring(errorMessage)
@@ -77,15 +83,15 @@ local function openManualDownload(errorMessage)
         "\nDeseja abrir o download do arquivo .rpk para instalação manual?",
         function(accepted)
             if not accepted then return end
-            local ok, errorMessage = pcall(GUI.openInBrowser, PACKAGE_URL)
+            local ok, errorMessage = pcall(GUI.openInBrowser, packageUrl)
             if not ok then
-                showError(tostring(errorMessage) .. "\nBaixe manualmente em: " .. PACKAGE_URL)
+                showError(tostring(errorMessage) .. "\nBaixe manualmente em: " .. packageUrl)
             end
         end
     )
 end
 
-local function installDownloadedPackage(stream, expectedVersion)
+local function installDownloadedPackage(stream, expectedVersion, packageUrl)
     if type(stream) ~= "table" or tonumber(stream.size) == nil or tonumber(stream.size) <= 0 then
         showError("O arquivo .rpk baixado está vazio ou incompleto.")
         return
@@ -101,7 +107,7 @@ local function installDownloadedPackage(stream, expectedVersion)
         return
     end
 
-    local packageVersion = parseVersion(details.version, false)
+    local packageVersion = parseVersion(details.version, true)
     local expectedParts = parseVersion(expectedVersion, false)
     if packageVersion == nil or expectedParts == nil or compareParts(packageVersion, expectedParts) ~= 0 then
         showError("A versão do arquivo .rpk não corresponde à versão publicada no GitHub.")
@@ -123,7 +129,7 @@ local function installDownloadedPackage(stream, expectedVersion)
     stream.position = 0
     local installOk, installed, installError = pcall(Firecast.Plugins.installPlugin, stream)
     if not installOk or not installed then
-        openManualDownload(not installOk and installed or installError)
+        openManualDownload(not installOk and installed or installError, packageUrl)
         return
     end
 
@@ -133,12 +139,12 @@ local function installDownloadedPackage(stream, expectedVersion)
     )
 end
 
-local function downloadPackage(expectedVersion)
+local function downloadPackage(expectedVersion, packageUrl)
     local ok, errorMessage = pcall(
         Internet.download,
-        PACKAGE_URL,
+        packageUrl,
         function(stream)
-            installDownloadedPackage(stream, expectedVersion)
+            installDownloadedPackage(stream, expectedVersion, packageUrl)
         end,
         function(downloadError)
             showError("Falha ao baixar o arquivo .rpk: " .. tostring(downloadError))
@@ -149,16 +155,14 @@ local function downloadPackage(expectedVersion)
     end
 end
 
-local function checkLatestVersion(installedPlugin)
-    local installedParts = parseVersion(installedPlugin.version, true)
-    if installedParts == nil then
-        showError("A versão instalada não está em um formato reconhecido.")
-        return
-    end
+local function isNotFound(errorMessage)
+    return tostring(errorMessage):match("404%s+Not Found") ~= nil
+end
 
-    local requestOk, request = pcall(Internet.newHTTPRequest, "GET", VERSION_URL)
+local function requestUrl(url, callback, errorCallback)
+    local requestOk, request = pcall(Internet.newHTTPRequest, "GET", url)
     if not requestOk then
-        showError("Falha ao consultar o GitHub: " .. tostring(request))
+        errorCallback("Falha ao consultar o GitHub: " .. tostring(request))
         return
     end
 
@@ -166,43 +170,83 @@ local function checkLatestVersion(installedPlugin)
         request:setRequestHeader("Accept", "application/vnd.github+json")
         request:setRequestHeader("User-Agent", "Harry-Firecast-Updater")
         request:addEventListener("onResponse", function()
-            if tonumber(request.status) == 404 then
-                return
-            end
-            if tonumber(request.status) ~= 200 then
-                showError("O GitHub respondeu com o status " .. tostring(request.status) .. ".")
-                return
-            end
-
-            local releaseTag = tostring(request.responseText or ""):match('"tag_name"%s*:%s*"([^"]+)"')
-            local latestVersion = releaseTag and releaseTag:match("^v(%d+%.%d+%.%d+)$")
-            local latestParts = parseVersion(latestVersion, false)
-            if latestParts == nil then
-                showError("A versão publicada no GitHub não está no formato major.minor.patch.")
-                return
-            end
-            if compareParts(latestParts, installedParts) <= 0 then return end
-
-            Dialogs.confirmOkCancel(
-                "Há uma nova versão do plugin Harry (" .. latestVersion ..
-                "). Deseja tentar instalá-la?",
-                function(accepted)
-                    if accepted then downloadPackage(latestVersion) end
-                end
-            )
+            callback(tonumber(request.status), tostring(request.responseText or ""))
         end)
-
         request:addEventListener("onError", function(errorMessage)
-            if tostring(errorMessage):match("HTTP/%d+%.%d+%s+404%s+Not Found") then
-                return
-            end
-            showError("Falha ao consultar a versão no GitHub: " .. tostring(errorMessage))
+            errorCallback(tostring(errorMessage))
         end)
         request:send()
     end)
     if not setupOk then
-        showError("Falha ao iniciar a consulta ao GitHub: " .. tostring(setupError))
+        errorCallback("Falha ao iniciar a consulta ao GitHub: " .. tostring(setupError))
     end
+end
+
+local function offerUpdate(latestVersion, installedParts, packageUrl, allowLegacy)
+    local latestParts = parseVersion(latestVersion, allowLegacy)
+    if latestParts == nil then
+        showError("A versão publicada no GitHub não está em um formato reconhecido.")
+        return
+    end
+    if compareParts(latestParts, installedParts) <= 0 then return end
+
+    local normalizedVersion = formatVersion(latestParts)
+    Dialogs.confirmOkCancel(
+        "Há uma nova versão do plugin Harry (" .. latestVersion ..
+        "). Deseja tentar instalá-la?",
+        function(accepted)
+            if accepted then downloadPackage(normalizedVersion, packageUrl) end
+        end
+    )
+end
+
+local function checkBranchVersion(installedParts)
+    requestUrl(BRANCH_VERSION_URL, function(status, responseText)
+        if status ~= 200 then
+            showError("O GitHub respondeu com o status " .. tostring(status) ..
+                " ao consultar a versão do branch.")
+            return
+        end
+
+        local moduleId = responseText:match("<id>%s*([^<]+)%s*</id>")
+        local latestVersion = responseText:match("<version>%s*([^<]+)%s*</version>")
+        if moduleId ~= MODULE_ID then
+            showError("O moduleId no module.xml do GitHub não corresponde a este plugin.")
+            return
+        end
+        offerUpdate(latestVersion, installedParts, BRANCH_PACKAGE_URL, true)
+    end, function(errorMessage)
+        showError("Falha ao consultar a versão no branch do GitHub: " .. tostring(errorMessage))
+    end)
+end
+
+local function checkLatestVersion(installedPlugin)
+    local installedParts = parseVersion(installedPlugin.version, true)
+    if installedParts == nil then
+        showError("A versão instalada não está em um formato reconhecido.")
+        return
+    end
+
+    requestUrl(VERSION_URL, function(status, responseText)
+        if status == 404 then
+            checkBranchVersion(installedParts)
+            return
+        end
+        if status ~= 200 then
+            showError("O GitHub respondeu com o status " .. tostring(status) .. ".")
+            return
+        end
+
+        local releaseTag = responseText:match('"tag_name"%s*:%s*"([^"]+)"')
+        local latestVersion = releaseTag and releaseTag:match("^v(%d+%.%d+%.%d+)$")
+        offerUpdate(latestVersion, installedParts, PACKAGE_URL, false)
+    end, function(errorMessage)
+        if isNotFound(errorMessage) then
+            checkBranchVersion(installedParts)
+            return
+        end
+        showError("Falha ao consultar a versão no GitHub: " .. tostring(errorMessage))
+    end)
 end
 
 function updater.check()
