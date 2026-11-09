@@ -7,7 +7,7 @@ O plugin verifica uma vez por inicialização a versão publicada na release mai
 1. Altere `module.xml` para a nova versão `major.minor.patch`.
 2. No Windows com o SDK do Firecast instalado, execute `.\build.ps1` para compilar e validar `output\Harry.rpk`.
 3. Envie `module.xml` e `output\Harry.rpk` ao GitHub.
-4. Crie e envie uma tag que corresponda à versão, por exemplo `v2.0.1`. A workflow `Publicar versão do plugin` valida o pacote e publica `Harry.rpk` na release. O plugin consulta a tag da release mais recente pela API do GitHub. O compilador `rdk.exe` não é distribuído com o repositório; a workflow publica o pacote já compilado pelo SDK.
+4. Crie e envie uma tag que corresponda à versão, por exemplo `v2.0.2`. A workflow `Publicar versão do plugin` valida o pacote e publica `Harry.rpk` na release. O plugin consulta a tag da release mais recente pela API do GitHub. O compilador `rdk.exe` não é distribuído com o repositório; a workflow publica o pacote já compilado pelo SDK.
 
 ## Testar a atualização
 

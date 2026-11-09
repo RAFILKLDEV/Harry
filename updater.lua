@@ -193,6 +193,9 @@ local function checkLatestVersion(installedPlugin)
         end)
 
         request:addEventListener("onError", function(errorMessage)
+            if tostring(errorMessage):match("HTTP/%d+%.%d+%s+404%s+Not Found") then
+                return
+            end
             showError("Falha ao consultar a versão no GitHub: " .. tostring(errorMessage))
         end)
         request:send()

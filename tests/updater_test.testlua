@@ -10,7 +10,7 @@ assert(updater.compareVersions("2.1.0", "2.0.9") == 1)
 assert(updater.compareVersions("2.0", "2.0.0") == 0)
 assert(updater.compareVersions("02.0.0", "2.0.0") == nil)
 
-local function runScenario(latestVersion, installedVersion, packageModuleId, installResult, responseStatus)
+local function runScenario(latestVersion, installedVersion, packageModuleId, installResult, responseStatus, requestError)
     local counts = {
         requests = 0,
         downloads = 0,
@@ -32,6 +32,10 @@ local function runScenario(latestVersion, installedVersion, packageModuleId, ins
                 self.listeners[name] = callback
             end
             function request:send()
+                if requestError then
+                    self.listeners.onError(requestError)
+                    return
+                end
                 self.status = responseStatus or 200
                 self.responseText = latestVersion and ('{"tag_name":"v' .. latestVersion .. '"}') or ""
                 self.listeners.onResponse()
@@ -95,7 +99,7 @@ local current = runScenario("2.0.0", "2.0.0", "HarryPotter_Ficha", true)
 assert(current.prompts == 0 and current.downloads == 0 and current.installs == 0)
 assert(current.successMessages == 0 and current.errors == 0)
 
-local noRelease = runScenario(nil, "2.0.0", "HarryPotter_Ficha", true, 404)
+local noRelease = runScenario(nil, "2.0.0", "HarryPotter_Ficha", true, nil, "HTTP/1.1 404 Not Found")
 assert(noRelease.prompts == 0 and noRelease.downloads == 0 and noRelease.installs == 0)
 assert(noRelease.successMessages == 0 and noRelease.errors == 0)
 
