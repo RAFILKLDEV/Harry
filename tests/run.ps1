@@ -53,7 +53,7 @@ if (-not [LuaTestRunner]::SetDllDirectory($SdkDirectory)) { throw 'Não foi poss
 $previousDirectory = [Environment]::CurrentDirectory
 try {
     [Environment]::CurrentDirectory = Split-Path $PSScriptRoot -Parent
-    foreach ($testFile in @('tests/condicoes_test.testlua', 'tests/updater_test.testlua')) {
+    foreach ($testFile in @('tests/condicoes_test.testlua', 'tests/feiticos_update_test.testlua', 'tests/updater_test.testlua')) {
         $result = [LuaTestRunner]::Run($testFile)
         if ($result -ne 0) { exit $result }
     }

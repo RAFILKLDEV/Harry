@@ -9,6 +9,65 @@ require("utils.lua")
 
 local feiticoScript = {}
 
+local camposFeitico = {
+    {campo = "Grad", nome = "Grad", array = "gradArray"},
+    {campo = "CD", nome = "CD", array = "cdfArray"},
+    {campo = "Dano", nome = "Dano", array = "danoArray"},
+    {campo = "Poder", nome = "Poder", array = "poderArray"},
+    {campo = "Range", nome = "Range", array = "rangeArray"},
+    {campo = "Area", nome = "Area", array = "areaArray"},
+    {campo = "Duracao", nome = "Duracao", array = "duracaoArray"}
+}
+
+local function normalizarNomeFeitico(nome)
+    nome = tostring(nome or "")
+    for _, par in ipairs({
+        {"Á", "á"}, {"À", "à"}, {"Â", "â"}, {"Ã", "ã"},
+        {"É", "é"}, {"Ê", "ê"}, {"Í", "í"},
+        {"Ó", "ó"}, {"Ô", "ô"}, {"Õ", "õ"},
+        {"Ú", "ú"}, {"Ü", "ü"}, {"Ç", "ç"}
+    }) do
+        nome = nome:gsub(par[1], par[2])
+    end
+    return nome:gsub("%s+", " "):match("^%s*(.-)%s*$"):lower()
+end
+
+local function prepararFeiticoBase(feitico)
+    local preparado = {dados = feitico, valores = {}}
+
+    for _, campo in ipairs(camposFeitico) do
+        local valores = totable(feitico[campo.array])
+        if type(valores) ~= "table" or #valores == 0 or valores[1] == nil then
+            error("A lista " .. campo.array .. " do feitiço " .. tostring(feitico.nome) .. " está inválida.")
+        end
+        preparado.valores[campo.campo] = valores
+    end
+
+    return preparado
+end
+
+local function aplicarFeiticoBase(node, preparado)
+    local dados = preparado.dados
+    node.escola = dados.escola
+    node.tipo = dados.cast
+    node.tempo = dados.tempo
+    node.defesa = dados.defesa
+    node.Desc = dados.desc
+    node.Efeito = dados.efeito
+    node.Bonus = dados.bonus
+
+    for _, campo in ipairs(camposFeitico) do
+        local valores = preparado.valores[campo.campo]
+        local indice = math.floor(tonumber(node[campo.campo .. "_grad"]) or 1)
+        if indice < 1 or valores[indice] == nil then indice = 1 end
+
+        node[campo.campo .. "_grad"] = indice
+        node[campo.campo .. "_name"] = campo.nome
+        node[campo.campo .. "_array"] = dados[campo.array]
+        node[campo.campo] = valores[indice]
+    end
+end
+
 local function getSpellNode(self, sheet)
     local node = nil
 
@@ -198,6 +257,66 @@ end
 
 function feiticoScript.stats(self, sheet) return stats(self, sheet) end
 
+function feiticoScript.atualizarListaFeiticos(sheet)
+    if sheet == nil or sheet.magias == nil then
+        return nil, "Não foi possível localizar a lista de feitiços da ficha."
+    end
+
+    local raiz = NDB.load("listfetico.xml")
+    if raiz == nil then
+        return nil, "Não foi possível carregar a lista oficial de feitiços."
+    end
+
+    local baseDeFeiticos = NDB.getChildNodes(raiz)
+    if baseDeFeiticos == nil or #baseDeFeiticos == 0 then
+        return nil, "A lista oficial de feitiços está vazia."
+    end
+
+    local basePorNome = {}
+    for _, feitico in ipairs(baseDeFeiticos) do
+        local nome = normalizarNomeFeitico(feitico.nome)
+        if nome ~= "" and basePorNome[nome] == nil then
+            basePorNome[nome] = prepararFeiticoBase(feitico)
+        end
+    end
+
+    local feiticosCadastrados = NDB.getChildNodes(sheet.magias) or {}
+    local atualizados, naoEncontrados = 0, {}
+
+    for _, feitico in ipairs(feiticosCadastrados) do
+        local preparado = basePorNome[normalizarNomeFeitico(feitico.nome)]
+        if preparado ~= nil then
+            aplicarFeiticoBase(feitico, preparado)
+            atualizados = atualizados + 1
+        else
+            naoEncontrados[#naoEncontrados + 1] = tostring(feitico.nome or "(sem nome)")
+        end
+    end
+
+    return atualizados, naoEncontrados
+end
+
+function feiticoScript.atualizarFeiticos(self, sheet)
+    Dialogs.showMessageDlg("Deseja atualizar sua lista de feitiços?",
+        dialogs.DT_INFORMATION, {dialogs.DB_YES, dialogs.DB_NO}, function(escolha)
+            if escolha == dialogs.DB_YES then
+                local atualizados, naoEncontrados = feiticoScript.atualizarListaFeiticos(sheet)
+                if atualizados == nil then
+                    Dialogs.showErrorMessage(naoEncontrados)
+                elseif atualizados == 0 then
+                    Dialogs.showMessage("Não há feitiços cadastrados para atualizar.")
+                elseif #naoEncontrados > 0 then
+                    Dialogs.showMessage("Feitiços atualizados: " .. atualizados ..
+                        "\nNão encontrados na lista oficial:\n" .. table.concat(naoEncontrados, "\n"))
+                else
+                    Dialogs.showMessage("Todos os " .. atualizados .. " feitiços foram atualizados!")
+                end
+            elseif escolha == dialogs.DB_NO then
+                Dialogs.showMessage("Se não atualizar vai perder ponto")
+            end
+        end)
+end
+
 function feiticoScript.atualizarResumoTalentos(self, sheet)
     local node = getSpellNode(self, sheet)
     if node == nil or self.resumoTalentos == nil then return end
@@ -208,7 +327,7 @@ function feiticoScript.atualizarResumoTalentos(self, sheet)
     local texto = #ativos > 0 and table.concat(ativos, " | ") or "Nenhum talento marcado para este feitiço."
     if node.talentoAtaquePoderoso then
         local efetivo = talentos.feiticoEfetivo(node)
-        texto = texto .. " | Com Ataque Poderoso — Dano: " .. lancamento.formatarNumero(efetivo.Dano) ..
+        texto = texto .. " | Com Feitiço Potente — Dano: " .. lancamento.formatarNumero(efetivo.Dano) ..
                 " / Poder: " .. lancamento.formatarNumero(efetivo.Poder)
     end
     self.resumoTalentos.text = texto

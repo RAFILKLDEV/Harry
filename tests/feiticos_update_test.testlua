@@ -1,0 +1,94 @@
+table.insert(package.searchers, 2, function(name)
+    if name:match("%.lua$") then
+        local loader, reason = loadfile(name)
+        return loader or reason
+    end
+    return "\n\tfora do loader de arquivos Firecast"
+end)
+
+local dialogMessage, dialogCallback, shownMessages = nil, nil, {}
+Dialogs = {
+    showMessageDlg = function(message, _, _, callback)
+        dialogMessage, dialogCallback = message, callback
+    end,
+    showMessage = function(message) shownMessages[#shownMessages + 1] = message end,
+    showErrorMessage = function(message) error(message) end
+}
+dialogs = {DT_INFORMATION = 1, DB_YES = "yes", DB_NO = "no"}
+
+local officialSpells = {
+    f1 = {
+        nome = "Feitiço de teste", escola = "Encantamento", cast = "Cast", tempo = "1 turno",
+        defesa = "Vontade", desc = "Descrição oficial", efeito = "Efeito oficial", bonus = "Bônus oficial",
+        gradArray = {0, 1, 2}, cdfArray = {12, 11}, danoArray = {0, 5},
+        poderArray = {1, 2}, rangeArray = {"6m", "9m"}, areaArray = {0, 3}, duracaoArray = {0, 4}
+    }
+}
+NDB = {
+    load = function(file)
+        assert(file == "listfetico.xml")
+        return {_children = {officialSpells.f1}}
+    end,
+    getChildNodes = function(node) return node and node._children or {} end
+}
+
+package.preload["dialogs.lua"] = function() return Dialogs end
+package.preload["ndb.lua"] = function() return NDB end
+package.preload["gui.lua"] = function() return {} end
+package.preload["condicoes.lua"] = function() return {} end
+package.preload["lancamento.lua"] = function()
+    return {formatarNumero = function(value) return tostring(value) end}
+end
+package.preload["talentos.lua"] = function()
+    return {lista = {}, feiticoEfetivo = function(node) return node end}
+end
+package.preload["mensagens_magia.lua"] = function() return {} end
+package.preload["utils.lua"] = function()
+    totable = function(value) return value end
+    return true
+end
+
+local feiticos = require("feitico_script.lua")
+local function makeSpell(name, grades)
+    local node = {
+        nome = name, escola = "Inválida", tipo = "Inválido", tempo = "Inválido",
+        Grad = -1, CD = -1, Dano = -1, Poder = -1, Range = -1, Area = -1, Duracao = -1,
+        Grad_grad = grades and grades.Grad or 1,
+        CD_grad = grades and grades.CD or 1,
+        Dano_grad = grades and grades.Dano or 1,
+        Poder_grad = grades and grades.Poder or 1,
+        Range_grad = grades and grades.Range or 1,
+        Area_grad = grades and grades.Area or 1,
+        Duracao_grad = grades and grades.Duracao or 1
+    }
+    return node
+end
+
+local firstCopy = makeSpell(" FEITIÇO   DE TESTE ", {
+    Grad = 3, CD = 99, Dano = 2, Poder = 2, Range = 2, Area = 2, Duracao = 2
+})
+local secondCopy = makeSpell("Feitiço de teste")
+local customSpell = makeSpell("Feitiço personalizado")
+local sheet = {magias = {_children = {firstCopy, secondCopy, customSpell}}}
+
+local updated, unmatched = feiticos.atualizarListaFeiticos(sheet)
+assert(updated == 2, "deve atualizar todas as cópias do feitiço conhecido")
+assert(#unmatched == 1 and unmatched[1] == "Feitiço personalizado")
+assert(firstCopy.escola == "Encantamento" and firstCopy.tipo == "Cast")
+assert(firstCopy.tempo == "1 turno" and firstCopy.defesa == "Vontade")
+assert(firstCopy.Desc == "Descrição oficial" and firstCopy.Efeito == "Efeito oficial")
+assert(firstCopy.Bonus == "Bônus oficial")
+assert(firstCopy.Grad == 2 and firstCopy.Grad_grad == 3)
+assert(firstCopy.CD == 12 and firstCopy.CD_grad == 1)
+assert(firstCopy.Dano == 5 and firstCopy.Poder == 2 and firstCopy.Range == "9m")
+assert(firstCopy.Area == 3 and firstCopy.Duracao == 4)
+assert(firstCopy.Grad_array == officialSpells.f1.gradArray and firstCopy.Grad_name == "Grad")
+assert(secondCopy.CD == 12 and secondCopy.Grad == 0)
+assert(customSpell.escola == "Inválida", "feitiços fora da base não devem ser alterados")
+
+feiticos.atualizarFeiticos({}, sheet)
+assert(dialogMessage and dialogMessage:find("atualizar", 1, true))
+dialogCallback(dialogs.DB_YES)
+assert(#shownMessages == 1 and shownMessages[1]:find("Feitiço personalizado", 1, true))
+
+print("OK: atualização repara todos os feitiços reconhecidos e preserva os não catalogados.")

@@ -2,9 +2,9 @@ require("utils.lua")
 local talentos = {}
 
 talentos.lista = {
-    {campo = "talentoMaestria", nome = "Maestria em Feitiço", horas = 10,
+    {campo = "talentoMaestria", nome = "Mestre em Conjuração", horas = 10,
      descricao = "Qualquer falha de conjuração passa a ser de estágio 1."},
-    {campo = "talentoMaestriaSuperior", nome = "Maestria em Feitiço Superior", horas = 15,
+    {campo = "talentoMaestriaSuperior", nome = "Mestre em Ataque", horas = 15,
      descricao = "Mínimo de ataque 10 + DES + GRAD, indicado na mensagem."},
     {campo = "talentoMenteCalma", nome = "Mente Calma", horas = 10,
      descricao = "Permite reduzir a CDF em 3 no lançamento, fora de combate."},
@@ -12,7 +12,7 @@ talentos.lista = {
      descricao = "A penalidade de lançar silenciosamente passa a ser −2."},
     {campo = "talentoCritico", nome = "Crítico Aprimorado", horas = 10,
      descricao = "Amplia a margem de crítico em 1, automaticamente."},
-    {campo = "talentoAtaquePoderoso", nome = "Ataque Poderoso", horas = 20,
+    {campo = "talentoAtaquePoderoso", nome = "Feitiço Potente", horas = 20,
      descricao = "+1 fixo nos componentes numéricos de Dano e Poder existentes."},
     {campo = "talentoFeiticoPoderoso", nome = "Feitiço Poderoso",
      descricao = "Eleva o limite das melhorias temporárias de C4 para C10."}

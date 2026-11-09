@@ -59,8 +59,8 @@ local function extras(contexto)
         if presente(value) then partes[#partes + 1] = (tonalidade or cor.suave) .. texto(value) .. cor.branco end
     end
     if contexto.minimoAtaque ~= nil then
-        adicionar(contexto.minimoAplicado and "Maestria Superior (mín.)" or
-                  "Maestria Superior (mín. " .. numero(contexto.minimoAtaque) .. ")", cor.pessego)
+        adicionar(contexto.minimoAplicado and "Mestre em Ataque (mín.)" or
+                  "Mestre em Ataque (mín. " .. numero(contexto.minimoAtaque) .. ")", cor.pessego)
     end
     if contexto.falha then return #partes > 0 and cor.branco .. table.concat(partes, " · ") or nil end
     for _, campo in ipairs({{"Dano", "Dano "}, {"Poder", "Poder "}}) do
@@ -81,7 +81,7 @@ local function talentosAtivos(node)
         if node[talento.campo] then ativos[#ativos + 1] = talento.nome end
     end
     if #ativos == 0 then return nil end
-    return cor.dourado .. "Talentos: " .. table.concat(ativos, " · ") .. cor.branco
+    return cor.dourado .. table.concat(ativos, " · ") .. cor.branco
 end
 
 function mensagens.formatar(contexto)
@@ -93,10 +93,7 @@ function mensagens.formatar(contexto)
     if contexto.falha and contexto.estagios then
         status = status .. " (" .. numero(contexto.estagios) .. (contexto.estagios == 1 and " estágio)" or " estágios)")
     end
-    local cabecalho = cor.lavanda .. nome .. cor.branco .. " · " .. cor.rosa .. personagem .. cor.branco .. " · " .. status .. cor.branco
-    local listaTalentos = talentosAtivos(contexto.node or {})
-    if listaTalentos then cabecalho = cabecalho .. " · " .. listaTalentos end
-    local linhas = {cabecalho}
+    local linhas = {cor.lavanda .. nome .. cor.branco .. " · " .. cor.rosa .. personagem .. cor.branco .. " · " .. status .. cor.branco}
     linhas[#linhas + 1] = mensagens.calculo("Conj", contexto.conjuracao, contexto.modificadoresConjuracao) ..
                           " | " .. cor.lavanda .. "CD " .. numero(contexto.cd) .. cor.branco
     if contexto.criticoConjuracao then
@@ -110,6 +107,8 @@ function mensagens.formatar(contexto)
     end
     local detalhe = extras(contexto)
     if detalhe then linhas[#linhas + 1] = detalhe end
+    local listaTalentos = talentosAtivos(contexto.node or {})
+    if listaTalentos then linhas[#linhas + 1] = listaTalentos end
     return table.concat(linhas, "\n")
 end
 
